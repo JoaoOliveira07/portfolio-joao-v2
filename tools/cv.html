@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <!-- Fonte dos CVs em PDF (cv/cv-pt.pdf e cv/cv-en.pdf). Gerado por tools/gerar-cv.ps1.
+       ?lang=pt | ?lang=en. Versão pública: sem nomes de sistemas internos da empresa. -->
+  <title>CV — João Paulo Oliveira</title>
+  <meta name="robots" content="noindex">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    @page { size: A4; margin: 16mm 18mm; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Lato', Arial, sans-serif; font-size: 10.4pt; line-height: 1.42; color: #222; }
+    h1 { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 25pt; margin: 0; line-height: 1.1; color: #1d1d1f; }
+    .title { font-family: 'Poppins', sans-serif; font-weight: 500; font-size: 13pt; color: #2a63b8; margin: 2px 0 4px; }
+    .contact { color: #666; font-size: 9.6pt; }
+    .contact a { color: #2a63b8; text-decoration: none; }
+    h2 { font-family: 'Poppins', sans-serif; font-weight: 500; font-size: 11.5pt; color: #2a63b8; text-transform: uppercase; margin: 16px 0 6px; padding-bottom: 3px; border-bottom: 1px solid #ddd; }
+    p { margin: 0; }
+    .job { display: flex; justify-content: space-between; align-items: baseline; margin-top: 8px; }
+    .job b { font-size: 10.8pt; }
+    .job span { color: #666; font-size: 9.6pt; white-space: nowrap; }
+    .sub { color: #666; font-size: 9.6pt; }
+    ul { margin: 3px 0 0; padding-left: 16px; }
+    li { margin: 1px 0; }
+    .proj { margin-top: 8px; break-inside: avoid; }
+    .proj b { display: block; }
+    .stack { color: #666; font-style: italic; font-size: 9.4pt; }
+    table { border-collapse: collapse; width: 100%; }
+    td { vertical-align: top; padding: 2px 0; }
+    td:first-child { font-weight: 700; width: 34%; padding-right: 10px; }
+    [data-lang] { display: none; }
+    html[lang="pt-BR"] [data-lang="pt"], html[lang="en"] [data-lang="en"] { display: block; }
+  </style>
+  <script>if (new URLSearchParams(location.search).get('lang') === 'en') document.documentElement.lang = 'en';</script>
+</head>
+<body>
+<!-- ======================= PORTUGUÊS ======================= -->
+<main data-lang="pt">
+  <h1>João Paulo Oliveira</h1>
+  <div class="title">Backend Developer · Java | Spring Boot | AWS</div>
+  <div class="contact">Blumenau, SC · <a href="mailto:jpauloo.2003@gmail.com">jpauloo.2003@gmail.com</a> · <a href="https://www.linkedin.com/in/joaooliveira07/">linkedin.com/in/joaooliveira07</a> · <a href="https://github.com/JoaoOliveira07">github.com/JoaoOliveira07</a> · <a href="https://joaooliveira07.github.io/portfolio-joao-v2/">portfólio</a></div>
+
+  <h2>Resumo</h2>
+  <p>Backend Engineer com mais de 3 anos de experiência construindo sistemas escaláveis e integrações complexas com Java, Spring Boot e AWS. Atuação em arquitetura orientada a eventos, integração com ERP legado, plataformas B2B multi-tenant e Infrastructure as Code com Terraform. Entrei na área em 2023 sem formação técnica formal e evoluí de assistente de TI a desenvolvedor pleno em pouco mais de dois anos. Participo ativamente de decisões de arquitetura e priorizo código sustentável, performance e confiabilidade em produção.</p>
+
+  <h2>Experiência profissional</h2>
+  <div class="job"><b>Segala's Alimentos</b><span>Ago 2023 – Atual</span></div>
+  <div class="sub">Evolução: IT Assistant → Trainee → Junior → Mid-Level Software Developer</div>
+  <div class="job"><b>Mid-Level Software Developer</b><span>Set 2025 – Atual</span></div>
+  <ul>
+    <li>Desenvolvimento de soluções backend robustas e escaláveis para o ecossistema de e-commerce B2B, com foco em qualidade e performance.</li>
+    <li>Participação em decisões técnicas e de arquitetura (DDD, arquitetura hexagonal, event-driven com SQS/SNS e Kinesis).</li>
+    <li>Infraestrutura AWS versionada em Terraform para ambientes de teste, homologação e produção, com CI/CD no GitHub Actions.</li>
+  </ul>
+  <div class="job"><b>Junior Software Developer</b><span>Ago 2024 – Ago 2025</span></div>
+  <ul>
+    <li>Desenvolvimento de features de maior complexidade com autonomia, incluindo integrações com o ERP e o backend do app mobile.</li>
+    <li>Otimização de consultas e de pontos críticos de performance da aplicação.</li>
+  </ul>
+  <div class="job"><b>Trainee Software Developer</b><span>Mar 2024 – Jul 2024</span></div>
+  <ul><li>Participação ativa em tarefas de desenvolvimento, consolidando fundamentos de engenharia de software.</li></ul>
+  <div class="job"><b>IT Assistant</b><span>Ago 2023 – Fev 2024</span></div>
+  <ul><li>Início na área de TI com foco em aprendizado técnico e fundamentos de desenvolvimento.</li></ul>
+
+  <h2>Projetos em destaque</h2>
+  <div class="proj"><b>Backend de e-commerce B2B</b>
+    <p>Backend central do ecossistema B2B: API REST multi-tenant por parceiro (Layered + DDD) que atende o app de cadastro, o painel administrativo, a loja web e o app de força de vendas, com event streaming via Kinesis.</p>
+    <p class="stack">Java 17, Spring Boot 3, PostgreSQL, Redis, AWS SQS/SNS/S3, Kinesis</p></div>
+  <div class="proj"><b>Integração ERP ↔ nuvem — Client / Middleware / Orchestrator</b>
+    <p>Três serviços Java que sincronizam produtos, clientes, preços, estoque, pedidos e notificações entre um ERP Oracle on-premise e a plataforma B2B, com barramento SQS central e orquestração de fluxos de crédito, PIX e liberação de pedidos.</p>
+    <p class="stack">Java 17/21, Spring Boot 2.7/3.2, Oracle, PostgreSQL, AWS SQS</p></div>
+  <div class="proj"><b>API de sincronização para o app offline</b>
+    <p>API em arquitetura hexagonal que gera jobs de sincronização, consulta o banco do parceiro em modo somente leitura e abastece via S3 o banco local do app offline-first.</p>
+    <p class="stack">Java 17, Spring Boot 3.5, PostgreSQL, Redis, AWS S3, ECS Fargate, Terraform</p></div>
+  <div class="proj"><b>Infraestrutura AWS como código</b>
+    <p>Provisionamento multi-ambiente com módulos reutilizáveis, state remoto em S3 e pipeline de CI/CD.</p>
+    <p class="stack">Terraform, AWS Lambda, API Gateway, RDS, S3, VPC, SSM, ECR, GitHub Actions</p></div>
+  <div class="proj"><b>Apps e painéis do ecossistema (full-stack)</b>
+    <p>Contribuição em app Flutter offline-first de força de vendas, app de cadastro com validações brasileiras (CPF/CNPJ), SPA B2B white-label em React e painel administrativo em Next.js com chat de IA (AWS Bedrock / OpenRouter).</p>
+    <p class="stack">Flutter, Dart, BLoC, Drift, React 18, Next.js 16, TypeScript, AWS Bedrock</p></div>
+  <div class="proj"><b>Projetos pessoais</b>
+    <p>JOPES.EXE (portfólio em forma de RPG isométrico), CommitClock (timesheet automático a partir da foto do cartão ponto, com Groq Vision e APIs do GitHub e Clockify) e loja Kira Semi Joias (Next.js, checkout via WhatsApp).</p>
+    <p class="stack">JavaScript, three.js, TypeScript, Next.js, Groq AI, Vercel</p></div>
+
+  <h2>Habilidades técnicas</h2>
+  <table>
+    <tr><td>Backend &amp; APIs</td><td>Java 17/21, Spring Boot, Spring Integration, JPA/Hibernate, REST APIs, Node.js (Lambda)</td></tr>
+    <tr><td>Arquitetura</td><td>Event-Driven Architecture, microsserviços, DDD, arquitetura hexagonal/clean, multi-tenancy, integração com ERP</td></tr>
+    <tr><td>Cloud &amp; IaC</td><td>AWS (ECS Fargate, RDS, SQS, SNS, S3, Lambda, API Gateway, Kinesis), Terraform, Docker, GitHub Actions</td></tr>
+    <tr><td>Dados &amp; Observabilidade</td><td>PostgreSQL, Oracle, Redis, Prometheus, Grafana, Datadog, Sentry, CloudWatch</td></tr>
+    <tr><td>Mobile &amp; Frontend</td><td>Flutter, Dart, BLoC/Cubit, React, Next.js, TypeScript, Vite, Tailwind CSS</td></tr>
+  </table>
+
+  <h2>Recomendações</h2>
+  <p>Recomendações no LinkedIn de Alessandro Elias (Tech Lead | Senior Software Engineer), Kauan Curbani (Desenvolvedor Sênior), Fernando Junior (Engenheiro de Software Sênior), Joao Vargas e Felipe Baer, destacando contribuição central no backend Java/Spring do app mobile, autonomia em integrações com o ERP, otimização de consultas, aprendizado rápido e maturidade nas discussões técnicas.</p>
+</main>
+
+<!-- ======================= ENGLISH ======================= -->
+<main data-lang="en">
+  <h1>João Paulo Oliveira</h1>
+  <div class="title">Backend Developer · Java | Spring Boot | AWS</div>
+  <div class="contact">Blumenau, SC, Brazil · <a href="mailto:jpauloo.2003@gmail.com">jpauloo.2003@gmail.com</a> · <a href="https://www.linkedin.com/in/joaooliveira07/">linkedin.com/in/joaooliveira07</a> · <a href="https://github.com/JoaoOliveira07">github.com/JoaoOliveira07</a> · <a href="https://joaooliveira07.github.io/portfolio-joao-v2/?lang=en">portfolio</a></div>
+
+  <h2>Summary</h2>
+  <p>Backend Engineer with 3+ years of experience building scalable systems and complex integrations with Java, Spring Boot and AWS. Hands-on with event-driven architecture, legacy ERP integration, multi-tenant B2B platforms and Infrastructure as Code with Terraform. Entered tech in 2023 without a formal technical background and grew from IT Assistant to Mid-Level Developer in just over two years. Actively involved in architecture decisions, with a focus on maintainable code, performance and production reliability.</p>
+
+  <h2>Professional experience</h2>
+  <div class="job"><b>Segala's Alimentos</b><span>Aug 2023 – Present</span></div>
+  <div class="sub">Career progression: IT Assistant → Trainee → Junior → Mid-Level Software Developer</div>
+  <div class="job"><b>Mid-Level Software Developer</b><span>Sep 2025 – Present</span></div>
+  <ul>
+    <li>Build robust, scalable backend solutions for the B2B e-commerce ecosystem, with a focus on quality and performance.</li>
+    <li>Contribute to technical and architecture decisions (DDD, hexagonal architecture, event-driven design with SQS/SNS and Kinesis).</li>
+    <li>Manage AWS infrastructure as code with Terraform across test, staging and production, with CI/CD on GitHub Actions.</li>
+  </ul>
+  <div class="job"><b>Junior Software Developer</b><span>Aug 2024 – Aug 2025</span></div>
+  <ul>
+    <li>Delivered complex features autonomously, including ERP integrations and the mobile app backend.</li>
+    <li>Optimized database queries and performance-critical parts of the application.</li>
+  </ul>
+  <div class="job"><b>Trainee Software Developer</b><span>Mar 2024 – Jul 2024</span></div>
+  <ul><li>Took an active part in development tasks, strengthening software engineering fundamentals.</li></ul>
+  <div class="job"><b>IT Assistant</b><span>Aug 2023 – Feb 2024</span></div>
+  <ul><li>Started in IT, focused on technical learning and software development fundamentals.</li></ul>
+
+  <h2>Selected projects</h2>
+  <div class="proj"><b>B2B E-commerce Backend</b>
+    <p>Core backend of the B2B ecosystem: a partner-level multi-tenant REST API (Layered + DDD) serving the onboarding app, the admin panel, the web store and the field sales app, with event streaming via Kinesis.</p>
+    <p class="stack">Java 17, Spring Boot 3, PostgreSQL, Redis, AWS SQS/SNS/S3, Kinesis</p></div>
+  <div class="proj"><b>ERP ↔ Cloud Integration — Client / Middleware / Orchestrator</b>
+    <p>Three Java services that keep products, customers, prices, inventory, orders and notifications in sync between an on-premise Oracle ERP and the B2B platform, using a central SQS bus and orchestrating credit, PIX and order-release workflows.</p>
+    <p class="stack">Java 17/21, Spring Boot 2.7/3.2, Oracle, PostgreSQL, AWS SQS</p></div>
+  <div class="proj"><b>Sync API for the Offline App</b>
+    <p>Hexagonal-architecture API that generates sync jobs, runs read-only queries against the partner's database and feeds the offline-first app's local database through S3.</p>
+    <p class="stack">Java 17, Spring Boot 3.5, PostgreSQL, Redis, AWS S3, ECS Fargate, Terraform</p></div>
+  <div class="proj"><b>AWS Infrastructure as Code</b>
+    <p>Multi-environment provisioning with reusable modules, remote state on S3 and a CI/CD pipeline.</p>
+    <p class="stack">Terraform, AWS Lambda, API Gateway, RDS, S3, VPC, SSM, ECR, GitHub Actions</p></div>
+  <div class="proj"><b>Ecosystem Apps and Dashboards (full-stack)</b>
+    <p>Contributed to an offline-first Flutter field sales app, an onboarding app with Brazilian document validation (CPF/CNPJ), a white-label B2B SPA in React and a Next.js admin panel with an AI chat (AWS Bedrock / OpenRouter).</p>
+    <p class="stack">Flutter, Dart, BLoC, Drift, React 18, Next.js 16, TypeScript, AWS Bedrock</p></div>
+  <div class="proj"><b>Side projects</b>
+    <p>JOPES.EXE (a portfolio as an isometric RPG), CommitClock (automatic timesheets from a photo of a paper time card, with Groq Vision plus the GitHub and Clockify APIs) and the Kira Semi Joias store (Next.js, checkout via WhatsApp).</p>
+    <p class="stack">JavaScript, three.js, TypeScript, Next.js, Groq AI, Vercel</p></div>
+
+  <h2>Technical skills</h2>
+  <table>
+    <tr><td>Backend &amp; APIs</td><td>Java 17/21, Spring Boot, Spring Integration, JPA/Hibernate, REST APIs, Node.js (Lambda)</td></tr>
+    <tr><td>Architecture</td><td>Event-Driven Architecture, microservices, DDD, hexagonal/clean architecture, multi-tenancy, ERP integration</td></tr>
+    <tr><td>Cloud &amp; IaC</td><td>AWS (ECS Fargate, RDS, SQS, SNS, S3, Lambda, API Gateway, Kinesis), Terraform, Docker, GitHub Actions</td></tr>
+    <tr><td>Data &amp; Observability</td><td>PostgreSQL, Oracle, Redis, Prometheus, Grafana, Datadog, Sentry, CloudWatch</td></tr>
+    <tr><td>Mobile &amp; Frontend</td><td>Flutter, Dart, BLoC/Cubit, React, Next.js, TypeScript, Vite, Tailwind CSS</td></tr>
+  </table>
+
+  <h2>Recommendations</h2>
+  <p>LinkedIn recommendations from Alessandro Elias (Tech Lead | Senior Software Engineer), Kauan Curbani (Senior Developer), Fernando Junior (Senior Software Engineer), Joao Vargas and Felipe Baer, highlighting a key role in building the mobile app's Java/Spring backend, autonomy on ERP integrations, query optimization, fast learning and maturity in technical discussions.</p>
+</main>
+</body>
+</html>

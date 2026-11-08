@@ -1,0 +1,36 @@
+{
+  "group_id": "651408fb-1c64-4d57-a526-88d20d3f0e66",
+  "states": [
+    {
+      "character": {
+        "id": "d682554a-f6da-4432-96b3-43c130e76c15",
+        "name": "Idle",
+        "prompt": "Full body isometric pixel art character, head to toe visible,\n3/4 top-down view, standing idle pose,\nyoung man, short dark hair combed to the side,\nwearing a dark green quilted puffer jacket over a black and white\nstriped button-up shirt,\ndark pants, casual sneakers,\nneutral confident expression,\nmoody cool-toned lighting, subtle rim light,\nclean pixel art style, sharp outlines, game-ready NPC sprite,\nconsistent with isometric city RPG art style",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-08-17T13:16:52.574596+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-08-17T13:19:37.880763"
+}

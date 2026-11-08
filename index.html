@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>O Jopes — João Paulo Oliveira</title>
+  <meta name="description" content="O Jopes: o portfólio em forma de jornal de João Paulo Oliveira, engenheiro backend em Blumenau. Java, Spring Boot, AWS, projetos, carreira e contato.">
+  <meta name="theme-color" content="#f1ebdf">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="img/og.png">
+  <!-- Prévia ao compartilhar (LinkedIn, WhatsApp, X...). SITE_URL: troque se o domínio mudar. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="O Jopes">
+  <meta property="og:title" content="O Jopes — João Paulo Oliveira, engenheiro backend">
+  <meta property="og:description" content="Portfólio em forma de jornal: projetos, carreira, cartas de colegas, uma palavra cruzada e um RPG. Java, Spring Boot, AWS e mensageria.">
+  <meta property="og:url" content="https://joaooliveira07.github.io/portfolio-joao-v2/">
+  <meta property="og:image" content="https://joaooliveira07.github.io/portfolio-joao-v2/img/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Capa do jornal O Jopes com a foto de João Paulo Oliveira">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://joaooliveira07.github.io/portfolio-joao-v2/">
+  <script>
+    // Antes de pintar: idioma, tema e se a abertura da rotativa deve rodar.
+    (function () {
+      var d = document.documentElement, s = {};
+      try { s = { lang: localStorage.getItem('jopes-lang'), theme: localStorage.getItem('jopes-theme'), seen: localStorage.getItem('jopes-press') }; } catch (e) {}
+      var q = new URLSearchParams(location.search).get('lang');
+      var lang = q || s.lang || 'pt';
+      d.lang = lang === 'en' ? 'en' : 'pt-BR';
+      d.dataset.lang = lang === 'en' ? 'en' : 'pt';
+      var night = s.theme ? s.theme === 'night' : matchMedia('(prefers-color-scheme: dark)').matches;
+      if (night) d.dataset.theme = 'night';
+      var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!s.seen && !reduce && !location.hash) d.classList.add('press');
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,700;0,6..72,800;1,6..72,400;1,6..72,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Abertura: a edição saindo da rotativa -->
+  <div class="press-overlay" id="press" aria-hidden="true">
+    <div class="press-roller"></div>
+    <div class="press-text"><span id="pressText">Rodando a edição…</span><small data-i18n="press.skip">clique para pular</small></div>
+  </div>
+
+  <!-- Barra de utilidades -->
+  <div class="utility">
+    <div class="wrap utility-inner">
+      <span id="dateline">Blumenau, SC</span>
+      <a class="utility-river" href="#games" data-i18n-html="util.trending"></a>
+      <span class="utility-actions">
+        <button id="langBtn" type="button"></button>
+        <button id="nightBtn" type="button"></button>
+        <button id="printBtn" type="button" data-i18n="util.print"></button>
+        <a class="game-link" href="rpg/" data-i18n="util.play"></a>
+      </span>
+    </div>
+  </div>
+
+  <!-- Cabeçalho do jornal -->
+  <header class="masthead wrap" id="capa">
+    <div class="ear ear-left">
+      <span class="ear-title" data-i18n="ear.l.t"></span>
+      <span data-i18n-html="ear.l"></span>
+    </div>
+    <h1 class="title"><a href="#capa" id="paperName">O Jopes</a></h1>
+    <div class="ear ear-right">
+      <span class="ear-title" data-i18n="ear.r.t"></span>
+      <span data-i18n-html="ear.r"></span>
+    </div>
+    <p class="motto" id="motto"></p>
+  </header>
+
+  <nav class="sections wrap" id="sections" aria-label="Cadernos">
+    <a href="#capa" data-i18n="nav.front"></a>
+    <a href="#tecnologia" data-i18n="nav.tech"></a>
+    <a href="#entrevista" data-i18n="nav.interview"></a>
+    <a href="#carreira" data-i18n="nav.career"></a>
+    <a href="#classificados" data-i18n="nav.ads"></a>
+    <a href="#passatempos" data-i18n="nav.puzzles"></a>
+    <a href="#cartas" data-i18n="nav.letters"></a>
+    <a href="#expediente" data-i18n="nav.contact"></a>
+  </nav>
+
+  <!-- Masthead compacto ao rolar -->
+  <div class="mini" id="mini" aria-hidden="true">
+    <div class="wrap mini-inner">
+      <a href="#capa" class="mini-title" id="miniName">O Jopes</a>
+      <span class="mini-links">
+        <a href="#tecnologia" data-i18n="nav.tech"></a><a href="#entrevista" data-i18n="nav.interview"></a><a href="#carreira" data-i18n="nav.career"></a><a href="#classificados" data-i18n="nav.ads"></a><a href="#passatempos" data-i18n="nav.puzzles"></a><a href="#cartas" data-i18n="nav.letters"></a><a href="#expediente" data-i18n="nav.contact"></a>
+      </span>
+    </div>
+  </div>
+
+  <!-- Letreiro de logs -->
+  <div class="ticker">
+    <span class="ticker-label" data-i18n="ticker.label"></span>
+    <div class="ticker-viewport"><div class="ticker-track" id="ticker"></div></div>
+  </div>
+
+  <main class="wrap">
+    <!-- CAPA -->
+    <section class="front" id="tecnologia">
+      <article class="lead" id="lead"></article>
+      <aside class="side">
+        <div class="profile" id="profile"></div>
+        <div class="numbers">
+          <h2 class="box-title" data-i18n="numbers.title"></h2>
+          <div id="numbers"></div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- Matéria especial: o RPG -->
+    <section class="feature" id="games"></section>
+
+    <section class="row3" id="row3"></section>
+
+    <section class="more">
+      <h2 class="band"><span data-i18n="more.title"></span></h2>
+      <div class="more-grid" id="more"></div>
+    </section>
+
+    <!-- ENTREVISTA -->
+    <section class="interview" id="entrevista"></section>
+
+    <!-- CARREIRA -->
+    <section class="career" id="carreira">
+      <h2 class="caderno"><span class="caderno-tag" data-i18n="career.tag"></span> <span data-i18n="career.title"></span></h2>
+      <p class="caderno-deck" data-i18n="career.deck"></p>
+      <div class="market" id="market">
+        <div class="market-head">
+          <div><span class="ticker-sym">JPO3</span> <span class="market-name" data-i18n="career.company"></span></div>
+          <div class="market-quote"><b id="quote">—</b> <span id="quoteDelta"></span></div>
+        </div>
+        <svg class="chart" id="chart" aria-hidden="true"></svg>
+        <div class="market-foot" id="marketFoot"></div>
+      </div>
+      <ol class="positions" id="positions"></ol>
+    </section>
+
+    <!-- CLASSIFICADOS -->
+    <section class="classifieds" id="classificados">
+      <h2 class="caderno"><span class="caderno-tag" data-i18n="ads.tag"></span> <span data-i18n="ads.title"></span></h2>
+      <div class="ads" id="ads"></div>
+    </section>
+
+    <!-- PASSATEMPOS -->
+    <section class="puzzles" id="passatempos">
+      <h2 class="caderno"><span class="caderno-tag" data-i18n="pz.tag"></span> <span data-i18n="pz.title"></span></h2>
+      <p class="caderno-deck" data-i18n="pz.deck"></p>
+      <div class="xw">
+        <div class="xw-board">
+          <div class="xw-status">
+            <span id="xwProgress"></span>
+            <span class="xw-tools">
+              <button type="button" id="xwHint" data-i18n="pz.hint"></button>
+              <button type="button" id="xwCheck" data-i18n="pz.check"></button>
+              <button type="button" id="xwReveal" data-i18n="pz.reveal"></button>
+              <button type="button" id="xwReset" data-i18n="pz.reset"></button>
+            </span>
+          </div>
+          <div class="xw-grid-wrap"><div class="xw-grid" id="xwGrid"></div></div>
+          <div class="xw-current" id="xwCurrent"></div>
+        </div>
+        <div class="xw-clues">
+          <div><h3 data-i18n="pz.across"></h3><ol id="xwAcross"></ol></div>
+          <div><h3 data-i18n="pz.down"></h3><ol id="xwDown"></ol></div>
+        </div>
+      </div>
+      <div class="xw-found">
+        <h3 class="box-title" data-i18n="pz.found"></h3>
+        <div class="xw-explain" id="xwExplain"></div>
+      </div>
+    </section>
+
+    <!-- CARTAS -->
+    <section class="letters" id="cartas">
+      <h2 class="caderno"><span class="caderno-tag" data-i18n="letters.tag"></span> <span data-i18n="letters.title"></span></h2>
+      <p class="caderno-deck" data-i18n="letters.deck"></p>
+      <div class="letters-grid" id="letters"></div>
+    </section>
+  </main>
+
+  <!-- EXPEDIENTE -->
+  <footer class="colophon" id="expediente">
+    <div class="wrap">
+      <div class="colophon-title" id="footName">O Jopes</div>
+      <div class="colophon-grid">
+        <div>
+          <h3 data-i18n="col.staff"></h3>
+          <p id="staff"></p>
+        </div>
+        <div>
+          <h3 data-i18n="col.pitch"></h3>
+          <p data-i18n="col.pitchText"></p>
+          <button class="copy" id="copyEmail" type="button"></button>
+        </div>
+        <div>
+          <h3 data-i18n="col.outlets"></h3>
+          <ul class="outlets" id="outlets"></ul>
+        </div>
+      </div>
+      <p class="fine" id="fine"></p>
+    </div>
+  </footer>
+
+  <!-- Leitor de matéria -->
+  <div class="reader" id="reader" role="dialog" aria-modal="true" aria-labelledby="readerTitle" hidden>
+    <div class="reader-bar">
+      <span id="readerFolio"></span>
+      <button class="reader-close" id="readerClose" type="button" data-i18n="reader.close"></button>
+    </div>
+    <article class="reader-page" id="readerBody"></article>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="i18n.js"></script>
+  <script src="diagram.js"></script>
+  <script src="crossword.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

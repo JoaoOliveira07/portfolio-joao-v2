@@ -1,0 +1,105 @@
+{
+  "_info": "Modelos 3D prontos (GLB) para a garagem. Sem arquivo, usa o modelo feito à mão em cars/*.js.",
+  "cruze": {
+    "file": "cruze.glb",
+    "length": 70.2,
+    "wheel": "BRIDGESTONE|RODACINZA|DISCO_CRUZES18|PARAFUSORODA|CUBORODA|LOGOCHEVROLETRODA",
+    "tyre": "BRIDGESTONE",
+    "static": "CUBORODA",
+    "brake": "BLIGHTS|LANTERNATRASEIRA",
+    "credit": "Modelo 3D: “2017 Chevrolet Cruze LTZ” por Ddiaz Design (Sketchfab) · CC BY 4.0"
+  },
+  "clio": {
+    "file": "clio.glb",
+    "length": 57.2,
+    "wheel": "^(material|rim_badge|rim_chrome_td|rim_emblem|rim_hub_black|rim_plastic|tyre|disc|CALIPER|EXT_PLATE_plastic)$",
+    "tyre": "^tyre$",
+    "static": "CALIPER",
+    "brake": "^(tail_lens|feux)$",
+    "credit": "Modelo 3D: “Renault Clio 2003” por DR1KING100K (Sketchfab) · CC BY 4.0 · pintado de preto"
+  },
+  "hb20": {
+    "file": "hb20.glb",
+    "length": 58.8,
+    "brake": "Vidros_Vermelhos",
+    "credit": "Modelo 3D: “Hyundai HB20” por Nieve5677 (Sketchfab) · CC BY 4.0 · pintado de branco",
+    "wheel": "Pneu|_Roda$",
+    "tyre": "Pneu"
+  },
+  "xtz": {
+    "file": "xtz.glb",
+    "length": 31.8,
+    "rotY": -1.5708,
+    "moto": true,
+    "brake": "^Color_A06$",
+    "credit": "Modelo 3D: “Moto Yamaha XTZ 250 Lander” por lf.tavares (Sketchfab) · CC BY 4.0 · cores ajustadas"
+  },
+  "corvette": {
+    "file": "corvette.glb",
+    "length": 69.5,
+    "traffic": true,
+    "credit": "“2019 Chevrolet Corvette C8 Stingray” por Hari (Sketchfab) · CC BY 4.0",
+    "rotY": -1.5708,
+    "brake": "Brake.?Lights|Taillights",
+    "wheel": "(Front|Rear)_(Left|Right)_(Wheel|Brake_Caliper)_",
+    "tyre": "Wheel_(Tire|Rim|Painted)",
+    "static": "Caliper"
+  },
+  "porsche": {
+    "file": "porsche.glb",
+    "length": 66.9,
+    "traffic": true,
+    "credit": "“Porsche” por Batman KNIGHTs (Sketchfab) · CC BY 4.0",
+    "brake": "^(Bottom_Rear_Brake_Light|Rear_Light)$",
+    "wheel": "^(Tyre_Rim_Texture|Tyre_Texture|Brake_Disk_Texture|Brake_Secondary_Color|Calliper_Badge)$",
+    "tyre": "^(Tyre_Texture|Tyre_Rim_Texture)$",
+    "static": "^(Brake_Secondary_Color|Calliper_Badge)$"
+  },
+  "ferrari": {
+    "file": "ferrari.glb",
+    "length": 69.2,
+    "traffic": true,
+    "credit": "“2020 Ferrari F8 Tributo” por Ddiaz Design (Sketchfab) · CC BY-NC-SA 4.0",
+    "wheel": "3DWheel1A_Material|CalliperGloss",
+    "tyre": "3DWheel1A_Material",
+    "static": "CalliperGloss"
+  },
+  "jetta": {
+    "file": "jetta.glb",
+    "length": 70.5,
+    "traffic": true,
+    "credit": "“2019 Volkswagen Jetta” por Ddiaz Design (Sketchfab) · CC BY-NC-SA 4.0",
+    "brake": "^BACKLIGHT$",
+    "wheel": "^WHEEL$|BOLT_WHEEL",
+    "tyre": "^WHEEL$"
+  },
+  "passat": {
+    "file": "passat.glb",
+    "length": 73.0,
+    "traffic": true,
+    "credit": "“2022 Volkswagen Passat PHEV” por Ddiaz Design (Sketchfab) · CC BY-NC-SA 4.0",
+    "hide": "^83_hub",
+    "brake": "Taillight_glass",
+    "wheel": "^(tyre|breaks)$",
+    "tyre": "^tyre$",
+    "static": "^breaks$"
+  },
+  "a45": {
+    "file": "a45.glb",
+    "length": 65.0,
+    "traffic": true,
+    "credit": "“Mercedes-Benz A45 AMG 2018” por Lexyc16 (Sketchfab) · CC BY-NC 4.0",
+    "rotY": -1.5708,
+    "brake": "^backlight_glass",
+    "wheel": "^(wheel\\.001|brake_metal|caliper)$",
+    "tyre": "^wheel\\.001$",
+    "static": "^(caliper|brake_metal)$"
+  },
+  "civic": {
+    "file": "civic.glb",
+    "length": 69.5,
+    "traffic": true,
+    "credit": "“Honda Civic” por Aldios (Sketchfab) · CC BY 4.0",
+    "rotY": 3.1416
+  }
+}

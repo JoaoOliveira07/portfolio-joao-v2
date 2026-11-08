@@ -1,0 +1,319 @@
+[
+  {
+    "slug": "integracao-erp",
+    "type": "professional",
+    "year": 2026,
+    "title": { "pt": "Integração ERP ↔ Nuvem", "en": "ERP ↔ Cloud Integration" },
+    "subtitle": { "pt": "Ponte bidirecional entre um ERP Oracle legado e uma plataforma B2B na AWS, em três serviços Java", "en": "Two-way bridge between a legacy Oracle ERP and a B2B platform on AWS, built as three Java services" },
+    "description": { "pt": "Conjunto de três serviços que mantém produtos, clientes, preços, estoque, pedidos e notificações circulando entre um ERP Oracle on-premise e uma plataforma B2B na nuvem. Um client roda dentro da rede do parceiro, um middleware faz o transporte por filas e um orquestrador coordena os fluxos mais complexos, como crédito, PIX e liberação de pedidos.", "en": "Three services that keep products, customers, prices, stock, orders and notifications flowing between an on-premise Oracle ERP and a cloud B2B platform. A client runs inside the partner's network, a middleware handles transport over queues and an orchestrator coordinates the more complex flows, such as credit, PIX payments and order release." },
+    "problem": { "pt": "O ERP fica na rede do parceiro e não pode ser exposto à internet, mas a loja online precisa de dados atualizados e cada pedido tem que chegar ao ERP exatamente uma vez, mesmo com rede instável.", "en": "The ERP lives inside the partner's network and cannot be exposed to the internet, yet the online store needs fresh data and every order must reach the ERP exactly once, even over an unreliable network." },
+    "solution": { "pt": "Separar responsabilidades: extração no client on-premise, transporte assíncrono por filas na AWS e coordenação no orquestrador. Chaves de idempotência garantem entrega única mesmo com retentativas.", "en": "Split responsibilities: extraction in the on-premise client, asynchronous transport over AWS queues and coordination in the orchestrator. Idempotency keys guarantee single delivery even with retries." },
+    "role": { "pt": "Um dos principais contribuidores do client on-premise, com contribuição contínua nos três serviços: pipelines, renderizadores e envios", "en": "One of the main contributors to the on-premise client, contributing continuously across all three services: pipelines, renderers and senders" },
+    "highlights": {
+      "pt": ["Client on-premise como única ponte até o banco do ERP, por segurança dos dados", "Middleware de mensageria sobre filas SQS, com autenticação", "Orquestrador para fluxos de crédito, PIX, liberação de pedidos e relatórios", "Geração de PDF, planilhas e mensagens de WhatsApp com botões", "Envio por e-mail e WhatsApp a partir dos mesmos eventos", "Strategy para suportar ERPs diferentes sem mexer no núcleo"],
+      "en": ["On-premise client as the only bridge to the ERP database, for data security", "Messaging middleware over SQS queues, with authentication", "Orchestrator for credit, PIX payment, order release and reporting flows", "PDF, spreadsheet and WhatsApp-with-buttons generation", "Email and WhatsApp delivery from the same events", "Strategy pattern to support different ERPs without touching the core"]
+    },
+    "technicalDecisions": {
+      "pt": ["Três serviços com papéis claros: extração, transporte e coordenação", "Filas em vez de chamadas síncronas: o ERP pode ficar fora do ar sem perder pedido", "Chave de idempotência em cada mensagem: retentativa nunca duplica efeito"],
+      "en": ["Three services with clear roles: extraction, transport and coordination", "Queues instead of synchronous calls: the ERP can go down without losing orders", "An idempotency key on every message: retries never duplicate effects"]
+    },
+    "challenges": {
+      "pt": ["Manter consistência entre um sistema legado e um sistema em nuvem", "Lidar com quedas de rede na ponta do parceiro", "Evoluir os fluxos sem quebrar integrações em produção"],
+      "en": ["Keeping a legacy system and a cloud system consistent", "Handling network drops on the partner's side", "Evolving the flows without breaking production integrations"]
+    },
+    "results": {
+      "pt": ["Sincronização confiável entre o ERP legado e a plataforma em nuvem", "Pedidos entregues ao ERP com retentativa automática e sem duplicidade", "Fluxos de PIX, crédito e relatórios executando de ponta a ponta"],
+      "en": ["Reliable sync between the legacy ERP and the cloud platform", "Orders delivered to the ERP with automatic retries and no duplicates", "PIX, credit and reporting flows running end to end"]
+    },
+    "techStack": ["Java 17", "Java 21", "Spring Boot", "Oracle", "PostgreSQL", "AWS SQS", "Spring Security", "Apache POI", "PDFBox"],
+    "diagram": {
+      "groups": [{ "label": { "pt": "rede do parceiro", "en": "partner network" }, "x": 20, "y": 40, "w": 190, "h": 320 }],
+      "nodes": [
+        { "id": "erp", "kind": "db", "label": { "pt": "ERP legado", "en": "Legacy ERP" }, "sub": "Oracle", "x": 115, "y": 120 },
+        { "id": "cli", "label": "Client", "sub": "on-premise", "x": 115, "y": 280 },
+        { "id": "mq", "kind": "main", "label": "Middleware", "sub": { "pt": "filas SQS", "en": "SQS queues" }, "x": 330, "y": 280 },
+        { "id": "orc", "label": { "pt": "Orquestrador", "en": "Orchestrator" }, "sub": { "pt": "PIX · crédito · pedidos", "en": "PIX · credit · orders" }, "x": 528, "y": 280, "w": 184 },
+        { "id": "b2b", "kind": "cloud", "label": { "pt": "Plataforma B2B", "en": "B2B platform" }, "sub": "AWS", "x": 330, "y": 100 },
+        { "id": "out", "label": "PDF · WhatsApp", "sub": "e-mail", "x": 530, "y": 100 }
+      ],
+      "edges": [["erp", "cli", "JDBC"], ["cli", "mq"], ["mq", "orc"], ["mq", "b2b"], ["orc", "out"]]
+    }
+  },
+  {
+    "slug": "backend-ecommerce",
+    "type": "professional",
+    "year": 2026,
+    "title": { "pt": "E-commerce B2B — Backend", "en": "B2B E-commerce — Backend" },
+    "subtitle": { "pt": "Monolito modular em Spring Boot que serve web, app de vendas, painel administrativo e app de cadastro", "en": "Modular Spring Boot monolith serving the web store, sales app, admin panel and onboarding app" },
+    "description": { "pt": "Backend central de um ecossistema de vendas B2B. Uma API REST atende quatro aplicações diferentes, com isolamento de dados por parceiro, arquitetura em camadas com DDD e eventos publicados em streaming para integrações assíncronas.", "en": "Central backend of a B2B sales ecosystem. A single REST API serves four different applications, with per-partner data isolation, a layered DDD architecture and events published to a stream for asynchronous integrations." },
+    "problem": { "pt": "Unificar cadastro, pedidos web e mobile e administração em um só backend multi-tenant, mantendo consistência sob carga e sem duplicar regra de negócio.", "en": "Unify onboarding, web and mobile orders and administration in a single multi-tenant backend, staying consistent under load without duplicating business rules." },
+    "solution": { "pt": "Monolito modular com contextos bem separados, cache em duas camadas, jobs com trava distribuída e streaming de eventos para abrir caminho ao event-driven sem reescrever o núcleo.", "en": "A modular monolith with well-separated contexts, a two-layer cache, jobs with a distributed lock and event streaming to open the way to event-driven work without rewriting the core." },
+    "role": { "pt": "Um dos principais contribuidores do repositório, com contribuição contínua em features de backend, code reviews e otimizações", "en": "One of the repository's top contributors, contributing continuously to backend features, code reviews and optimizations" },
+    "highlights": {
+      "pt": ["Arquitetura em camadas com DDD e contextos bem delimitados", "Multi-tenant com isolamento de dados por parceiro", "Autenticação com JWT, OAuth e passkeys (login sem senha)", "Cache em duas camadas: Redis distribuído + Caffeine local", "Jobs distribuídos com ShedLock, sem execução duplicada", "Migrations versionadas com Liquibase e documentação OpenAPI"],
+      "en": ["Layered architecture with DDD and well-bounded contexts", "Multi-tenant with per-partner data isolation", "Authentication with JWT, OAuth and passkeys (passwordless login)", "Two-layer cache: distributed Redis + local Caffeine", "Distributed jobs with ShedLock, never running twice", "Versioned migrations with Liquibase and OpenAPI docs"]
+    },
+    "technicalDecisions": {
+      "pt": ["Monolito modular: deploy único, separação por contextos de negócio", "Redis + Caffeine: coerência entre instâncias e latência mínima na leitura", "ShedLock: trava distribuída pelo próprio banco, sem infraestrutura extra", "Passkeys ao lado do JWT: login sem senha sem quebrar quem já usa"],
+      "en": ["Modular monolith: single deploy, split by business context", "Redis + Caffeine: coherence across instances and minimal read latency", "ShedLock: a distributed lock using the database itself, no extra infrastructure", "Passkeys alongside JWT: passwordless login without breaking existing users"]
+    },
+    "challenges": {
+      "pt": ["Isolar dados por parceiro sem duplicar lógica de domínio", "Combinar três formas de autenticação na mesma API", "Migrar aos poucos para eventos sem quebrar contratos REST"],
+      "en": ["Isolating data per partner without duplicating domain logic", "Combining three authentication methods in the same API", "Gradually moving to events without breaking REST contracts"]
+    },
+    "results": {
+      "pt": ["Uma plataforma servindo quatro aplicações diferentes", "Login com passkey reduzindo fricção para o usuário", "Leituras de catálogo mais rápidas com o cache em camadas"],
+      "en": ["One platform serving four different applications", "Passkey login reducing friction for users", "Faster catalog reads with the layered cache"]
+    },
+    "techStack": ["Java 17", "Spring Boot 3", "PostgreSQL", "Redis", "AWS SQS/SNS/S3", "Kinesis", "Liquibase", "New Relic"],
+    "diagram": {
+      "nodes": [
+        { "id": "w", "label": "Web B2B", "x": 95, "y": 70 },
+        { "id": "v", "label": { "pt": "App de vendas", "en": "Sales app" }, "x": 245, "y": 70 },
+        { "id": "a", "label": { "pt": "Painel admin", "en": "Admin panel" }, "x": 395, "y": 70 },
+        { "id": "c", "label": { "pt": "App cadastro", "en": "Onboarding" }, "x": 545, "y": 70 },
+        { "id": "api", "kind": "main", "label": "API REST", "sub": { "pt": "Spring Boot · multi-tenant", "en": "Spring Boot · multi-tenant" }, "x": 320, "y": 200, "w": 230 },
+        { "id": "pg", "kind": "db", "label": "PostgreSQL", "x": 150, "y": 330 },
+        { "id": "rd", "kind": "db", "label": "Redis", "sub": "+ Caffeine", "x": 320, "y": 330 },
+        { "id": "ev", "label": { "pt": "Eventos", "en": "Events" }, "sub": "Kinesis", "x": 490, "y": 330 }
+      ],
+      "edges": [["w", "api"], ["v", "api"], ["a", "api"], ["c", "api"], ["api", "pg"], ["api", "rd"], ["api", "ev"]]
+    }
+  },
+  {
+    "slug": "app-vendas",
+    "type": "professional",
+    "year": 2026,
+    "title": { "pt": "App de Força de Vendas — Offline-first", "en": "Field Sales App — Offline-first" },
+    "subtitle": { "pt": "App Flutter multiplataforma que funciona sem internet e sincroniza em segundo plano", "en": "Cross-platform Flutter app that works with no internet and syncs in the background" },
+    "description": { "pt": "App para representantes comerciais gerenciarem clientes, pedidos e entregas na rua. Clean Architecture em três camadas, banco SQLite local e sincronização automática quando a conexão volta. Um único código roda em Android, iOS, web e desktop.", "en": "An app for sales reps to manage customers, orders and deliveries on the road. Three-layer Clean Architecture, a local SQLite database and automatic sync when the connection returns. A single codebase runs on Android, iOS, web and desktop." },
+    "problem": { "pt": "Representantes passam o dia em regiões sem sinal e não podem parar de vender por causa disso.", "en": "Sales reps spend their day in areas with no signal and cannot stop selling because of it." },
+    "solution": { "pt": "Tratar o offline como padrão: tudo é gravado localmente primeiro e um motor de sincronização envia e recebe dados em segundo plano.", "en": "Treat offline as the default: everything is written locally first and a sync engine sends and receives data in the background." },
+    "role": { "pt": "Contribuição contínua em features offline-first, no banco local, no motor de sincronização e na migração de gerenciamento de estado para BLoC", "en": "Continuous contribution to offline-first features, the local database, the sync engine and the state management migration to BLoC" },
+    "highlights": {
+      "pt": ["Clean Architecture: domínio, infraestrutura e apresentação", "Banco local com Drift (SQLite) e migrations versionadas", "Sincronização em segundo plano com workmanager", "Rotas com GoRouter em abas", "Observabilidade com Sentry e Datadog RUM", "Feature flags com LaunchDarkly para liberar recursos aos poucos"],
+      "en": ["Clean Architecture: domain, infrastructure and presentation", "Local database with Drift (SQLite) and versioned migrations", "Background sync with workmanager", "Tabbed routing with GoRouter", "Observability with Sentry and Datadog RUM", "Feature flags with LaunchDarkly for gradual rollouts"]
+    },
+    "technicalDecisions": {
+      "pt": ["Offline como padrão, não como exceção", "Drift em vez de SQL cru: consultas tipadas e migrations seguras", "Migração de MobX para BLoC para estado mais previsível"],
+      "en": ["Offline as the default, not the exception", "Drift instead of raw SQL: typed queries and safe migrations", "Migration from MobX to BLoC for more predictable state"]
+    },
+    "challenges": {
+      "pt": ["Resolver conflitos quando o mesmo dado muda offline e online", "Manter o banco local pequeno e rápido", "Testar cenários de rede instável"],
+      "en": ["Resolving conflicts when the same data changes offline and online", "Keeping the local database small and fast", "Testing unstable-network scenarios"]
+    },
+    "results": {
+      "pt": ["App 100% funcional sem internet, com sincronização automática", "Um único código para seis plataformas", "Visibilidade de falhas e desempenho em campo"],
+      "en": ["App fully functional offline, with automatic sync", "A single codebase for six platforms", "Visibility into crashes and performance in the field"]
+    },
+    "techStack": ["Flutter", "Dart 3", "BLoC/Cubit", "Drift (SQLite)", "workmanager", "Dio", "GoRouter", "Sentry", "Datadog RUM", "LaunchDarkly"],
+    "diagram": {
+      "nodes": [
+        { "id": "app", "kind": "phone", "label": "App", "sub": "Flutter", "x": 120, "y": 170 },
+        { "id": "db", "kind": "db", "label": "SQLite", "sub": { "pt": "no celular", "en": "on device" }, "x": 120, "y": 335 },
+        { "id": "sync", "kind": "main", "label": { "pt": "Sync em 2º plano", "en": "Background sync" }, "x": 340, "y": 170, "w": 190 },
+        { "id": "api", "label": { "pt": "API de sync", "en": "Sync API" }, "x": 540, "y": 170 },
+        { "id": "net", "label": { "pt": "sem sinal? tudo bem", "en": "no signal? fine" }, "x": 340, "y": 320, "w": 190, "kind": "note" }
+      ],
+      "edges": [["app", "db"], ["app", "sync"], ["sync", "api"]]
+    }
+  },
+  {
+    "slug": "api-sync",
+    "type": "professional",
+    "year": 2026,
+    "title": { "pt": "API de Sincronização para o App Offline", "en": "Sync API for the Offline App" },
+    "subtitle": { "pt": "Spring Boot que gera pacotes de dados para o app de vendas sem expor o banco do parceiro", "en": "Spring Boot service that builds data packages for the sales app without exposing the partner's database" },
+    "description": { "pt": "API dedicada ao app de vendas offline. Gera jobs de sincronização, consulta o banco do parceiro em modo somente leitura e publica pacotes de dados no S3 para o app baixar. Arquitetura hexagonal e infraestrutura própria em Terraform.", "en": "An API dedicated to the offline sales app. It creates sync jobs, queries the partner's database in read-only mode and publishes data packages to S3 for the app to download. Hexagonal architecture and its own Terraform infrastructure." },
+    "problem": { "pt": "O app precisa de dados atualizados do parceiro, mas o banco dele não pode receber acesso direto do celular nem sofrer com consultas pesadas.", "en": "The app needs fresh data from the partner, but its database cannot be reached directly from phones or be hammered by heavy queries." },
+    "solution": { "pt": "Uma API no meio do caminho: consulta em leitura, guarda resultados pesados em cache e entrega pacotes prontos pelo S3.", "en": "An API in the middle: read-only queries, heavy results cached and ready-made packages delivered via S3." },
+    "role": { "pt": "Um dos principais contribuidores da API e da infraestrutura, com contribuição contínua em jobs, consultas, cache e provisionamento", "en": "One of the main contributors to the API and its infrastructure, contributing continuously to jobs, queries, caching and provisioning" },
+    "highlights": {
+      "pt": ["Arquitetura hexagonal: núcleo, aplicação e infraestrutura", "Duas fontes de dados: PostgreSQL próprio + banco do parceiro em leitura", "Cache Redis para consultas pesadas", "Autenticação OAuth2 com JWT em todas as rotas", "Testes com Testcontainers e cobertura mínima de 80%", "Observabilidade com Prometheus, Micrometer e Loki"],
+      "en": ["Hexagonal architecture: core, application and infrastructure", "Two data sources: own PostgreSQL + partner database in read-only mode", "Redis cache for heavy queries", "OAuth2 with JWT on every route", "Tests with Testcontainers and a minimum 80% coverage", "Observability with Prometheus, Micrometer and Loki"]
+    },
+    "technicalDecisions": {
+      "pt": ["Banco do parceiro sempre em somente leitura", "Pacotes grandes pelo S3 em vez de respostas gigantes na API", "Infraestrutura em ECS Fargate + RDS, toda em Terraform"],
+      "en": ["The partner database is always read-only", "Large packages via S3 instead of huge API responses", "Infrastructure on ECS Fargate + RDS, fully in Terraform"]
+    },
+    "challenges": {
+      "pt": ["Consultas pesadas sem pesar no banco do parceiro", "Pacotes de dados que precisam caber no celular", "Ambientes reproduzíveis de desenvolvimento e produção"],
+      "en": ["Heavy queries without loading the partner database", "Data packages that must fit on a phone", "Reproducible development and production environments"]
+    },
+    "results": {
+      "pt": ["App sempre com dados atualizados, sem expor o banco do parceiro", "Menos pressão sobre o banco graças ao cache", "Migrations testadas em banco real antes de cada merge"],
+      "en": ["The app always has fresh data, without exposing the partner database", "Less pressure on the database thanks to caching", "Migrations tested on a real database before every merge"]
+    },
+    "techStack": ["Java 17", "Spring Boot 3.5", "PostgreSQL", "Redis", "AWS S3", "AWS ECS Fargate", "AWS RDS", "OAuth2 JWT", "Liquibase", "Testcontainers", "Prometheus", "Terraform"],
+    "diagram": {
+      "nodes": [
+        { "id": "job", "label": { "pt": "Job de sync", "en": "Sync job" }, "x": 100, "y": 90 },
+        { "id": "api", "kind": "main", "label": "API", "sub": "Spring Boot", "x": 320, "y": 90 },
+        { "id": "src", "kind": "db", "label": { "pt": "Banco do parceiro", "en": "Partner DB" }, "sub": { "pt": "somente leitura", "en": "read-only" }, "x": 540, "y": 90 },
+        { "id": "rd", "kind": "db", "label": "Redis", "sub": "cache", "x": 320, "y": 320 },
+        { "id": "s3", "label": "S3", "sub": { "pt": "pacotes de dados", "en": "data packages" }, "x": 540, "y": 320 },
+        { "id": "app", "kind": "phone", "label": "App", "sub": "offline", "x": 100, "y": 290 }
+      ],
+      "edges": [["job", "api"], ["api", "src"], ["api", "rd"], ["api", "s3"], ["s3", "app"]]
+    }
+  },
+  {
+    "slug": "loja-b2b",
+    "type": "professional",
+    "year": 2026,
+    "title": { "pt": "Loja B2B — SPA White-label", "en": "B2B Store — White-label SPA" },
+    "subtitle": { "pt": "React 18 + Vite: uma só aplicação que assume a marca de cada parceiro", "en": "React 18 + Vite: a single app that takes on each partner's brand" },
+    "description": { "pt": "Loja B2B para clientes e representantes fazerem pedidos: catálogo, carrinho, checkout, histórico, datas de entrega, planos de pagamento e recomendações. Multi-tenant white-label: a mesma aplicação muda de identidade conforme o parceiro, sem build separado.", "en": "A B2B store for customers and sales reps to place orders: catalog, cart, checkout, history, delivery dates, payment plans and recommendations. Multi-tenant white-label: the same app changes identity per partner, with no separate build." },
+    "problem": { "pt": "Vários parceiros, cada um com sua marca, e nenhuma vontade de manter várias lojas diferentes.", "en": "Many partners, each with its own brand, and no appetite for maintaining several different stores." },
+    "solution": { "pt": "Uma SPA única que identifica o parceiro na requisição e aplica tema, regras e catálogo dele.", "en": "A single SPA that identifies the partner on each request and applies its theme, rules and catalog." },
+    "role": { "pt": "Contribuição contínua em catálogo, carrinho, checkout e otimização de bundle e LCP", "en": "Continuous contribution to catalog, cart, checkout and bundle/LCP optimization" },
+    "highlights": {
+      "pt": ["Padrão Container/Presentational: lógica separada da interface", "White-label por parceiro sem build separado", "PWA com Workbox: cache offline e instalação como app", "Cliente HTTP com retentativa exponencial", "Divisão manual de chunks no Vite para carregar mais rápido", "Testes com Vitest, Playwright e MSW"],
+      "en": ["Container/Presentational pattern: logic separated from UI", "Per-partner white-label with no separate build", "PWA with Workbox: offline cache and install as an app", "HTTP client with exponential retry", "Manual Vite chunking for faster loading", "Tests with Vitest, Playwright and MSW"]
+    },
+    "technicalDecisions": {
+      "pt": ["Tema e regras por parceiro em tempo de execução", "Chunks separados para bibliotecas pesadas", "Versão do build no cache para todo mundo receber a última versão"],
+      "en": ["Per-partner theme and rules at runtime", "Separate chunks for heavy libraries", "Build version in the cache key so everyone gets the latest release"]
+    },
+    "challenges": {
+      "pt": ["Manter a experiência rápida em conexões ruins", "Testar fluxos de compra de vários parceiros", "Evitar regressões em catálogo e checkout"],
+      "en": ["Keeping the experience fast on poor connections", "Testing purchase flows for several partners", "Avoiding regressions in catalog and checkout"]
+    },
+    "results": {
+      "pt": ["Uma única loja atendendo vários parceiros com marca própria", "Uso possível mesmo com conexão intermitente", "Bundle inicial menor sem perder produtividade"],
+      "en": ["A single store serving several partners, each with its own brand", "Usable even with an intermittent connection", "Smaller initial bundle without losing productivity"]
+    },
+    "techStack": ["TypeScript", "React 18", "Vite 5", "Redux Toolkit", "Material-UI", "Ant Design", "Workbox PWA", "Vitest", "Playwright", "MSW"],
+    "diagram": {
+      "nodes": [
+        { "id": "a", "label": { "pt": "Marca A", "en": "Brand A" }, "x": 100, "y": 90 },
+        { "id": "b", "label": { "pt": "Marca B", "en": "Brand B" }, "x": 100, "y": 200 },
+        { "id": "c", "label": { "pt": "Marca C", "en": "Brand C" }, "x": 100, "y": 310 },
+        { "id": "spa", "kind": "main", "label": { "pt": "SPA única", "en": "Single SPA" }, "sub": "React + Vite", "x": 330, "y": 200, "w": 180 },
+        { "id": "pwa", "label": "PWA", "sub": { "pt": "cache offline", "en": "offline cache" }, "x": 330, "y": 330 },
+        { "id": "api", "label": "API", "x": 545, "y": 200 }
+      ],
+      "edges": [["a", "spa"], ["b", "spa"], ["c", "spa"], ["spa", "pwa"], ["spa", "api"]]
+    }
+  },
+  {
+    "slug": "painel-admin",
+    "type": "professional",
+    "year": 2026,
+    "title": { "pt": "Painel Administrativo com Assistente de IA", "en": "Admin Panel with an AI Assistant" },
+    "subtitle": { "pt": "Next.js + React 19 com Server Components, shadcn/ui e um chat de IA integrado", "en": "Next.js + React 19 with Server Components, shadcn/ui and a built-in AI chat" },
+    "description": { "pt": "Painel administrativo moderno que substitui um sistema legado. Gestão de integrações, clientes, pedidos, PIX, banners e relatórios, com um assistente de IA que responde perguntas sobre a operação do dia a dia.", "en": "A modern admin panel replacing a legacy system. It manages integrations, customers, orders, PIX payments, banners and reports, with an AI assistant that answers questions about day-to-day operations." },
+    "problem": { "pt": "O painel antigo era pesado, difícil de evoluir e obrigava a equipe a navegar por várias telas para responder perguntas simples.", "en": "The old panel was heavy, hard to evolve and forced the team through several screens to answer simple questions." },
+    "solution": { "pt": "Reescrever com Next.js, uma camada BFF entre a interface e o backend, e um chat de IA que consulta os dados pela própria API.", "en": "Rewrite it with Next.js, a BFF layer between the UI and the backend, and an AI chat that queries data through the API itself." },
+    "role": { "pt": "Contribuição contínua em gestão, chat de IA, logs de auditoria e migração do sistema antigo", "en": "Continuous contribution to management screens, the AI chat, audit logs and the migration from the old system" },
+    "highlights": {
+      "pt": ["Arquitetura MVVM com Server Components onde possível", "API Routes como BFF entre a interface e o backend Java", "Chat de IA com Vercel AI SDK, AWS Bedrock e fallback", "Listagens com filtros e paginação no servidor (TanStack)", "Formulários tipados de ponta a ponta com React Hook Form + Zod", "Logs de auditoria para rastrear ações administrativas"],
+      "en": ["MVVM architecture with Server Components where possible", "API Routes as a BFF between the UI and the Java backend", "AI chat with the Vercel AI SDK, AWS Bedrock and a fallback", "Server-side filtered, paginated tables (TanStack)", "End-to-end typed forms with React Hook Form + Zod", "Audit logs to trace administrative actions"]
+    },
+    "technicalDecisions": {
+      "pt": ["BFF no Next.js: a interface nunca fala direto com o backend", "Provedor de IA com fallback para não depender de um só serviço", "Testes com MSW para mocks de rede determinísticos"],
+      "en": ["A Next.js BFF: the UI never talks directly to the backend", "AI provider with a fallback so we never depend on a single service", "Tests with MSW for deterministic network mocks"]
+    },
+    "challenges": {
+      "pt": ["Migrar telas sem parar a operação", "Dar respostas úteis de IA sem expor dados indevidos", "Manter listagens grandes rápidas"],
+      "en": ["Migrating screens without stopping operations", "Giving useful AI answers without exposing the wrong data", "Keeping large tables fast"]
+    },
+    "results": {
+      "pt": ["Build e bundle bem menores que os do sistema antigo", "Chat de IA usado no dia a dia para consultas de pedidos e relatórios", "Rastreabilidade das ações administrativas"],
+      "en": ["Much smaller build and bundle than the old system", "AI chat used daily for order and report lookups", "Traceable administrative actions"]
+    },
+    "techStack": ["Next.js 16", "React 19", "TypeScript", "Bun", "Tailwind v4", "shadcn/ui", "TanStack Query", "React Hook Form", "Zod", "Vercel AI SDK", "AWS Bedrock", "Vitest", "MSW"],
+    "diagram": {
+      "nodes": [
+        { "id": "ui", "label": { "pt": "Painel", "en": "Panel" }, "sub": "Next.js", "x": 100, "y": 200 },
+        { "id": "bff", "kind": "main", "label": "BFF", "sub": "API Routes", "x": 320, "y": 200 },
+        { "id": "be", "label": "Backend", "sub": "Spring Boot", "x": 540, "y": 200 },
+        { "id": "ai", "label": { "pt": "Assistente de IA", "en": "AI assistant" }, "x": 320, "y": 70, "w": 180 },
+        { "id": "llm", "kind": "cloud", "label": "LLM", "sub": { "pt": "com fallback", "en": "with fallback" }, "x": 540, "y": 70 },
+        { "id": "log", "kind": "db", "label": { "pt": "Auditoria", "en": "Audit log" }, "x": 320, "y": 335 }
+      ],
+      "edges": [["ui", "bff"], ["bff", "be"], ["bff", "ai"], ["ai", "llm"], ["bff", "log"]]
+    }
+  },
+  {
+    "slug": "app-cadastro",
+    "type": "professional",
+    "year": 2026,
+    "title": { "pt": "App de Cadastro em Etapas", "en": "Step-by-step Onboarding App" },
+    "subtitle": { "pt": "Flutter para cadastro de vendedores e clientes, com envio de documentos e endereço no mapa", "en": "Flutter app for seller and customer onboarding, with document upload and an address map" },
+    "description": { "pt": "App de cadastro em várias etapas: documentos, endereço com mapa, contatos e validações brasileiras como CPF, CNPJ e telefone. Feature flags alternam entre o fluxo de vendedor e o de comprador.", "en": "A multi-step onboarding app: documents, address with a map, contacts and Brazilian validations such as CPF, CNPJ and phone numbers. Feature flags switch between the seller and buyer flows." },
+    "problem": { "pt": "O cadastro era um formulário web longo, que gerava abandono e dados errados chegando ao backend.", "en": "Onboarding was a long web form that caused drop-offs and let bad data reach the backend." },
+    "solution": { "pt": "Um fluxo guiado no celular, uma etapa por vez, com validação na hora.", "en": "A guided mobile flow, one step at a time, with instant validation." },
+    "role": { "pt": "Contribuição contínua nas etapas do fluxo, na integração com a API de cadastro e nas validações", "en": "Continuous contribution to the flow steps, the onboarding API integration and validations" },
+    "highlights": {
+      "pt": ["Arquitetura por features com um BLoC/Cubit por etapa", "Um Cubit principal coordena o progresso", "Navegação declarativa com proteção do botão voltar", "Envio de documentos com pré-visualização", "Endereço com mapa e geocodificação", "Validações de CPF, CNPJ e telefone"],
+      "en": ["Feature-based architecture with one BLoC/Cubit per step", "A main Cubit coordinates progress", "Declarative navigation with back-button protection", "Document upload with preview", "Address with a map and geocoding", "CPF, CNPJ and phone number validation"]
+    },
+    "technicalDecisions": {
+      "pt": ["Um Cubit por etapa: cada passo é testável sozinho", "Feature flags para mudar um fluxo sem afetar o outro", "Mesmo código para Android, iOS, web e desktop"],
+      "en": ["One Cubit per step: each step is testable on its own", "Feature flags to change one flow without affecting the other", "The same code for Android, iOS, web and desktop"]
+    },
+    "challenges": {
+      "pt": ["Guardar o progresso se o usuário sair no meio", "Arquivos grandes em redes móveis", "Validações que mudam por tipo de cadastro"],
+      "en": ["Keeping progress if the user leaves halfway", "Large files over mobile networks", "Validations that change per onboarding type"]
+    },
+    "results": {
+      "pt": ["Cadastro guiado no lugar do formulário pesado", "Menos dados errados chegando ao backend", "Ajustes no fluxo de vendedor sem afetar o de comprador"],
+      "en": ["A guided flow instead of the heavy form", "Less bad data reaching the backend", "Seller flow tweaks without touching the buyer flow"]
+    },
+    "techStack": ["Flutter", "Dart 3", "BLoC/Cubit", "GoRouter", "GetIt", "Dio", "flutter_map", "brasil_fields", "file_picker"],
+    "diagram": {
+      "nodes": [
+        { "id": "s1", "label": "1", "sub": "CNPJ", "x": 75, "y": 140, "w": 96 },
+        { "id": "s2", "label": "2", "sub": { "pt": "documentos", "en": "documents" }, "x": 197, "y": 140, "w": 96 },
+        { "id": "s3", "label": "3", "sub": { "pt": "endereço", "en": "address" }, "x": 319, "y": 140, "w": 96 },
+        { "id": "s4", "label": "4", "sub": { "pt": "contatos", "en": "contacts" }, "x": 441, "y": 140, "w": 96 },
+        { "id": "s5", "kind": "main", "label": "5", "sub": { "pt": "revisão", "en": "review" }, "x": 563, "y": 140, "w": 96 },
+        { "id": "api", "kind": "db", "label": { "pt": "API de cadastro", "en": "Onboarding API" }, "x": 319, "y": 320 }
+      ],
+      "edges": [["s1", "s2"], ["s2", "s3"], ["s3", "s4"], ["s4", "s5"], ["s5", "api"]]
+    }
+  },
+  {
+    "slug": "infra-aws",
+    "type": "professional",
+    "year": 2025,
+    "title": { "pt": "Infraestrutura AWS como Código", "en": "AWS Infrastructure as Code" },
+    "subtitle": { "pt": "Terraform versionando a infraestrutura do ecossistema em vários ambientes", "en": "Terraform versioning the ecosystem's infrastructure across several environments" },
+    "description": { "pt": "Infraestrutura como código na AWS: Lambdas, API Gateway, RDS, S3, VPC, Parameter Store e ECR, em ambientes de teste, homologação e produção, com state remoto e pipelines de CI/CD.", "en": "Infrastructure as code on AWS: Lambdas, API Gateway, RDS, S3, VPC, Parameter Store and ECR, across test, staging and production environments, with remote state and CI/CD pipelines." },
+    "problem": { "pt": "Recursos criados à mão no console são difíceis de auditar, de repetir em outro ambiente e de desfazer.", "en": "Resources created by hand in the console are hard to audit, repeat in another environment or roll back." },
+    "solution": { "pt": "Tudo descrito em Terraform, revisado por pull request e aplicado por pipeline.", "en": "Everything described in Terraform, reviewed through pull requests and applied by a pipeline." },
+    "role": { "pt": "Contribuição contínua em provisionamento, módulos e ajustes de permissões", "en": "Continuous contribution to provisioning, modules and permission tweaks" },
+    "highlights": {
+      "pt": ["Módulos reutilizáveis para Lambda, API Gateway, RDS, S3, VPC e ECR", "Vários ambientes isolados", "State remoto no S3", "Convenções de nomes que facilitam encontrar cada recurso", "Permissões seguindo o princípio do menor privilégio", "Plan e apply automatizados no GitHub Actions"],
+      "en": ["Reusable modules for Lambda, API Gateway, RDS, S3, VPC and ECR", "Several isolated environments", "Remote state in S3", "Naming conventions that make every resource easy to find", "Permissions following least privilege", "Automated plan and apply in GitHub Actions"]
+    },
+    "technicalDecisions": {
+      "pt": ["Módulos em vez de copiar e colar entre ambientes", "Pipeline aplicando mudanças, nunca uma pessoa no console", "Histórico do Git como trilha de auditoria"],
+      "en": ["Modules instead of copy-paste between environments", "A pipeline applies changes, never a person in the console", "Git history as the audit trail"]
+    },
+    "challenges": {
+      "pt": ["Trazer para o código recursos que já existiam", "Mudar permissões sem derrubar serviços", "Manter ambientes parecidos sem ser idênticos"],
+      "en": ["Bringing existing resources into code", "Changing permissions without taking services down", "Keeping environments similar without being identical"]
+    },
+    "results": {
+      "pt": ["Infraestrutura auditável pelo Git", "Provisionamento reproduzível do teste à produção", "Rollback rápido revertendo um pull request"],
+      "en": ["Infrastructure auditable through Git", "Reproducible provisioning from test to production", "Fast rollback by reverting a pull request"]
+    },
+    "techStack": ["Terraform", "AWS Lambda", "AWS API Gateway", "AWS RDS", "AWS S3", "AWS VPC", "AWS SSM", "AWS ECR", "GitHub Actions"],
+    "diagram": {
+      "groups": [{ "label": { "pt": "AWS · teste / homologação / produção", "en": "AWS · test / staging / production" }, "x": 20, "y": 262, "w": 600, "h": 118 }],
+      "nodes": [
+        { "id": "pr", "label": "Pull request", "sub": { "pt": "revisão de código", "en": "code review" }, "x": 105, "y": 85 },
+        { "id": "ci", "label": "GitHub Actions", "sub": "plan · apply", "x": 320, "y": 85, "w": 170 },
+        { "id": "tf", "kind": "main", "label": "Terraform", "sub": { "pt": "módulos reutilizáveis", "en": "reusable modules" }, "x": 320, "y": 190, "w": 190 },
+        { "id": "st", "kind": "db", "label": "State", "sub": { "pt": "remoto no S3", "en": "remote in S3" }, "x": 540, "y": 190, "w": 130 },
+        { "id": "lb", "label": "Lambda", "sub": "+ API Gateway", "x": 100, "y": 330, "w": 130 },
+        { "id": "rd", "kind": "db", "label": "RDS", "x": 240, "y": 330, "w": 110 },
+        { "id": "s3", "label": "S3", "sub": "+ ECR", "x": 380, "y": 330, "w": 110 },
+        { "id": "vp", "label": "VPC", "sub": { "pt": "+ permissões", "en": "+ IAM" }, "x": 530, "y": 330, "w": 130 }
+      ],
+      "edges": [["pr", "ci"], ["ci", "tf"], ["tf", "st"], ["tf", "lb"], ["tf", "rd"], ["tf", "s3"], ["tf", "vp"]]
+    }
+  }
+]

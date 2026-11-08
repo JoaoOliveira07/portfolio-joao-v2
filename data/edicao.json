@@ -1,0 +1,631 @@
+{
+    "profile":  {
+                    "name":  "João Paulo Oliveira",
+                    "email":  "jpauloo.2003@gmail.com",
+                    "github":  "https://github.com/JoaoOliveira07",
+                    "linkedin":  "https://www.linkedin.com/in/joaooliveira07/",
+                    "location":  "Blumenau, SC"
+                },
+    "experience":  {
+                       "company":  "Segala\u0027s Alimentos",
+                       "location":  {
+                                        "pt":  "Gaspar, SC - Brasil",
+                                        "en":  "Gaspar, SC - Brazil"
+                                    },
+                       "positions":  [
+                                         {
+                                             "title":  "Senior Software Developer",
+                                             "period":  {
+                                                            "pt":  "2027 - Em breve",
+                                                            "en":  "2027 - Coming soon"
+                                                        },
+                                             "description":  {
+                                                                 "pt":  "Próxima etapa da carreira - construção de arquiteturas complexas e liderança técnica.",
+                                                                 "en":  "Next step in career - building complex architectures and technical leadership."
+                                                             },
+                                             "responsibilities":  {
+                                                                      "pt":  [
+                                                                                 "Arquitetura de sistemas distribuídos e escaláveis",
+                                                                                 "Liderança técnica e mentoring de equipe",
+                                                                                 "Tomada de decisões técnicas estratégicas"
+                                                                             ],
+                                                                      "en":  [
+                                                                                 "Architecture of distributed and scalable systems",
+                                                                                 "Technical leadership and team mentoring",
+                                                                                 "Strategic technical decision making"
+                                                                             ]
+                                                                  },
+                                             "techStack":  [
+
+                                                           ],
+                                             "isLocked":  true
+                                         },
+                                         {
+                                             "title":  "Mid-Level Software Developer",
+                                             "period":  {
+                                                            "pt":  "Set 2025 - Atual (7 meses)",
+                                                            "en":  "Sep 2025 - Present (7 months)"
+                                                        },
+                                             "description":  {
+                                                                 "pt":  "Desenvolvo soluções robustas e escaláveis, focando em qualidade e performance.",
+                                                                 "en":  "I develop robust and scalable solutions, focusing on quality and performance."
+                                                             },
+                                             "responsibilities":  {
+                                                                      "pt":  [
+                                                                                 "Entrega de features críticas garantindo código sustentável e manutenível",
+                                                                                 "Contribuição em decisões técnicas de arquitetura e design de sistemas",
+                                                                                 "Code reviews para manter qualidade e padronização do código",
+                                                                                 "Colaboração em infraestrutura e automação usando AWS (Lambda, SQS, ECS, S3) e Terraform"
+                                                                             ],
+                                                                      "en":  [
+                                                                                 "Delivering critical features while ensuring sustainable and maintainable code",
+                                                                                 "Contributing to technical decisions regarding architecture and system design",
+                                                                                 "Conducting code reviews to maintain code quality and standardization",
+                                                                                 "Collaborating on infrastructure and automation using AWS (Lambda, SQS, ECS, S3) and Terraform"
+                                                                             ]
+                                                                  },
+                                             "techStack":  [
+                                                               "Java 17",
+                                                               "Spring Boot",
+                                                               "AWS",
+                                                               "Terraform",
+                                                               "Docker",
+                                                               "PostgreSQL",
+                                                               "Event-Driven Architecture"
+                                                           ]
+                                         },
+                                         {
+                                             "title":  "Junior Software Developer",
+                                             "period":  {
+                                                            "pt":  "Ago 2024 - Ago 2025 (1 ano 1 mês)",
+                                                            "en":  "Aug 2024 - Aug 2025 (1 year 1 month)"
+                                                        },
+                                             "description":  {
+                                                                 "pt":  "Desenvolvimento de features mais complexas com maior autonomia.",
+                                                                 "en":  "Development of more complex features with greater autonomy."
+                                                             },
+                                             "responsibilities":  {
+                                                                      "pt":  [
+                                                                                 "Desenvolvimento de soluções end-to-end, da análise à entrega final",
+                                                                                 "Code reviews e descrição técnica de tarefas",
+                                                                                 "Aprendizado proativo de novas tecnologias para otimizar entregas",
+                                                                                 "Implementação de soluções em AWS (S3, Lambda, CloudWatch, ECS, SQS)"
+                                                                             ],
+                                                                      "en":  [
+                                                                                 "Developing end-to-end solutions, from problem analysis to final delivery",
+                                                                                 "Performing code reviews and contributing to technical task descriptions",
+                                                                                 "Proactively learning new technologies to optimize deliveries",
+                                                                                 "Implementing solutions in AWS (S3, Lambda, CloudWatch, ECS, SQS)"
+                                                                             ]
+                                                                  },
+                                             "techStack":  [
+                                                               "Java 17",
+                                                               "Spring Boot",
+                                                               "AWS",
+                                                               "Terraform",
+                                                               "PostgreSQL",
+                                                               "MySQL"
+                                                           ]
+                                         },
+                                         {
+                                             "title":  "Trainee Software Developer",
+                                             "period":  {
+                                                            "pt":  "Mar 2024 - Jul 2024 (5 meses)",
+                                                            "en":  "Mar 2024 - Jul 2024 (5 months)"
+                                                        },
+                                             "description":  {
+                                                                 "pt":  "Participação ativa em tarefas de desenvolvimento, fortalecendo fundamentos de engenharia de software.",
+                                                                 "en":  "Actively participated in development tasks, strengthening software engineering fundamentals."
+                                                             },
+                                             "responsibilities":  {
+                                                                      "pt":  [
+                                                                                 "Contribuição frequente em tarefas do backlog com cadência consistente",
+                                                                                 "Colaboração em práticas de versionamento, code reviews e organização de repositório",
+                                                                                 "Experiência prática com Java, Spring Boot e bancos relacionais"
+                                                                             ],
+                                                                      "en":  [
+                                                                                 "Frequently contributed to backlog tasks with consistent delivery cadence",
+                                                                                 "Collaborated with the team on version control, code reviews and repository organization",
+                                                                                 "Gained practical experience with Java, Spring Boot and relational databases"
+                                                                             ]
+                                                                  },
+                                             "techStack":  [
+                                                               "Java 17",
+                                                               "Spring Boot",
+                                                               "PostgreSQL",
+                                                               "MySQL",
+                                                               "Git",
+                                                               "Hibernate"
+                                                           ]
+                                         },
+                                         {
+                                             "title":  "IT Assistant",
+                                             "period":  {
+                                                            "pt":  "Ago 2023 - Fev 2024 (7 meses)",
+                                                            "en":  "Aug 2023 - Feb 2024 (7 months)"
+                                                        },
+                                             "description":  {
+                                                                 "pt":  "Foco em aprendizado técnico e fundamentos de desenvolvimento.",
+                                                                 "en":  "Initial role focused on technical learning and development fundamentals."
+                                                             },
+                                             "responsibilities":  {
+                                                                      "pt":  [
+                                                                                 "Concentração em Java, Spring Boot, Hibernate",
+                                                                                 "Práticas de qualidade: TDD, testes unitários, testes de integração",
+                                                                                 "Estudo de design patterns e boas práticas"
+                                                                             ],
+                                                                      "en":  [
+                                                                                 "Concentration on Java, Spring Boot, Hibernate",
+                                                                                 "Quality practices: TDD, unit testing, integration testing",
+                                                                                 "Study of design patterns and best practices"
+                                                                             ]
+                                                                  },
+                                             "techStack":  [
+                                                               "Java",
+                                                               "Spring Boot",
+                                                               "Hibernate",
+                                                               "TDD",
+                                                               "JUnit",
+                                                               "Mockito"
+                                                           ]
+                                         }
+                                     ]
+                   },
+    "skills":  [
+                   {
+                       "icon":  "Workflow",
+                       "title":  {
+                                     "pt":  "Backend \u0026 APIs",
+                                     "en":  "Backend \u0026 APIs"
+                                 },
+                       "description":  {
+                                           "pt":  "Java 17 + Spring Boot e Spring Integration. APIs REST, JPA/Hibernate e mensageria assíncrona.",
+                                           "en":  "Java 17 + Spring Boot and Spring Integration. REST APIs, JPA/Hibernate and async messaging."
+                                       },
+                       "skills":  [
+                                      "Java 17",
+                                      "Spring Boot",
+                                      "Spring Integration",
+                                      "JPA / Hibernate",
+                                      "REST APIs",
+                                      "Node.js (Lambda)"
+                                  ]
+                   },
+                   {
+                       "icon":  "Layers",
+                       "title":  {
+                                     "pt":  "Mobile \u0026 Frontend",
+                                     "en":  "Mobile \u0026 Frontend"
+                                 },
+                       "description":  {
+                                           "pt":  "Flutter offline-first com Clean Architecture + BLoC. React/Next.js com TypeScript, Vite e PWA.",
+                                           "en":  "Offline-first Flutter with Clean Architecture + BLoC. React/Next.js with TypeScript, Vite and PWA."
+                                       },
+                       "skills":  [
+                                      "Flutter",
+                                      "Dart",
+                                      "BLoC / Cubit",
+                                      "React",
+                                      "Next.js",
+                                      "TypeScript",
+                                      "Vite",
+                                      "Tailwind CSS"
+                                  ]
+                   },
+                   {
+                       "icon":  "Cloud",
+                       "title":  {
+                                     "pt":  "Cloud \u0026 IaC",
+                                     "en":  "Cloud \u0026 IaC"
+                                 },
+                       "description":  {
+                                           "pt":  "AWS (ECS, RDS, SQS, S3, Lambda, ALB, VPC, IAM) provisionada via Terraform. CI/CD em GitHub Actions.",
+                                           "en":  "AWS (ECS, RDS, SQS, S3, Lambda, ALB, VPC, IAM) provisioned via Terraform. CI/CD on GitHub Actions."
+                                       },
+                       "skills":  [
+                                      "AWS ECS",
+                                      "AWS RDS",
+                                      "AWS SQS",
+                                      "AWS S3",
+                                      "AWS Lambda",
+                                      "Terraform",
+                                      "Docker",
+                                      "GitHub Actions"
+                                  ]
+                   },
+                   {
+                       "icon":  "Activity",
+                       "title":  {
+                                     "pt":  "Dados \u0026 Observabilidade",
+                                     "en":  "Data \u0026 Observability"
+                                 },
+                       "description":  {
+                                           "pt":  "PostgreSQL + Oracle. Stack Prometheus v3 + Grafana, Datadog, Sentry, CloudWatch.",
+                                           "en":  "PostgreSQL + Oracle. Prometheus v3 + Grafana stack, Datadog, Sentry, CloudWatch."
+                                       },
+                       "skills":  [
+                                      "PostgreSQL",
+                                      "Oracle",
+                                      "Prometheus v3",
+                                      "Grafana",
+                                      "Datadog",
+                                      "Sentry",
+                                      "CloudWatch"
+                                  ]
+                   }
+               ],
+    "testimonials":  [
+                         {
+                             "author":  {
+                                            "name":  "Alessandro Elias",
+                                            "role":  {
+                                                         "pt":  "Tech Lead | Senior Software Engineer",
+                                                         "en":  "Tech Lead | Senior Software Engineer"
+                                                     },
+                                            "linkedin":  "https://www.linkedin.com/in/alessandro-elias-b08b85206/?locale=pt"
+                                        },
+                             "relationship":  {
+                                                  "pt":  "Alessandro supervisionava João Paulo diretamente",
+                                                  "en":  "Alessandro directly supervised João Paulo"
+                                              },
+                             "content":  {
+                                             "pt":  "Mentorei o João no desenvolvimento do e-commerce e do aplicativo de força de vendas. Desde o início não hesitou em tirar dúvidas e resolver ambiguidades, e em pouco tempo passou a assumir features complexas com autonomia, como integrações com o ERP e o backend do app mobile. Evoluiu rápido de assistente de TI a desenvolvedor, sempre entregando com qualidade e atenção ao negócio.",
+                                             "en":  "I mentored João on the development of the e-commerce platform and the field sales app. From the start he never hesitated to ask questions and clear up ambiguities, and in a short time he was taking on complex features on his own, such as ERP integrations and the mobile app\u0027s backend. He grew quickly from IT assistant to developer, always delivering with quality and attention to the business."
+                                         }
+                         },
+                         {
+                             "author":  {
+                                            "name":  "Kauan Curbani",
+                                            "role":  {
+                                                         "pt":  "Desenvolvedor Sênior · Web e Mobile",
+                                                         "en":  "Senior Web and Mobile Developer"
+                                                     },
+                                            "company":  "Cloud \u0026 Observabilidade",
+                                            "linkedin":  "https://www.linkedin.com/in/crbnii/",
+                                            "avatar":  "/avatars/kauan-curbani.jpeg"
+                                        },
+                             "relationship":  {
+                                                  "pt":  "Kauan supervisionava João Paulo diretamente",
+                                                  "en":  "Kauan directly supervised João Paulo"
+                                              },
+                             "content":  {
+                                             "pt":  "Tive a oportunidade de trabalhar com o João nos últimos 2 anos no desenvolvimento do nosso app mobile, e posso dizer com tranquilidade que ele foi peça-chave na construção do backend.\n\nComo Dev Backend, atuando com Java e Spring, o João participou diretamente de grande parte da implementação da nossa estrutura backend. Além disso, contribuiu bastante para melhorar a performance de consultas e otimizar pontos importantes da aplicação, sempre preocupado com eficiência e qualidade.\n\nO que mais gosto de trabalhar com ele é a postura: aprende rápido, entende o problema com facilidade e sabe discutir soluções de forma madura, sempre buscando a melhor decisão para o produto. Ele entrega rápido, mas sem abrir mão de boas práticas e organização, o que faz muita diferença no dia a dia.\n\nRecomendo o João com total confiança para qualquer time que precise de um backend sólido, responsável e comprometido com resultado.",
+                                             "en":  "I had the opportunity to work with João for the last 2 years on developing our mobile app, and I can confidently say he was a key piece in building the backend.\n\nAs a Backend Developer, working with Java and Spring, João directly participated in a large part of implementing our backend structure. Additionally, he contributed significantly to improving query performance and optimizing important parts of the application, always concerned with efficiency and quality.\n\nWhat I like most about working with him is his attitude: he learns fast, understands problems easily, and knows how to discuss solutions maturely, always seeking the best decision for the product. He delivers quickly, but without compromising on best practices and organization, which makes a huge difference day-to-day.\n\nI recommend João with total confidence for any team that needs a solid, responsible backend developer committed to results."
+                                         }
+                         },
+                         {
+                             "author":  {
+                                            "name":  "Fernando Junior",
+                                            "role":  {
+                                                         "pt":  "Engenheiro de software sênior",
+                                                         "en":  "Senior Software Engineer"
+                                                     },
+                                            "company":  "Java | Go | AWS",
+                                            "linkedin":  "https://www.linkedin.com/in/fernando-junior-bnu/",
+                                            "avatar":  "/avatars/fernando.jpeg"
+                                        },
+                             "relationship":  {
+                                                  "pt":  "Fernando supervisionava João Paulo diretamente",
+                                                  "en":  "Fernando directly supervised João Paulo"
+                                              },
+                             "content":  {
+                                             "pt":  "João é um excelente profissional, tive a oportunidade de trabalhar com ele durante 2 anos e ele sempre foi um profissional dedicado, se mostrou desde o início ter facilidade de aprender e ser capaz de assumir responsabilidades. Desempenhou com excelência os projetos em que participou. João é e será peça fundamental em qualquer equipe que atuar. Contudo deixo minha recomendação de seus serviços.",
+                                             "en":  "João is an excellent professional, I had the opportunity to work with him for 2 years and he has always been a dedicated professional, showing from the beginning that he learns easily and is capable of taking on responsibilities. He performed excellently in the projects he participated in. João is and will be a fundamental piece in any team he works with. Therefore, I leave my recommendation for his services."
+                                         }
+                         },
+                         {
+                             "author":  {
+                                            "name":  "Joao Vargas",
+                                            "role":  {
+                                                         "pt":  "Desenvolvedor | Full-stack | Java, Spring Boot | React.js, Flutter",
+                                                         "en":  "Developer | Full-stack | Java, Spring Boot | React.js, Flutter"
+                                                     },
+                                            "company":  "",
+                                            "avatar":  "/avatars/vargas.jpeg",
+                                            "linkedin":  "https://www.linkedin.com/in/vargxrz/"
+                                        },
+                             "relationship":  {
+                                                  "pt":  "Joao trabalhou na mesma equipe que João Paulo",
+                                                  "en":  "Joao worked on the same team as João Paulo"
+                                              },
+                             "content":  {
+                                             "pt":  "Tive a sorte de iniciar minha carreira como desenvolvedor ao lado do João Paulo. Desde o começo, sempre ficou evidente a competência e a curiosidade dele na resolução de problemas.\n\nO João foi uma peça fundamental na minha evolução profissional. Como colega e amigo, nunca mediu esforços para ajudar ou explicando algo que eu não entendia ou dedicando horas (às vezes o dia inteiro) para resolver um problema junto. Para ele, o importante sempre foi chegar na melhor solução.\n\nRecomendo o João com total confiança para qualquer empresa. Trabalhar com ele é uma experiência que eleva o nível de quem está ao redor.",
+                                             "en":  "I was lucky to start my career as a developer alongside João Paulo. From the start, his competence and curiosity in problem-solving were always evident.\n\nJoão was a fundamental piece in my professional growth. As a colleague and friend, he never held back from helping — whether explaining something I didn\u0027t understand or dedicating hours (sometimes all day) to solve a problem together. What always mattered to him was reaching the best solution.\n\nI recommend João with full confidence to any company. Working with him is an experience that elevates everyone around."
+                                         }
+                         },
+                         {
+                             "author":  {
+                                            "name":  "Felipe Baer",
+                                            "role":  {
+                                                         "pt":  "Desenvolvedor Full-Stack | Web, Mobile e PWA",
+                                                         "en":  "Full-Stack Developer | Web, Mobile and PWA"
+                                                     },
+                                            "company":  "",
+                                            "avatar":  "/avatars/baer.jpeg",
+                                            "linkedin":  "https://www.linkedin.com/in/flpbaer/?locale=pt"
+                                        },
+                             "relationship":  {
+                                                  "pt":  "Felipe trabalhou com João Paulo, mas em equipes diferentes",
+                                                  "en":  "Felipe worked with João Paulo, but on different teams"
+                                              },
+                             "content":  {
+                                             "pt":  "Tive o prazer de trabalhar com o João e posso afirmar, com total convicção, que seu trabalho é excepcional. Acompanhei de perto sua evolução, assim como sua dedicação e vontade constante de aprender e fazer as coisas acontecerem.\n\nSeu papel sempre foi fundamental, tanto na tomada de decisões quanto na construção de soluções, graças ao seu profundo conhecimento e domínio técnico. Trabalhar com o João é, sem dúvida, uma oportunidade valiosa que todos deveriam ter.",
+                                             "en":  "I had the pleasure of working with João and can state, with full conviction, that his work is exceptional. I followed his evolution closely, as well as his dedication and constant drive to learn and make things happen.\n\nHis role was always fundamental, both in decision-making and solution building, thanks to his deep technical knowledge and domain mastery. Working with João is, without a doubt, a valuable opportunity that everyone should have."
+                                         }
+                         }
+                     ],
+    "personal":  [
+                     {
+                         "slug":  "commitclock",
+                         "type":  "personal",
+                         "year":  2026,
+                         "title":  {
+                                       "pt":  "CommitClock — Timesheet com IA",
+                                       "en":  "CommitClock — AI-Powered Timesheet"
+                                   },
+                         "subtitle":  {
+                                          "pt":  "Envia foto do cartão ponto, Groq extrai os horários e gera entradas no Clockify cruzadas com commits do GitHub",
+                                          "en":  "Upload your timesheet photo, Groq extracts the hours and generates Clockify entries cross-referenced with GitHub commits"
+                                      },
+                         "description":  {
+                                             "pt":  "Webapp que automatiza o preenchimento do Clockify. O usuário envia uma foto do cartão ponto físico; Groq Vision extrai os horários de entrada e saída; a API do GitHub busca os commits do período para enriquecer as descrições; e a API do Clockify cria as entradas de tempo automaticamente.",
+                                             "en":  "Webapp that automates Clockify time tracking. The user uploads a photo of their physical timesheet; Groq Vision extracts clock-in/out times; the GitHub API fetches commits for that period to enrich entry descriptions; and the Clockify API creates the time entries automatically."
+                                         },
+                         "problem":  {
+                                         "pt":  "Preencher manualmente o Clockify a partir de um cartão ponto físico é repetitivo e propenso a erros — exige comparar papel, commits e calendário toda semana.",
+                                         "en":  "Manually filling Clockify from a physical timesheet is repetitive and error-prone — it requires comparing paper, commits and calendar every week."
+                                     },
+                         "solution":  {
+                                          "pt":  "Pipeline de três etapas: (1) Groq Vision lê a foto e extrai os horários em JSON estruturado; (2) GitHub API busca commits do período para gerar descrições de tarefas; (3) Clockify API cria as entradas com horários e descrições preenchidos automaticamente.",
+                                          "en":  "Three-stage pipeline: (1) Groq Vision reads the photo and extracts times into structured JSON; (2) GitHub API fetches commits for the period to generate task descriptions; (3) Clockify API creates the entries with times and descriptions filled automatically."
+                                      },
+                         "role":  {
+                                      "pt":  "Projeto solo — concepção, design e implementação completos",
+                                      "en":  "Solo project — full conception, design and implementation"
+                                  },
+                         "highlights":  {
+                                            "pt":  [
+                                                       "Groq Vision (LLaMA) faz OCR inteligente do cartão ponto físico",
+                                                       "Saída estruturada em JSON: data, entrada, saída, total de horas",
+                                                       "GitHub API busca commits do período para enriquecer descrições",
+                                                       "Clockify API cria entradas de tempo com um clique",
+                                                       "Interface minimalista: upload → preview → confirmar → pronto"
+                                                   ],
+                                            "en":  [
+                                                       "Groq Vision (LLaMA) performs intelligent OCR on the physical timesheet",
+                                                       "Structured JSON output: date, clock-in, clock-out, total hours",
+                                                       "GitHub API fetches commits from the period to enrich descriptions",
+                                                       "Clockify API creates time entries with one click",
+                                                       "Minimal interface: upload → preview → confirm → done"
+                                                   ]
+                                        },
+                         "technicalDecisions":  {
+                                                    "pt":  [
+                                                               "Groq sobre OpenAI Vision: latência menor e custo menor para extração simples de texto",
+                                                               "Next.js full-stack: API routes evitam expor chaves de API no cliente",
+                                                               "JSON estruturado no prompt: saída validável e tipada antes de chamar o Clockify"
+                                                           ],
+                                                    "en":  [
+                                                               "Groq over OpenAI Vision: lower latency and cost for simple text extraction",
+                                                               "Next.js full-stack: API routes avoid exposing API keys to the client",
+                                                               "Structured JSON in the prompt: validatable, typed output before calling Clockify"
+                                                           ]
+                                                },
+                         "challenges":  {
+                                            "pt":  [
+                                                       "Cartões ponto têm layouts variados — prompt do Groq precisa ser robusto a formatos distintos",
+                                                       "Mapear commits do GitHub para as entradas de tempo corretas sem falsos positivos",
+                                                       "Lidar com fotos de baixa qualidade ou com reflexo sem travar o pipeline"
+                                                   ],
+                                            "en":  [
+                                                       "Physical timesheets vary in layout — the Groq prompt must handle diverse formats",
+                                                       "Mapping GitHub commits to the correct time entries without false positives",
+                                                       "Handling low-quality or glare-affected photos without breaking the pipeline"
+                                                   ]
+                                        },
+                         "results":  {
+                                         "pt":  [
+                                                    "Reduz o preenchimento semanal do Clockify de ~20 min para menos de 1 min",
+                                                    "Descrições automáticas baseadas em commits eliminam entradas genéricas",
+                                                    "Funciona com qualquer layout de cartão ponto físico"
+                                                ],
+                                         "en":  [
+                                                    "Reduces weekly Clockify fill time from ~20 min to under 1 min",
+                                                    "Automatic commit-based descriptions eliminate generic entries",
+                                                    "Works with any physical timesheet layout"
+                                                ]
+                                     },
+                         "techStack":  [
+                                           "TypeScript",
+                                           "Next.js",
+                                           "Groq AI",
+                                           "GitHub API",
+                                           "Clockify API"
+                                       ],
+                         "img":  "img/commitclock.jpg"
+                     },
+                     {
+                         "slug":  "kira-semi-joias",
+                         "type":  "personal",
+                         "year":  2025,
+                         "title":  {
+                                       "pt":  "Kira Semi Joias — Loja + Backoffice",
+                                       "en":  "Kira Semi Joias — Store + Backoffice"
+                                   },
+                         "subtitle":  {
+                                          "pt":  "E-commerce Next.js com catálogo, checkout via WhatsApp e admin completo editável",
+                                          "en":  "Next.js e-commerce with catalog, WhatsApp checkout and fully editable admin panel"
+                                      },
+                         "description":  {
+                                             "pt":  "Loja de semi-joias full-stack. Clientes navegam pelo catálogo filtrado por categoria, favoritar produtos e finalizam o pedido direto no WhatsApp. O backoffice permite ao operador editar qualquer campo do conteúdo — produtos, categorias, preços, banners, configurações e newsletter — com upload e crop de imagem e importação em massa via Excel.",
+                                             "en":  "Full-stack semi-precious jewelry store. Customers browse the category-filtered catalog, favorite products and finalize orders directly on WhatsApp. The backoffice lets operators edit any content field — products, categories, prices, banners, settings and newsletter — with image upload/cropping and bulk Excel import."
+                                         },
+                         "problem":  {
+                                         "pt":  "Loja física de semi-joias precisava de presença digital com catálogo atualizado e processo de pedido simples, sem complexidade de gateway de pagamento, e um painel admin que qualquer pessoa possa operar.",
+                                         "en":  "A physical semi-jewelry store needed a digital presence with an up-to-date catalog and a simple order process — no payment gateway complexity — plus an admin panel anyone can operate."
+                                     },
+                         "solution":  {
+                                          "pt":  "Next.js 16 App Router full-stack com Vercel KV para sessões e configurações, Vercel Blob para imagens de produtos, Zustand para estado do carrinho e favoritos, react-image-crop para upload com recorte, XLSX para importação em massa e bcryptjs para auth do backoffice.",
+                                          "en":  "Full-stack Next.js 16 App Router with Vercel KV for sessions and settings, Vercel Blob for product images, Zustand for cart and favorites state, react-image-crop for upload with cropping, XLSX for bulk import, and bcryptjs for backoffice auth."
+                                      },
+                         "role":  {
+                                      "pt":  "Projeto solo — produto completo do design ao deploy",
+                                      "en":  "Solo project — full product from design to deploy"
+                                  },
+                         "highlights":  {
+                                            "pt":  [
+                                                       "Catálogo filtrado por categoria: Colares, Brincos, Pulseiras, Anéis",
+                                                       "Checkout via WhatsApp: sem gateway de pagamento, fluxo familiar ao cliente",
+                                                       "Backoffice completo: produtos, categorias, configs, newsletter — todos os campos editáveis",
+                                                       "Upload de imagens com crop integrado (react-image-crop)",
+                                                       "Importação em massa via Excel (XLSX) para atualizar catálogo rapidamente",
+                                                       "Vercel Blob para storage de imagens e Vercel KV para sessão e settings",
+                                                       "Zustand para carrinho e favoritos no cliente sem Redux boilerplate",
+                                                       "Auth do admin com bcryptjs — sem dependência de provider externo"
+                                                   ],
+                                            "en":  [
+                                                       "Category-filtered catalog: Necklaces, Earrings, Bracelets, Rings",
+                                                       "WhatsApp checkout: no payment gateway, familiar flow for customers",
+                                                       "Full backoffice: products, categories, settings, newsletter — all fields editable",
+                                                       "Image upload with integrated crop (react-image-crop)",
+                                                       "Bulk Excel import (XLSX) for fast catalog updates",
+                                                       "Vercel Blob for image storage and Vercel KV for session and settings",
+                                                       "Zustand for client-side cart and favorites without Redux boilerplate",
+                                                       "Admin auth with bcryptjs — no external provider dependency"
+                                                   ]
+                                        },
+                         "technicalDecisions":  {
+                                                    "pt":  [
+                                                               "WhatsApp checkout: elimina gateway de pagamento e fricção de cadastro para o cliente",
+                                                               "Vercel KV + Blob: zero infra própria para storage e sessão no plano gratuito",
+                                                               "Zustand sobre Context: estado de carrinho simples e performático sem boilerplate",
+                                                               "bcryptjs local: auth do admin sem Clerk/Auth.js — menos dependência para um projeto pequeno"
+                                                           ],
+                                                    "en":  [
+                                                               "WhatsApp checkout: eliminates payment gateway and registration friction for customers",
+                                                               "Vercel KV + Blob: zero own infra for storage and session on the free tier",
+                                                               "Zustand over Context: simple, performant cart state without boilerplate",
+                                                               "Local bcryptjs: admin auth without Clerk/Auth.js — fewer dependencies for a small project"
+                                                           ]
+                                                },
+                         "challenges":  {
+                                            "pt":  [
+                                                       "Manter catálogo atualizado sem que o operador precise de conhecimento técnico",
+                                                       "Upload de imagens mobile com crop funcional em iOS e Android",
+                                                       "Sincronizar estado do carrinho entre abas sem backend"
+                                                   ],
+                                            "en":  [
+                                                       "Keep the catalog updated without requiring technical knowledge from the operator",
+                                                       "Mobile image upload with functional crop on iOS and Android",
+                                                       "Sync cart state across tabs without a backend"
+                                                   ]
+                                        },
+                         "results":  {
+                                         "pt":  [
+                                                    "Loja ativa com catálogo completo e processo de pedido simples via WhatsApp",
+                                                    "Operador atualiza produtos e preços sem suporte técnico",
+                                                    "Importação Excel permite atualizar dezenas de produtos em segundos"
+                                                ],
+                                         "en":  [
+                                                    "Live store with full catalog and simple WhatsApp order process",
+                                                    "Operator updates products and prices without technical support",
+                                                    "Excel import lets you update dozens of products in seconds"
+                                                ]
+                                     },
+                         "techStack":  [
+                                           "TypeScript",
+                                           "Next.js 16",
+                                           "Tailwind CSS 4",
+                                           "Vercel KV",
+                                           "Vercel Blob",
+                                           "Zustand",
+                                           "XLSX",
+                                           "react-image-crop"
+                                       ],
+                         "img":  "img/kira-semi-joias.jpg"
+                     },
+                     {
+                         "slug":  "finance-dashboard",
+                         "type":  "personal",
+                         "year":  2026,
+                         "title":  {
+                                       "pt":  "Finance Dashboard — Controle Financeiro",
+                                       "en":  "Finance Dashboard — Personal Finance Tracker"
+                                   },
+                         "subtitle":  {
+                                          "pt":  "API Spring Boot para categorização de gastos pessoais com frontend React em desenvolvimento",
+                                          "en":  "Spring Boot API for personal expense categorization with React frontend in development"
+                                      },
+                         "description":  {
+                                             "pt":  "Side project de controle financeiro pessoal. Backend Spring Boot expõe API REST para registrar transações, categorizar gastos e agregar dados para visualizações. Frontend TypeScript/React consome a API e exibe dashboards com gráficos de gastos por categoria, evolução mensal e balanço.",
+                                             "en":  "Personal finance side project. Spring Boot backend exposes a REST API to record transactions, categorize expenses and aggregate data for visualizations. TypeScript/React frontend consumes the API and displays dashboards with spending-by-category charts, monthly trends and balance."
+                                         },
+                         "problem":  {
+                                         "pt":  "Planilhas manuais para controle de gastos são difíceis de manter e não oferecem visualizações automáticas. Precisava de uma solução própria para registrar e entender os gastos mensais.",
+                                         "en":  "Manual spreadsheets for expense tracking are hard to maintain and offer no automatic visualizations. Needed a personal solution to record and understand monthly spending."
+                                     },
+                         "solution":  {
+                                          "pt":  "API REST Spring Boot com PostgreSQL para persistência, categorias de gastos configuráveis e endpoints de agregação para os gráficos. Frontend React com charts para visualização de gastos por categoria e evolução temporal.",
+                                          "en":  "REST Spring Boot API with PostgreSQL for persistence, configurable expense categories and aggregation endpoints for charts. React frontend with charts for spending-by-category and time-evolution visualization."
+                                      },
+                         "role":  {
+                                      "pt":  "Projeto solo — backend e frontend",
+                                      "en":  "Solo project — backend and frontend"
+                                  },
+                         "highlights":  {
+                                            "pt":  [
+                                                       "API REST Spring Boot com persistência PostgreSQL",
+                                                       "Categorias de gastos configuráveis (alimentação, transporte, lazer, etc.)",
+                                                       "Endpoints de agregação para totais por categoria e por período",
+                                                       "Frontend React com dashboards de gráficos",
+                                                       "Projeto solo de aprendizado — Java backend + frontend TypeScript"
+                                                   ],
+                                            "en":  [
+                                                       "REST Spring Boot API with PostgreSQL persistence",
+                                                       "Configurable expense categories (food, transport, leisure, etc.)",
+                                                       "Aggregation endpoints for totals by category and period",
+                                                       "React frontend with chart dashboards",
+                                                       "Solo learning project — Java backend + TypeScript frontend"
+                                                   ]
+                                        },
+                         "technicalDecisions":  {
+                                                    "pt":  [
+                                                               "Spring Boot para o backend: familiaridade com o stack do trabalho aplicada em projeto pessoal",
+                                                               "PostgreSQL sobre H2: banco real desde o início evita surpresas na migração"
+                                                           ],
+                                                    "en":  [
+                                                               "Spring Boot for the backend: applying work stack familiarity to a personal project",
+                                                               "PostgreSQL over H2: real database from day one avoids migration surprises"
+                                                           ]
+                                                },
+                         "challenges":  {
+                                            "pt":  [
+                                                       "Modelar categorias flexíveis sem engessar o schema para futuros tipos de transação",
+                                                       "Agregar dados de forma eficiente no banco para não processar no frontend"
+                                                   ],
+                                            "en":  [
+                                                       "Model flexible categories without locking the schema for future transaction types",
+                                                       "Aggregate data efficiently in the database to avoid processing on the frontend"
+                                                   ]
+                                        },
+                         "results":  {
+                                         "pt":  [
+                                                    "Visibilidade clara de gastos mensais por categoria",
+                                                    "Substituiu planilhas manuais por uma interface de dashboard"
+                                                ],
+                                         "en":  [
+                                                    "Clear visibility into monthly spending by category",
+                                                    "Replaced manual spreadsheets with a dashboard interface"
+                                                ]
+                                     },
+                         "techStack":  [
+                                           "Java 17",
+                                           "Spring Boot",
+                                           "PostgreSQL",
+                                           "TypeScript",
+                                           "React"
+                                       ],
+                         "img":  "img/finance-dashboard.jpg"
+                     }
+                 ]
+}

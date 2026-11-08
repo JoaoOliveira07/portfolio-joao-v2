@@ -1,0 +1,1427 @@
+{
+    "syncedAt":  "2026-11-08T22:17:33.4040264Z",
+    "projects":  [
+                     {
+                         "slug":  "integracao-erp",
+                         "title":  {
+                                       "pt":  "Integração ERP ↔ Nuvem",
+                                       "en":  "ERP ↔ Cloud Integration"
+                                   },
+                         "subtitle":  {
+                                          "pt":  "Ponte bidirecional entre um ERP Oracle legado e uma plataforma B2B na AWS, em três serviços Java",
+                                          "en":  "Two-way bridge between a legacy Oracle ERP and a B2B platform on AWS, built as three Java services"
+                                      },
+                         "description":  {
+                                             "pt":  "Conjunto de três serviços que mantém produtos, clientes, preços, estoque, pedidos e notificações circulando entre um ERP Oracle on-premise e uma plataforma B2B na nuvem. Um client roda dentro da rede do parceiro, um middleware faz o transporte por filas e um orquestrador coordena os fluxos mais complexos, como crédito, PIX e liberação de pedidos.",
+                                             "en":  "Three services that keep products, customers, prices, stock, orders and notifications flowing between an on-premise Oracle ERP and a cloud B2B platform. A client runs inside the partner\u0027s network, a middleware handles transport over queues and an orchestrator coordinates the more complex flows, such as credit, PIX payments and order release."
+                                         },
+                         "problem":  {
+                                         "pt":  "O ERP fica na rede do parceiro e não pode ser exposto à internet, mas a loja online precisa de dados atualizados e cada pedido tem que chegar ao ERP exatamente uma vez, mesmo com rede instável.",
+                                         "en":  "The ERP lives inside the partner\u0027s network and cannot be exposed to the internet, yet the online store needs fresh data and every order must reach the ERP exactly once, even over an unreliable network."
+                                     },
+                         "solution":  {
+                                          "pt":  "Separar responsabilidades: extração no client on-premise, transporte assíncrono por filas na AWS e coordenação no orquestrador. Chaves de idempotência garantem entrega única mesmo com retentativas.",
+                                          "en":  "Split responsibilities: extraction in the on-premise client, asynchronous transport over AWS queues and coordination in the orchestrator. Idempotency keys guarantee single delivery even with retries."
+                                      },
+                         "techStack":  [
+                                           "Java 17",
+                                           "Java 21",
+                                           "Spring Boot",
+                                           "Oracle",
+                                           "PostgreSQL",
+                                           "AWS SQS",
+                                           "Spring Security",
+                                           "Apache POI",
+                                           "PDFBox"
+                                       ],
+                         "highlights":  {
+                                            "pt":  [
+                                                       "Client on-premise como única ponte até o banco do ERP, por segurança dos dados",
+                                                       "Middleware de mensageria sobre filas SQS, com autenticação",
+                                                       "Orquestrador para fluxos de crédito, PIX, liberação de pedidos e relatórios",
+                                                       "Geração de PDF, planilhas e mensagens de WhatsApp com botões",
+                                                       "Envio por e-mail e WhatsApp a partir dos mesmos eventos",
+                                                       "Strategy para suportar ERPs diferentes sem mexer no núcleo"
+                                                   ],
+                                            "en":  [
+                                                       "On-premise client as the only bridge to the ERP database, for data security",
+                                                       "Messaging middleware over SQS queues, with authentication",
+                                                       "Orchestrator for credit, PIX payment, order release and reporting flows",
+                                                       "PDF, spreadsheet and WhatsApp-with-buttons generation",
+                                                       "Email and WhatsApp delivery from the same events",
+                                                       "Strategy pattern to support different ERPs without touching the core"
+                                                   ]
+                                        },
+                         "role":  {
+                                      "pt":  "Um dos principais contribuidores do client on-premise, com contribuição contínua nos três serviços: pipelines, renderizadores e envios",
+                                      "en":  "One of the main contributors to the on-premise client, contributing continuously across all three services: pipelines, renderers and senders"
+                                  },
+                         "category":  "integration",
+                         "year":  2026,
+                         "complexity":  5,
+                         "type":  "professional",
+                         "challenges":  {
+                                            "pt":  [
+                                                       "Manter consistência entre um sistema legado e um sistema em nuvem",
+                                                       "Lidar com quedas de rede na ponta do parceiro",
+                                                       "Evoluir os fluxos sem quebrar integrações em produção"
+                                                   ],
+                                            "en":  [
+                                                       "Keeping a legacy system and a cloud system consistent",
+                                                       "Handling network drops on the partner\u0027s side",
+                                                       "Evolving the flows without breaking production integrations"
+                                                   ]
+                                        },
+                         "results":  {
+                                         "pt":  [
+                                                    "Sincronização confiável entre o ERP legado e a plataforma em nuvem",
+                                                    "Pedidos entregues ao ERP com retentativa automática e sem duplicidade",
+                                                    "Fluxos de PIX, crédito e relatórios executando de ponta a ponta"
+                                                ],
+                                         "en":  [
+                                                    "Reliable sync between the legacy ERP and the cloud platform",
+                                                    "Orders delivered to the ERP with automatic retries and no duplicates",
+                                                    "PIX, credit and reporting flows running end to end"
+                                                ]
+                                     },
+                         "technicalDecisions":  {
+                                                    "pt":  [
+                                                               "Três serviços com papéis claros: extração, transporte e coordenação",
+                                                               "Filas em vez de chamadas síncronas: o ERP pode ficar fora do ar sem perder pedido",
+                                                               "Chave de idempotência em cada mensagem: retentativa nunca duplica efeito"
+                                                           ],
+                                                    "en":  [
+                                                               "Three services with clear roles: extraction, transport and coordination",
+                                                               "Queues instead of synchronous calls: the ERP can go down without losing orders",
+                                                               "An idempotency key on every message: retries never duplicate effects"
+                                                           ]
+                                                },
+                         "image":  "assets/portfolio/img/integracao-erp.png"
+                     },
+                     {
+                         "slug":  "backend-ecommerce",
+                         "title":  {
+                                       "pt":  "E-commerce B2B — Backend",
+                                       "en":  "B2B E-commerce — Backend"
+                                   },
+                         "subtitle":  {
+                                          "pt":  "Monolito modular em Spring Boot que serve web, app de vendas, painel administrativo e app de cadastro",
+                                          "en":  "Modular Spring Boot monolith serving the web store, sales app, admin panel and onboarding app"
+                                      },
+                         "description":  {
+                                             "pt":  "Backend central de um ecossistema de vendas B2B. Uma API REST atende quatro aplicações diferentes, com isolamento de dados por parceiro, arquitetura em camadas com DDD e eventos publicados em streaming para integrações assíncronas.",
+                                             "en":  "Central backend of a B2B sales ecosystem. A single REST API serves four different applications, with per-partner data isolation, a layered DDD architecture and events published to a stream for asynchronous integrations."
+                                         },
+                         "problem":  {
+                                         "pt":  "Unificar cadastro, pedidos web e mobile e administração em um só backend multi-tenant, mantendo consistência sob carga e sem duplicar regra de negócio.",
+                                         "en":  "Unify onboarding, web and mobile orders and administration in a single multi-tenant backend, staying consistent under load without duplicating business rules."
+                                     },
+                         "solution":  {
+                                          "pt":  "Monolito modular com contextos bem separados, cache em duas camadas, jobs com trava distribuída e streaming de eventos para abrir caminho ao event-driven sem reescrever o núcleo.",
+                                          "en":  "A modular monolith with well-separated contexts, a two-layer cache, jobs with a distributed lock and event streaming to open the way to event-driven work without rewriting the core."
+                                      },
+                         "techStack":  [
+                                           "Java 17",
+                                           "Spring Boot 3",
+                                           "PostgreSQL",
+                                           "Redis",
+                                           "AWS SQS/SNS/S3",
+                                           "Kinesis",
+                                           "Liquibase",
+                                           "New Relic"
+                                       ],
+                         "highlights":  {
+                                            "pt":  [
+                                                       "Arquitetura em camadas com DDD e contextos bem delimitados",
+                                                       "Multi-tenant com isolamento de dados por parceiro",
+                                                       "Autenticação com JWT, OAuth e passkeys (login sem senha)",
+                                                       "Cache em duas camadas: Redis distribuído + Caffeine local",
+                                                       "Jobs distribuídos com ShedLock, sem execução duplicada",
+                                                       "Migrations versionadas com Liquibase e documentação OpenAPI"
+                                                   ],
+                                            "en":  [
+                                                       "Layered architecture with DDD and well-bounded contexts",
+                                                       "Multi-tenant with per-partner data isolation",
+                                                       "Authentication with JWT, OAuth and passkeys (passwordless login)",
+                                                       "Two-layer cache: distributed Redis + local Caffeine",
+                                                       "Distributed jobs with ShedLock, never running twice",
+                                                       "Versioned migrations with Liquibase and OpenAPI docs"
+                                                   ]
+                                        },
+                         "role":  {
+                                      "pt":  "Um dos principais contribuidores do repositório, com contribuição contínua em features de backend, code reviews e otimizações",
+                                      "en":  "One of the repository\u0027s top contributors, contributing continuously to backend features, code reviews and optimizations"
+                                  },
+                         "category":  "monolith",
+                         "year":  2026,
+                         "complexity":  5,
+                         "type":  "professional",
+                         "challenges":  {
+                                            "pt":  [
+                                                       "Isolar dados por parceiro sem duplicar lógica de domínio",
+                                                       "Combinar três formas de autenticação na mesma API",
+                                                       "Migrar aos poucos para eventos sem quebrar contratos REST"
+                                                   ],
+                                            "en":  [
+                                                       "Isolating data per partner without duplicating domain logic",
+                                                       "Combining three authentication methods in the same API",
+                                                       "Gradually moving to events without breaking REST contracts"
+                                                   ]
+                                        },
+                         "results":  {
+                                         "pt":  [
+                                                    "Uma plataforma servindo quatro aplicações diferentes",
+                                                    "Login com passkey reduzindo fricção para o usuário",
+                                                    "Leituras de catálogo mais rápidas com o cache em camadas"
+                                                ],
+                                         "en":  [
+                                                    "One platform serving four different applications",
+                                                    "Passkey login reducing friction for users",
+                                                    "Faster catalog reads with the layered cache"
+                                                ]
+                                     },
+                         "technicalDecisions":  {
+                                                    "pt":  [
+                                                               "Monolito modular: deploy único, separação por contextos de negócio",
+                                                               "Redis + Caffeine: coerência entre instâncias e latência mínima na leitura",
+                                                               "ShedLock: trava distribuída pelo próprio banco, sem infraestrutura extra",
+                                                               "Passkeys ao lado do JWT: login sem senha sem quebrar quem já usa"
+                                                           ],
+                                                    "en":  [
+                                                               "Modular monolith: single deploy, split by business context",
+                                                               "Redis + Caffeine: coherence across instances and minimal read latency",
+                                                               "ShedLock: a distributed lock using the database itself, no extra infrastructure",
+                                                               "Passkeys alongside JWT: passwordless login without breaking existing users"
+                                                           ]
+                                                },
+                         "image":  "assets/portfolio/img/backend-ecommerce.png"
+                     },
+                     {
+                         "slug":  "app-vendas",
+                         "title":  {
+                                       "pt":  "App de Força de Vendas — Offline-first",
+                                       "en":  "Field Sales App — Offline-first"
+                                   },
+                         "subtitle":  {
+                                          "pt":  "App Flutter multiplataforma que funciona sem internet e sincroniza em segundo plano",
+                                          "en":  "Cross-platform Flutter app that works with no internet and syncs in the background"
+                                      },
+                         "description":  {
+                                             "pt":  "App para representantes comerciais gerenciarem clientes, pedidos e entregas na rua. Clean Architecture em três camadas, banco SQLite local e sincronização automática quando a conexão volta. Um único código roda em Android, iOS, web e desktop.",
+                                             "en":  "An app for sales reps to manage customers, orders and deliveries on the road. Three-layer Clean Architecture, a local SQLite database and automatic sync when the connection returns. A single codebase runs on Android, iOS, web and desktop."
+                                         },
+                         "problem":  {
+                                         "pt":  "Representantes passam o dia em regiões sem sinal e não podem parar de vender por causa disso.",
+                                         "en":  "Sales reps spend their day in areas with no signal and cannot stop selling because of it."
+                                     },
+                         "solution":  {
+                                          "pt":  "Tratar o offline como padrão: tudo é gravado localmente primeiro e um motor de sincronização envia e recebe dados em segundo plano.",
+                                          "en":  "Treat offline as the default: everything is written locally first and a sync engine sends and receives data in the background."
+                                      },
+                         "techStack":  [
+                                           "Flutter",
+                                           "Dart 3",
+                                           "BLoC/Cubit",
+                                           "Drift (SQLite)",
+                                           "workmanager",
+                                           "Dio",
+                                           "GoRouter",
+                                           "Sentry",
+                                           "Datadog RUM",
+                                           "LaunchDarkly"
+                                       ],
+                         "highlights":  {
+                                            "pt":  [
+                                                       "Clean Architecture: domínio, infraestrutura e apresentação",
+                                                       "Banco local com Drift (SQLite) e migrations versionadas",
+                                                       "Sincronização em segundo plano com workmanager",
+                                                       "Rotas com GoRouter em abas",
+                                                       "Observabilidade com Sentry e Datadog RUM",
+                                                       "Feature flags com LaunchDarkly para liberar recursos aos poucos"
+                                                   ],
+                                            "en":  [
+                                                       "Clean Architecture: domain, infrastructure and presentation",
+                                                       "Local database with Drift (SQLite) and versioned migrations",
+                                                       "Background sync with workmanager",
+                                                       "Tabbed routing with GoRouter",
+                                                       "Observability with Sentry and Datadog RUM",
+                                                       "Feature flags with LaunchDarkly for gradual rollouts"
+                                                   ]
+                                        },
+                         "role":  {
+                                      "pt":  "Contribuição contínua em features offline-first, no banco local, no motor de sincronização e na migração de gerenciamento de estado para BLoC",
+                                      "en":  "Continuous contribution to offline-first features, the local database, the sync engine and the state management migration to BLoC"
+                                  },
+                         "category":  "mobile",
+                         "year":  2026,
+                         "complexity":  5,
+                         "type":  "professional",
+                         "challenges":  {
+                                            "pt":  [
+                                                       "Resolver conflitos quando o mesmo dado muda offline e online",
+                                                       "Manter o banco local pequeno e rápido",
+                                                       "Testar cenários de rede instável"
+                                                   ],
+                                            "en":  [
+                                                       "Resolving conflicts when the same data changes offline and online",
+                                                       "Keeping the local database small and fast",
+                                                       "Testing unstable-network scenarios"
+                                                   ]
+                                        },
+                         "results":  {
+                                         "pt":  [
+                                                    "App 100% funcional sem internet, com sincronização automática",
+                                                    "Um único código para seis plataformas",
+                                                    "Visibilidade de falhas e desempenho em campo"
+                                                ],
+                                         "en":  [
+                                                    "App fully functional offline, with automatic sync",
+                                                    "A single codebase for six platforms",
+                                                    "Visibility into crashes and performance in the field"
+                                                ]
+                                     },
+                         "technicalDecisions":  {
+                                                    "pt":  [
+                                                               "Offline como padrão, não como exceção",
+                                                               "Drift em vez de SQL cru: consultas tipadas e migrations seguras",
+                                                               "Migração de MobX para BLoC para estado mais previsível"
+                                                           ],
+                                                    "en":  [
+                                                               "Offline as the default, not the exception",
+                                                               "Drift instead of raw SQL: typed queries and safe migrations",
+                                                               "Migration from MobX to BLoC for more predictable state"
+                                                           ]
+                                                },
+                         "image":  "assets/portfolio/img/app-vendas.png"
+                     },
+                     {
+                         "slug":  "api-sync",
+                         "title":  {
+                                       "pt":  "API de Sincronização para o App Offline",
+                                       "en":  "Sync API for the Offline App"
+                                   },
+                         "subtitle":  {
+                                          "pt":  "Spring Boot que gera pacotes de dados para o app de vendas sem expor o banco do parceiro",
+                                          "en":  "Spring Boot service that builds data packages for the sales app without exposing the partner\u0027s database"
+                                      },
+                         "description":  {
+                                             "pt":  "API dedicada ao app de vendas offline. Gera jobs de sincronização, consulta o banco do parceiro em modo somente leitura e publica pacotes de dados no S3 para o app baixar. Arquitetura hexagonal e infraestrutura própria em Terraform.",
+                                             "en":  "An API dedicated to the offline sales app. It creates sync jobs, queries the partner\u0027s database in read-only mode and publishes data packages to S3 for the app to download. Hexagonal architecture and its own Terraform infrastructure."
+                                         },
+                         "problem":  {
+                                         "pt":  "O app precisa de dados atualizados do parceiro, mas o banco dele não pode receber acesso direto do celular nem sofrer com consultas pesadas.",
+                                         "en":  "The app needs fresh data from the partner, but its database cannot be reached directly from phones or be hammered by heavy queries."
+                                     },
+                         "solution":  {
+                                          "pt":  "Uma API no meio do caminho: consulta em leitura, guarda resultados pesados em cache e entrega pacotes prontos pelo S3.",
+                                          "en":  "An API in the middle: read-only queries, heavy results cached and ready-made packages delivered via S3."
+                                      },
+                         "techStack":  [
+                                           "Java 17",
+                                           "Spring Boot 3.5",
+                                           "PostgreSQL",
+                                           "Redis",
+                                           "AWS S3",
+                                           "AWS ECS Fargate",
+                                           "AWS RDS",
+                                           "OAuth2 JWT",
+                                           "Liquibase",
+                                           "Testcontainers",
+                                           "Prometheus",
+                                           "Terraform"
+                                       ],
+                         "highlights":  {
+                                            "pt":  [
+                                                       "Arquitetura hexagonal: núcleo, aplicação e infraestrutura",
+                                                       "Duas fontes de dados: PostgreSQL próprio + banco do parceiro em leitura",
+                                                       "Cache Redis para consultas pesadas",
+                                                       "Autenticação OAuth2 com JWT em todas as rotas",
+                                                       "Testes com Testcontainers e cobertura mínima de 80%",
+                                                       "Observabilidade com Prometheus, Micrometer e Loki"
+                                                   ],
+                                            "en":  [
+                                                       "Hexagonal architecture: core, application and infrastructure",
+                                                       "Two data sources: own PostgreSQL + partner database in read-only mode",
+                                                       "Redis cache for heavy queries",
+                                                       "OAuth2 with JWT on every route",
+                                                       "Tests with Testcontainers and a minimum 80% coverage",
+                                                       "Observability with Prometheus, Micrometer and Loki"
+                                                   ]
+                                        },
+                         "role":  {
+                                      "pt":  "Um dos principais contribuidores da API e da infraestrutura, com contribuição contínua em jobs, consultas, cache e provisionamento",
+                                      "en":  "One of the main contributors to the API and its infrastructure, contributing continuously to jobs, queries, caching and provisioning"
+                                  },
+                         "category":  "event-driven",
+                         "year":  2026,
+                         "complexity":  4,
+                         "type":  "professional",
+                         "challenges":  {
+                                            "pt":  [
+                                                       "Consultas pesadas sem pesar no banco do parceiro",
+                                                       "Pacotes de dados que precisam caber no celular",
+                                                       "Ambientes reproduzíveis de desenvolvimento e produção"
+                                                   ],
+                                            "en":  [
+                                                       "Heavy queries without loading the partner database",
+                                                       "Data packages that must fit on a phone",
+                                                       "Reproducible development and production environments"
+                                                   ]
+                                        },
+                         "results":  {
+                                         "pt":  [
+                                                    "App sempre com dados atualizados, sem expor o banco do parceiro",
+                                                    "Menos pressão sobre o banco graças ao cache",
+                                                    "Migrations testadas em banco real antes de cada merge"
+                                                ],
+                                         "en":  [
+                                                    "The app always has fresh data, without exposing the partner database",
+                                                    "Less pressure on the database thanks to caching",
+                                                    "Migrations tested on a real database before every merge"
+                                                ]
+                                     },
+                         "technicalDecisions":  {
+                                                    "pt":  [
+                                                               "Banco do parceiro sempre em somente leitura",
+                                                               "Pacotes grandes pelo S3 em vez de respostas gigantes na API",
+                                                               "Infraestrutura em ECS Fargate + RDS, toda em Terraform"
+                                                           ],
+                                                    "en":  [
+                                                               "The partner database is always read-only",
+                                                               "Large packages via S3 instead of huge API responses",
+                                                               "Infrastructure on ECS Fargate + RDS, fully in Terraform"
+                                                           ]
+                                                },
+                         "image":  "assets/portfolio/img/api-sync.png"
+                     },
+                     {
+                         "slug":  "loja-b2b",
+                         "title":  {
+                                       "pt":  "Loja B2B — SPA White-label",
+                                       "en":  "B2B Store — White-label SPA"
+                                   },
+                         "subtitle":  {
+                                          "pt":  "React 18 + Vite: uma só aplicação que assume a marca de cada parceiro",
+                                          "en":  "React 18 + Vite: a single app that takes on each partner\u0027s brand"
+                                      },
+                         "description":  {
+                                             "pt":  "Loja B2B para clientes e representantes fazerem pedidos: catálogo, carrinho, checkout, histórico, datas de entrega, planos de pagamento e recomendações. Multi-tenant white-label: a mesma aplicação muda de identidade conforme o parceiro, sem build separado.",
+                                             "en":  "A B2B store for customers and sales reps to place orders: catalog, cart, checkout, history, delivery dates, payment plans and recommendations. Multi-tenant white-label: the same app changes identity per partner, with no separate build."
+                                         },
+                         "problem":  {
+                                         "pt":  "Vários parceiros, cada um com sua marca, e nenhuma vontade de manter várias lojas diferentes.",
+                                         "en":  "Many partners, each with its own brand, and no appetite for maintaining several different stores."
+                                     },
+                         "solution":  {
+                                          "pt":  "Uma SPA única que identifica o parceiro na requisição e aplica tema, regras e catálogo dele.",
+                                          "en":  "A single SPA that identifies the partner on each request and applies its theme, rules and catalog."
+                                      },
+                         "techStack":  [
+                                           "TypeScript",
+                                           "React 18",
+                                           "Vite 5",
+                                           "Redux Toolkit",
+                                           "Material-UI",
+                                           "Ant Design",
+                                           "Workbox PWA",
+                                           "Vitest",
+                                           "Playwright",
+                                           "MSW"
+                                       ],
+                         "highlights":  {
+                                            "pt":  [
+                                                       "Padrão Container/Presentational: lógica separada da interface",
+                                                       "White-label por parceiro sem build separado",
+                                                       "PWA com Workbox: cache offline e instalação como app",
+                                                       "Cliente HTTP com retentativa exponencial",
+                                                       "Divisão manual de chunks no Vite para carregar mais rápido",
+                                                       "Testes com Vitest, Playwright e MSW"
+                                                   ],
+                                            "en":  [
+                                                       "Container/Presentational pattern: logic separated from UI",
+                                                       "Per-partner white-label with no separate build",
+                                                       "PWA with Workbox: offline cache and install as an app",
+                                                       "HTTP client with exponential retry",
+                                                       "Manual Vite chunking for faster loading",
+                                                       "Tests with Vitest, Playwright and MSW"
+                                                   ]
+                                        },
+                         "role":  {
+                                      "pt":  "Contribuição contínua em catálogo, carrinho, checkout e otimização de bundle e LCP",
+                                      "en":  "Continuous contribution to catalog, cart, checkout and bundle/LCP optimization"
+                                  },
+                         "category":  "frontend",
+                         "year":  2026,
+                         "complexity":  4,
+                         "type":  "professional",
+                         "challenges":  {
+                                            "pt":  [
+                                                       "Manter a experiência rápida em conexões ruins",
+                                                       "Testar fluxos de compra de vários parceiros",
+                                                       "Evitar regressões em catálogo e checkout"
+                                                   ],
+                                            "en":  [
+                                                       "Keeping the experience fast on poor connections",
+                                                       "Testing purchase flows for several partners",
+                                                       "Avoiding regressions in catalog and checkout"
+                                                   ]
+                                        },
+                         "results":  {
+                                         "pt":  [
+                                                    "Uma única loja atendendo vários parceiros com marca própria",
+                                                    "Uso possível mesmo com conexão intermitente",
+                                                    "Bundle inicial menor sem perder produtividade"
+                                                ],
+                                         "en":  [
+                                                    "A single store serving several partners, each with its own brand",
+                                                    "Usable even with an intermittent connection",
+                                                    "Smaller initial bundle without losing productivity"
+                                                ]
+                                     },
+                         "technicalDecisions":  {
+                                                    "pt":  [
+                                                               "Tema e regras por parceiro em tempo de execução",
+                                                               "Chunks separados para bibliotecas pesadas",
+                                                               "Versão do build no cache para todo mundo receber a última versão"
+                                                           ],
+                                                    "en":  [
+                                                               "Per-partner theme and rules at runtime",
+                                                               "Separate chunks for heavy libraries",
+                                                               "Build version in the cache key so everyone gets the latest release"
+                                                           ]
+                                                },
+                         "image":  "assets/portfolio/img/loja-b2b.png"
+                     },
+                     {
+                         "slug":  "painel-admin",
+                         "title":  {
+                                       "pt":  "Painel Administrativo com Assistente de IA",
+                                       "en":  "Admin Panel with an AI Assistant"
+                                   },
+                         "subtitle":  {
+                                          "pt":  "Next.js + React 19 com Server Components, shadcn/ui e um chat de IA integrado",
+                                          "en":  "Next.js + React 19 with Server Components, shadcn/ui and a built-in AI chat"
+                                      },
+                         "description":  {
+                                             "pt":  "Painel administrativo moderno que substitui um sistema legado. Gestão de integrações, clientes, pedidos, PIX, banners e relatórios, com um assistente de IA que responde perguntas sobre a operação do dia a dia.",
+                                             "en":  "A modern admin panel replacing a legacy system. It manages integrations, customers, orders, PIX payments, banners and reports, with an AI assistant that answers questions about day-to-day operations."
+                                         },
+                         "problem":  {
+                                         "pt":  "O painel antigo era pesado, difícil de evoluir e obrigava a equipe a navegar por várias telas para responder perguntas simples.",
+                                         "en":  "The old panel was heavy, hard to evolve and forced the team through several screens to answer simple questions."
+                                     },
+                         "solution":  {
+                                          "pt":  "Reescrever com Next.js, uma camada BFF entre a interface e o backend, e um chat de IA que consulta os dados pela própria API.",
+                                          "en":  "Rewrite it with Next.js, a BFF layer between the UI and the backend, and an AI chat that queries data through the API itself."
+                                      },
+                         "techStack":  [
+                                           "Next.js 16",
+                                           "React 19",
+                                           "TypeScript",
+                                           "Bun",
+                                           "Tailwind v4",
+                                           "shadcn/ui",
+                                           "TanStack Query",
+                                           "React Hook Form",
+                                           "Zod",
+                                           "Vercel AI SDK",
+                                           "AWS Bedrock",
+                                           "Vitest",
+                                           "MSW"
+                                       ],
+                         "highlights":  {
+                                            "pt":  [
+                                                       "Arquitetura MVVM com Server Components onde possível",
+                                                       "API Routes como BFF entre a interface e o backend Java",
+                                                       "Chat de IA com Vercel AI SDK, AWS Bedrock e fallback",
+                                                       "Listagens com filtros e paginação no servidor (TanStack)",
+                                                       "Formulários tipados de ponta a ponta com React Hook Form + Zod",
+                                                       "Logs de auditoria para rastrear ações administrativas"
+                                                   ],
+                                            "en":  [
+                                                       "MVVM architecture with Server Components where possible",
+                                                       "API Routes as a BFF between the UI and the Java backend",
+                                                       "AI chat with the Vercel AI SDK, AWS Bedrock and a fallback",
+                                                       "Server-side filtered, paginated tables (TanStack)",
+                                                       "End-to-end typed forms with React Hook Form + Zod",
+                                                       "Audit logs to trace administrative actions"
+                                                   ]
+                                        },
+                         "role":  {
+                                      "pt":  "Contribuição contínua em gestão, chat de IA, logs de auditoria e migração do sistema antigo",
+                                      "en":  "Continuous contribution to management screens, the AI chat, audit logs and the migration from the old system"
+                                  },
+                         "category":  "admin",
+                         "year":  2026,
+                         "complexity":  4,
+                         "type":  "professional",
+                         "challenges":  {
+                                            "pt":  [
+                                                       "Migrar telas sem parar a operação",
+                                                       "Dar respostas úteis de IA sem expor dados indevidos",
+                                                       "Manter listagens grandes rápidas"
+                                                   ],
+                                            "en":  [
+                                                       "Migrating screens without stopping operations",
+                                                       "Giving useful AI answers without exposing the wrong data",
+                                                       "Keeping large tables fast"
+                                                   ]
+                                        },
+                         "results":  {
+                                         "pt":  [
+                                                    "Build e bundle bem menores que os do sistema antigo",
+                                                    "Chat de IA usado no dia a dia para consultas de pedidos e relatórios",
+                                                    "Rastreabilidade das ações administrativas"
+                                                ],
+                                         "en":  [
+                                                    "Much smaller build and bundle than the old system",
+                                                    "AI chat used daily for order and report lookups",
+                                                    "Traceable administrative actions"
+                                                ]
+                                     },
+                         "technicalDecisions":  {
+                                                    "pt":  [
+                                                               "BFF no Next.js: a interface nunca fala direto com o backend",
+                                                               "Provedor de IA com fallback para não depender de um só serviço",
+                                                               "Testes com MSW para mocks de rede determinísticos"
+                                                           ],
+                                                    "en":  [
+                                                               "A Next.js BFF: the UI never talks directly to the backend",
+                                                               "AI provider with a fallback so we never depend on a single service",
+                                                               "Tests with MSW for deterministic network mocks"
+                                                           ]
+                                                },
+                         "image":  "assets/portfolio/img/painel-admin.png"
+                     },
+                     {
+                         "slug":  "app-cadastro",
+                         "title":  {
+                                       "pt":  "App de Cadastro em Etapas",
+                                       "en":  "Step-by-step Onboarding App"
+                                   },
+                         "subtitle":  {
+                                          "pt":  "Flutter para cadastro de vendedores e clientes, com envio de documentos e endereço no mapa",
+                                          "en":  "Flutter app for seller and customer onboarding, with document upload and an address map"
+                                      },
+                         "description":  {
+                                             "pt":  "App de cadastro em várias etapas: documentos, endereço com mapa, contatos e validações brasileiras como CPF, CNPJ e telefone. Feature flags alternam entre o fluxo de vendedor e o de comprador.",
+                                             "en":  "A multi-step onboarding app: documents, address with a map, contacts and Brazilian validations such as CPF, CNPJ and phone numbers. Feature flags switch between the seller and buyer flows."
+                                         },
+                         "problem":  {
+                                         "pt":  "O cadastro era um formulário web longo, que gerava abandono e dados errados chegando ao backend.",
+                                         "en":  "Onboarding was a long web form that caused drop-offs and let bad data reach the backend."
+                                     },
+                         "solution":  {
+                                          "pt":  "Um fluxo guiado no celular, uma etapa por vez, com validação na hora.",
+                                          "en":  "A guided mobile flow, one step at a time, with instant validation."
+                                      },
+                         "techStack":  [
+                                           "Flutter",
+                                           "Dart 3",
+                                           "BLoC/Cubit",
+                                           "GoRouter",
+                                           "GetIt",
+                                           "Dio",
+                                           "flutter_map",
+                                           "brasil_fields",
+                                           "file_picker"
+                                       ],
+                         "highlights":  {
+                                            "pt":  [
+                                                       "Arquitetura por features com um BLoC/Cubit por etapa",
+                                                       "Um Cubit principal coordena o progresso",
+                                                       "Navegação declarativa com proteção do botão voltar",
+                                                       "Envio de documentos com pré-visualização",
+                                                       "Endereço com mapa e geocodificação",
+                                                       "Validações de CPF, CNPJ e telefone"
+                                                   ],
+                                            "en":  [
+                                                       "Feature-based architecture with one BLoC/Cubit per step",
+                                                       "A main Cubit coordinates progress",
+                                                       "Declarative navigation with back-button protection",
+                                                       "Document upload with preview",
+                                                       "Address with a map and geocoding",
+                                                       "CPF, CNPJ and phone number validation"
+                                                   ]
+                                        },
+                         "role":  {
+                                      "pt":  "Contribuição contínua nas etapas do fluxo, na integração com a API de cadastro e nas validações",
+                                      "en":  "Continuous contribution to the flow steps, the onboarding API integration and validations"
+                                  },
+                         "category":  "mobile",
+                         "year":  2026,
+                         "complexity":  4,
+                         "type":  "professional",
+                         "challenges":  {
+                                            "pt":  [
+                                                       "Guardar o progresso se o usuário sair no meio",
+                                                       "Arquivos grandes em redes móveis",
+                                                       "Validações que mudam por tipo de cadastro"
+                                                   ],
+                                            "en":  [
+                                                       "Keeping progress if the user leaves halfway",
+                                                       "Large files over mobile networks",
+                                                       "Validations that change per onboarding type"
+                                                   ]
+                                        },
+                         "results":  {
+                                         "pt":  [
+                                                    "Cadastro guiado no lugar do formulário pesado",
+                                                    "Menos dados errados chegando ao backend",
+                                                    "Ajustes no fluxo de vendedor sem afetar o de comprador"
+                                                ],
+                                         "en":  [
+                                                    "A guided flow instead of the heavy form",
+                                                    "Less bad data reaching the backend",
+                                                    "Seller flow tweaks without touching the buyer flow"
+                                                ]
+                                     },
+                         "technicalDecisions":  {
+                                                    "pt":  [
+                                                               "Um Cubit por etapa: cada passo é testável sozinho",
+                                                               "Feature flags para mudar um fluxo sem afetar o outro",
+                                                               "Mesmo código para Android, iOS, web e desktop"
+                                                           ],
+                                                    "en":  [
+                                                               "One Cubit per step: each step is testable on its own",
+                                                               "Feature flags to change one flow without affecting the other",
+                                                               "The same code for Android, iOS, web and desktop"
+                                                           ]
+                                                },
+                         "image":  "assets/portfolio/img/app-cadastro.png"
+                     },
+                     {
+                         "slug":  "infra-aws",
+                         "title":  {
+                                       "pt":  "Infraestrutura AWS como Código",
+                                       "en":  "AWS Infrastructure as Code"
+                                   },
+                         "subtitle":  {
+                                          "pt":  "Terraform versionando a infraestrutura do ecossistema em vários ambientes",
+                                          "en":  "Terraform versioning the ecosystem\u0027s infrastructure across several environments"
+                                      },
+                         "description":  {
+                                             "pt":  "Infraestrutura como código na AWS: Lambdas, API Gateway, RDS, S3, VPC, Parameter Store e ECR, em ambientes de teste, homologação e produção, com state remoto e pipelines de CI/CD.",
+                                             "en":  "Infrastructure as code on AWS: Lambdas, API Gateway, RDS, S3, VPC, Parameter Store and ECR, across test, staging and production environments, with remote state and CI/CD pipelines."
+                                         },
+                         "problem":  {
+                                         "pt":  "Recursos criados à mão no console são difíceis de auditar, de repetir em outro ambiente e de desfazer.",
+                                         "en":  "Resources created by hand in the console are hard to audit, repeat in another environment or roll back."
+                                     },
+                         "solution":  {
+                                          "pt":  "Tudo descrito em Terraform, revisado por pull request e aplicado por pipeline.",
+                                          "en":  "Everything described in Terraform, reviewed through pull requests and applied by a pipeline."
+                                      },
+                         "techStack":  [
+                                           "Terraform",
+                                           "AWS Lambda",
+                                           "AWS API Gateway",
+                                           "AWS RDS",
+                                           "AWS S3",
+                                           "AWS VPC",
+                                           "AWS SSM",
+                                           "AWS ECR",
+                                           "GitHub Actions"
+                                       ],
+                         "highlights":  {
+                                            "pt":  [
+                                                       "Módulos reutilizáveis para Lambda, API Gateway, RDS, S3, VPC e ECR",
+                                                       "Vários ambientes isolados",
+                                                       "State remoto no S3",
+                                                       "Convenções de nomes que facilitam encontrar cada recurso",
+                                                       "Permissões seguindo o princípio do menor privilégio",
+                                                       "Plan e apply automatizados no GitHub Actions"
+                                                   ],
+                                            "en":  [
+                                                       "Reusable modules for Lambda, API Gateway, RDS, S3, VPC and ECR",
+                                                       "Several isolated environments",
+                                                       "Remote state in S3",
+                                                       "Naming conventions that make every resource easy to find",
+                                                       "Permissions following least privilege",
+                                                       "Automated plan and apply in GitHub Actions"
+                                                   ]
+                                        },
+                         "role":  {
+                                      "pt":  "Contribuição contínua em provisionamento, módulos e ajustes de permissões",
+                                      "en":  "Continuous contribution to provisioning, modules and permission tweaks"
+                                  },
+                         "category":  "iac",
+                         "year":  2025,
+                         "complexity":  4,
+                         "type":  "professional",
+                         "challenges":  {
+                                            "pt":  [
+                                                       "Trazer para o código recursos que já existiam",
+                                                       "Mudar permissões sem derrubar serviços",
+                                                       "Manter ambientes parecidos sem ser idênticos"
+                                                   ],
+                                            "en":  [
+                                                       "Bringing existing resources into code",
+                                                       "Changing permissions without taking services down",
+                                                       "Keeping environments similar without being identical"
+                                                   ]
+                                        },
+                         "results":  {
+                                         "pt":  [
+                                                    "Infraestrutura auditável pelo Git",
+                                                    "Provisionamento reproduzível do teste à produção",
+                                                    "Rollback rápido revertendo um pull request"
+                                                ],
+                                         "en":  [
+                                                    "Infrastructure auditable through Git",
+                                                    "Reproducible provisioning from test to production",
+                                                    "Fast rollback by reverting a pull request"
+                                                ]
+                                     },
+                         "technicalDecisions":  {
+                                                    "pt":  [
+                                                               "Módulos em vez de copiar e colar entre ambientes",
+                                                               "Pipeline aplicando mudanças, nunca uma pessoa no console",
+                                                               "Histórico do Git como trilha de auditoria"
+                                                           ],
+                                                    "en":  [
+                                                               "Modules instead of copy-paste between environments",
+                                                               "A pipeline applies changes, never a person in the console",
+                                                               "Git history as the audit trail"
+                                                           ]
+                                                },
+                         "image":  "assets/portfolio/img/infra-aws.png"
+                     },
+                     {
+                         "slug":  "commitclock",
+                         "title":  {
+                                       "pt":  "CommitClock — Timesheet com IA",
+                                       "en":  "CommitClock — AI-Powered Timesheet"
+                                   },
+                         "subtitle":  {
+                                          "pt":  "Envia foto do cartão ponto, Groq extrai os horários e gera entradas no Clockify cruzadas com commits do GitHub",
+                                          "en":  "Upload your timesheet photo, Groq extracts the hours and generates Clockify entries cross-referenced with GitHub commits"
+                                      },
+                         "description":  {
+                                             "pt":  "Webapp que automatiza o preenchimento do Clockify. O usuário envia uma foto do cartão ponto físico; Groq Vision extrai os horários de entrada e saída; a API do GitHub busca os commits do período para enriquecer as descrições; e a API do Clockify cria as entradas de tempo automaticamente.",
+                                             "en":  "Webapp that automates Clockify time tracking. The user uploads a photo of their physical timesheet; Groq Vision extracts clock-in/out times; the GitHub API fetches commits for that period to enrich entry descriptions; and the Clockify API creates the time entries automatically."
+                                         },
+                         "problem":  {
+                                         "pt":  "Preencher manualmente o Clockify a partir de um cartão ponto físico é repetitivo e propenso a erros — exige comparar papel, commits e calendário toda semana.",
+                                         "en":  "Manually filling Clockify from a physical timesheet is repetitive and error-prone — it requires comparing paper, commits and calendar every week."
+                                     },
+                         "solution":  {
+                                          "pt":  "Pipeline de três etapas: (1) Groq Vision lê a foto e extrai os horários em JSON estruturado; (2) GitHub API busca commits do período para gerar descrições de tarefas; (3) Clockify API cria as entradas com horários e descrições preenchidos automaticamente.",
+                                          "en":  "Three-stage pipeline: (1) Groq Vision reads the photo and extracts times into structured JSON; (2) GitHub API fetches commits for the period to generate task descriptions; (3) Clockify API creates the entries with times and descriptions filled automatically."
+                                      },
+                         "techStack":  [
+                                           "TypeScript",
+                                           "Next.js",
+                                           "Groq AI",
+                                           "GitHub API",
+                                           "Clockify API"
+                                       ],
+                         "highlights":  {
+                                            "pt":  [
+                                                       "Groq Vision (LLaMA) faz OCR inteligente do cartão ponto físico",
+                                                       "Saída estruturada em JSON: data, entrada, saída, total de horas",
+                                                       "GitHub API busca commits do período para enriquecer descrições",
+                                                       "Clockify API cria entradas de tempo com um clique",
+                                                       "Interface minimalista: upload → preview → confirmar → pronto"
+                                                   ],
+                                            "en":  [
+                                                       "Groq Vision (LLaMA) performs intelligent OCR on the physical timesheet",
+                                                       "Structured JSON output: date, clock-in, clock-out, total hours",
+                                                       "GitHub API fetches commits from the period to enrich descriptions",
+                                                       "Clockify API creates time entries with one click",
+                                                       "Minimal interface: upload → preview → confirm → done"
+                                                   ]
+                                        },
+                         "role":  {
+                                      "pt":  "Projeto solo — concepção, design e implementação completos",
+                                      "en":  "Solo project — full conception, design and implementation"
+                                  },
+                         "category":  "automation",
+                         "year":  2026,
+                         "complexity":  3,
+                         "type":  "personal",
+                         "challenges":  {
+                                            "pt":  [
+                                                       "Cartões ponto têm layouts variados — prompt do Groq precisa ser robusto a formatos distintos",
+                                                       "Mapear commits do GitHub para as entradas de tempo corretas sem falsos positivos",
+                                                       "Lidar com fotos de baixa qualidade ou com reflexo sem travar o pipeline"
+                                                   ],
+                                            "en":  [
+                                                       "Physical timesheets vary in layout — the Groq prompt must handle diverse formats",
+                                                       "Mapping GitHub commits to the correct time entries without false positives",
+                                                       "Handling low-quality or glare-affected photos without breaking the pipeline"
+                                                   ]
+                                        },
+                         "results":  {
+                                         "pt":  [
+                                                    "Reduz o preenchimento semanal do Clockify de ~20 min para menos de 1 min",
+                                                    "Descrições automáticas baseadas em commits eliminam entradas genéricas",
+                                                    "Funciona com qualquer layout de cartão ponto físico"
+                                                ],
+                                         "en":  [
+                                                    "Reduces weekly Clockify fill time from ~20 min to under 1 min",
+                                                    "Automatic commit-based descriptions eliminate generic entries",
+                                                    "Works with any physical timesheet layout"
+                                                ]
+                                     },
+                         "technicalDecisions":  {
+                                                    "pt":  [
+                                                               "Groq sobre OpenAI Vision: latência menor e custo menor para extração simples de texto",
+                                                               "Next.js full-stack: API routes evitam expor chaves de API no cliente",
+                                                               "JSON estruturado no prompt: saída validável e tipada antes de chamar o Clockify"
+                                                           ],
+                                                    "en":  [
+                                                               "Groq over OpenAI Vision: lower latency and cost for simple text extraction",
+                                                               "Next.js full-stack: API routes avoid exposing API keys to the client",
+                                                               "Structured JSON in the prompt: validatable, typed output before calling Clockify"
+                                                           ]
+                                                },
+                         "image":  "assets/portfolio/img/commitclock.jpg"
+                     },
+                     {
+                         "slug":  "kira-semi-joias",
+                         "title":  {
+                                       "pt":  "Kira Semi Joias — Loja + Backoffice",
+                                       "en":  "Kira Semi Joias — Store + Backoffice"
+                                   },
+                         "subtitle":  {
+                                          "pt":  "E-commerce Next.js com catálogo, checkout via WhatsApp e admin completo editável",
+                                          "en":  "Next.js e-commerce with catalog, WhatsApp checkout and fully editable admin panel"
+                                      },
+                         "description":  {
+                                             "pt":  "Loja de semi-joias full-stack. Clientes navegam pelo catálogo filtrado por categoria, favoritar produtos e finalizam o pedido direto no WhatsApp. O backoffice permite ao operador editar qualquer campo do conteúdo — produtos, categorias, preços, banners, configurações e newsletter — com upload e crop de imagem e importação em massa via Excel.",
+                                             "en":  "Full-stack semi-precious jewelry store. Customers browse the category-filtered catalog, favorite products and finalize orders directly on WhatsApp. The backoffice lets operators edit any content field — products, categories, prices, banners, settings and newsletter — with image upload/cropping and bulk Excel import."
+                                         },
+                         "problem":  {
+                                         "pt":  "Loja física de semi-joias precisava de presença digital com catálogo atualizado e processo de pedido simples, sem complexidade de gateway de pagamento, e um painel admin que qualquer pessoa possa operar.",
+                                         "en":  "A physical semi-jewelry store needed a digital presence with an up-to-date catalog and a simple order process — no payment gateway complexity — plus an admin panel anyone can operate."
+                                     },
+                         "solution":  {
+                                          "pt":  "Next.js 16 App Router full-stack com Vercel KV para sessões e configurações, Vercel Blob para imagens de produtos, Zustand para estado do carrinho e favoritos, react-image-crop para upload com recorte, XLSX para importação em massa e bcryptjs para auth do backoffice.",
+                                          "en":  "Full-stack Next.js 16 App Router with Vercel KV for sessions and settings, Vercel Blob for product images, Zustand for cart and favorites state, react-image-crop for upload with cropping, XLSX for bulk import, and bcryptjs for backoffice auth."
+                                      },
+                         "techStack":  [
+                                           "TypeScript",
+                                           "Next.js 16",
+                                           "Tailwind CSS 4",
+                                           "Vercel KV",
+                                           "Vercel Blob",
+                                           "Zustand",
+                                           "XLSX",
+                                           "react-image-crop"
+                                       ],
+                         "highlights":  {
+                                            "pt":  [
+                                                       "Catálogo filtrado por categoria: Colares, Brincos, Pulseiras, Anéis",
+                                                       "Checkout via WhatsApp: sem gateway de pagamento, fluxo familiar ao cliente",
+                                                       "Backoffice completo: produtos, categorias, configs, newsletter — todos os campos editáveis",
+                                                       "Upload de imagens com crop integrado (react-image-crop)",
+                                                       "Importação em massa via Excel (XLSX) para atualizar catálogo rapidamente",
+                                                       "Vercel Blob para storage de imagens e Vercel KV para sessão e settings",
+                                                       "Zustand para carrinho e favoritos no cliente sem Redux boilerplate",
+                                                       "Auth do admin com bcryptjs — sem dependência de provider externo"
+                                                   ],
+                                            "en":  [
+                                                       "Category-filtered catalog: Necklaces, Earrings, Bracelets, Rings",
+                                                       "WhatsApp checkout: no payment gateway, familiar flow for customers",
+                                                       "Full backoffice: products, categories, settings, newsletter — all fields editable",
+                                                       "Image upload with integrated crop (react-image-crop)",
+                                                       "Bulk Excel import (XLSX) for fast catalog updates",
+                                                       "Vercel Blob for image storage and Vercel KV for session and settings",
+                                                       "Zustand for client-side cart and favorites without Redux boilerplate",
+                                                       "Admin auth with bcryptjs — no external provider dependency"
+                                                   ]
+                                        },
+                         "role":  {
+                                      "pt":  "Projeto solo — produto completo do design ao deploy",
+                                      "en":  "Solo project — full product from design to deploy"
+                                  },
+                         "category":  "frontend",
+                         "year":  2025,
+                         "complexity":  3,
+                         "type":  "personal",
+                         "challenges":  {
+                                            "pt":  [
+                                                       "Manter catálogo atualizado sem que o operador precise de conhecimento técnico",
+                                                       "Upload de imagens mobile com crop funcional em iOS e Android",
+                                                       "Sincronizar estado do carrinho entre abas sem backend"
+                                                   ],
+                                            "en":  [
+                                                       "Keep the catalog updated without requiring technical knowledge from the operator",
+                                                       "Mobile image upload with functional crop on iOS and Android",
+                                                       "Sync cart state across tabs without a backend"
+                                                   ]
+                                        },
+                         "results":  {
+                                         "pt":  [
+                                                    "Loja ativa com catálogo completo e processo de pedido simples via WhatsApp",
+                                                    "Operador atualiza produtos e preços sem suporte técnico",
+                                                    "Importação Excel permite atualizar dezenas de produtos em segundos"
+                                                ],
+                                         "en":  [
+                                                    "Live store with full catalog and simple WhatsApp order process",
+                                                    "Operator updates products and prices without technical support",
+                                                    "Excel import lets you update dozens of products in seconds"
+                                                ]
+                                     },
+                         "technicalDecisions":  {
+                                                    "pt":  [
+                                                               "WhatsApp checkout: elimina gateway de pagamento e fricção de cadastro para o cliente",
+                                                               "Vercel KV + Blob: zero infra própria para storage e sessão no plano gratuito",
+                                                               "Zustand sobre Context: estado de carrinho simples e performático sem boilerplate",
+                                                               "bcryptjs local: auth do admin sem Clerk/Auth.js — menos dependência para um projeto pequeno"
+                                                           ],
+                                                    "en":  [
+                                                               "WhatsApp checkout: eliminates payment gateway and registration friction for customers",
+                                                               "Vercel KV + Blob: zero own infra for storage and session on the free tier",
+                                                               "Zustand over Context: simple, performant cart state without boilerplate",
+                                                               "Local bcryptjs: admin auth without Clerk/Auth.js — fewer dependencies for a small project"
+                                                           ]
+                                                },
+                         "image":  "assets/portfolio/img/kira-semi-joias.jpg"
+                     },
+                     {
+                         "slug":  "finance-dashboard",
+                         "title":  {
+                                       "pt":  "Finance Dashboard — Controle Financeiro",
+                                       "en":  "Finance Dashboard — Personal Finance Tracker"
+                                   },
+                         "subtitle":  {
+                                          "pt":  "API Spring Boot para categorização de gastos pessoais com frontend React em desenvolvimento",
+                                          "en":  "Spring Boot API for personal expense categorization with React frontend in development"
+                                      },
+                         "description":  {
+                                             "pt":  "Side project de controle financeiro pessoal. Backend Spring Boot expõe API REST para registrar transações, categorizar gastos e agregar dados para visualizações. Frontend TypeScript/React consome a API e exibe dashboards com gráficos de gastos por categoria, evolução mensal e balanço.",
+                                             "en":  "Personal finance side project. Spring Boot backend exposes a REST API to record transactions, categorize expenses and aggregate data for visualizations. TypeScript/React frontend consumes the API and displays dashboards with spending-by-category charts, monthly trends and balance."
+                                         },
+                         "problem":  {
+                                         "pt":  "Planilhas manuais para controle de gastos são difíceis de manter e não oferecem visualizações automáticas. Precisava de uma solução própria para registrar e entender os gastos mensais.",
+                                         "en":  "Manual spreadsheets for expense tracking are hard to maintain and offer no automatic visualizations. Needed a personal solution to record and understand monthly spending."
+                                     },
+                         "solution":  {
+                                          "pt":  "API REST Spring Boot com PostgreSQL para persistência, categorias de gastos configuráveis e endpoints de agregação para os gráficos. Frontend React com charts para visualização de gastos por categoria e evolução temporal.",
+                                          "en":  "REST Spring Boot API with PostgreSQL for persistence, configurable expense categories and aggregation endpoints for charts. React frontend with charts for spending-by-category and time-evolution visualization."
+                                      },
+                         "techStack":  [
+                                           "Java 17",
+                                           "Spring Boot",
+                                           "PostgreSQL",
+                                           "TypeScript",
+                                           "React"
+                                       ],
+                         "highlights":  {
+                                            "pt":  [
+                                                       "API REST Spring Boot com persistência PostgreSQL",
+                                                       "Categorias de gastos configuráveis (alimentação, transporte, lazer, etc.)",
+                                                       "Endpoints de agregação para totais por categoria e por período",
+                                                       "Frontend React com dashboards de gráficos",
+                                                       "Projeto solo de aprendizado — Java backend + frontend TypeScript"
+                                                   ],
+                                            "en":  [
+                                                       "REST Spring Boot API with PostgreSQL persistence",
+                                                       "Configurable expense categories (food, transport, leisure, etc.)",
+                                                       "Aggregation endpoints for totals by category and period",
+                                                       "React frontend with chart dashboards",
+                                                       "Solo learning project — Java backend + TypeScript frontend"
+                                                   ]
+                                        },
+                         "role":  {
+                                      "pt":  "Projeto solo — backend e frontend",
+                                      "en":  "Solo project — backend and frontend"
+                                  },
+                         "category":  "monolith",
+                         "year":  2026,
+                         "complexity":  3,
+                         "type":  "personal",
+                         "challenges":  {
+                                            "pt":  [
+                                                       "Modelar categorias flexíveis sem engessar o schema para futuros tipos de transação",
+                                                       "Agregar dados de forma eficiente no banco para não processar no frontend"
+                                                   ],
+                                            "en":  [
+                                                       "Model flexible categories without locking the schema for future transaction types",
+                                                       "Aggregate data efficiently in the database to avoid processing on the frontend"
+                                                   ]
+                                        },
+                         "results":  {
+                                         "pt":  [
+                                                    "Visibilidade clara de gastos mensais por categoria",
+                                                    "Substituiu planilhas manuais por uma interface de dashboard"
+                                                ],
+                                         "en":  [
+                                                    "Clear visibility into monthly spending by category",
+                                                    "Replaced manual spreadsheets with a dashboard interface"
+                                                ]
+                                     },
+                         "technicalDecisions":  {
+                                                    "pt":  [
+                                                               "Spring Boot para o backend: familiaridade com o stack do trabalho aplicada em projeto pessoal",
+                                                               "PostgreSQL sobre H2: banco real desde o início evita surpresas na migração"
+                                                           ],
+                                                    "en":  [
+                                                               "Spring Boot for the backend: applying work stack familiarity to a personal project",
+                                                               "PostgreSQL over H2: real database from day one avoids migration surprises"
+                                                           ]
+                                                },
+                         "image":  "assets/portfolio/img/finance-dashboard.jpg"
+                     }
+                 ],
+    "experience":  {
+                       "company":  "Segala\u0027s Alimentos",
+                       "location":  {
+                                        "pt":  "Gaspar, SC - Brasil",
+                                        "en":  "Gaspar, SC - Brazil"
+                                    },
+                       "positions":  [
+                                         {
+                                             "title":  "Senior Software Developer",
+                                             "period":  {
+                                                            "pt":  "2027 - Em breve",
+                                                            "en":  "2027 - Coming soon"
+                                                        },
+                                             "description":  {
+                                                                 "pt":  "Próxima etapa da carreira - construção de arquiteturas complexas e liderança técnica.",
+                                                                 "en":  "Next step in career - building complex architectures and technical leadership."
+                                                             },
+                                             "responsibilities":  {
+                                                                      "pt":  [
+                                                                                 "Arquitetura de sistemas distribuídos e escaláveis",
+                                                                                 "Liderança técnica e mentoring de equipe",
+                                                                                 "Tomada de decisões técnicas estratégicas"
+                                                                             ],
+                                                                      "en":  [
+                                                                                 "Architecture of distributed and scalable systems",
+                                                                                 "Technical leadership and team mentoring",
+                                                                                 "Strategic technical decision making"
+                                                                             ]
+                                                                  },
+                                             "techStack":  [
+
+                                                           ],
+                                             "isLocked":  true
+                                         },
+                                         {
+                                             "title":  "Mid-Level Software Developer",
+                                             "period":  {
+                                                            "pt":  "Set 2025 - Atual (7 meses)",
+                                                            "en":  "Sep 2025 - Present (7 months)"
+                                                        },
+                                             "description":  {
+                                                                 "pt":  "Desenvolvo soluções robustas e escaláveis, focando em qualidade e performance.",
+                                                                 "en":  "I develop robust and scalable solutions, focusing on quality and performance."
+                                                             },
+                                             "responsibilities":  {
+                                                                      "pt":  [
+                                                                                 "Entrega de features críticas garantindo código sustentável e manutenível",
+                                                                                 "Contribuição em decisões técnicas de arquitetura e design de sistemas",
+                                                                                 "Code reviews para manter qualidade e padronização do código",
+                                                                                 "Colaboração em infraestrutura e automação usando AWS (Lambda, SQS, ECS, S3) e Terraform"
+                                                                             ],
+                                                                      "en":  [
+                                                                                 "Delivering critical features while ensuring sustainable and maintainable code",
+                                                                                 "Contributing to technical decisions regarding architecture and system design",
+                                                                                 "Conducting code reviews to maintain code quality and standardization",
+                                                                                 "Collaborating on infrastructure and automation using AWS (Lambda, SQS, ECS, S3) and Terraform"
+                                                                             ]
+                                                                  },
+                                             "techStack":  [
+                                                               "Java 17",
+                                                               "Spring Boot",
+                                                               "AWS",
+                                                               "Terraform",
+                                                               "Docker",
+                                                               "PostgreSQL",
+                                                               "Event-Driven Architecture"
+                                                           ]
+                                         },
+                                         {
+                                             "title":  "Junior Software Developer",
+                                             "period":  {
+                                                            "pt":  "Ago 2024 - Ago 2025 (1 ano 1 mês)",
+                                                            "en":  "Aug 2024 - Aug 2025 (1 year 1 month)"
+                                                        },
+                                             "description":  {
+                                                                 "pt":  "Desenvolvimento de features mais complexas com maior autonomia.",
+                                                                 "en":  "Development of more complex features with greater autonomy."
+                                                             },
+                                             "responsibilities":  {
+                                                                      "pt":  [
+                                                                                 "Desenvolvimento de soluções end-to-end, da análise à entrega final",
+                                                                                 "Code reviews e descrição técnica de tarefas",
+                                                                                 "Aprendizado proativo de novas tecnologias para otimizar entregas",
+                                                                                 "Implementação de soluções em AWS (S3, Lambda, CloudWatch, ECS, SQS)"
+                                                                             ],
+                                                                      "en":  [
+                                                                                 "Developing end-to-end solutions, from problem analysis to final delivery",
+                                                                                 "Performing code reviews and contributing to technical task descriptions",
+                                                                                 "Proactively learning new technologies to optimize deliveries",
+                                                                                 "Implementing solutions in AWS (S3, Lambda, CloudWatch, ECS, SQS)"
+                                                                             ]
+                                                                  },
+                                             "techStack":  [
+                                                               "Java 17",
+                                                               "Spring Boot",
+                                                               "AWS",
+                                                               "Terraform",
+                                                               "PostgreSQL",
+                                                               "MySQL"
+                                                           ]
+                                         },
+                                         {
+                                             "title":  "Trainee Software Developer",
+                                             "period":  {
+                                                            "pt":  "Mar 2024 - Jul 2024 (5 meses)",
+                                                            "en":  "Mar 2024 - Jul 2024 (5 months)"
+                                                        },
+                                             "description":  {
+                                                                 "pt":  "Participação ativa em tarefas de desenvolvimento, fortalecendo fundamentos de engenharia de software.",
+                                                                 "en":  "Actively participated in development tasks, strengthening software engineering fundamentals."
+                                                             },
+                                             "responsibilities":  {
+                                                                      "pt":  [
+                                                                                 "Contribuição frequente em tarefas do backlog com cadência consistente",
+                                                                                 "Colaboração em práticas de versionamento, code reviews e organização de repositório",
+                                                                                 "Experiência prática com Java, Spring Boot e bancos relacionais"
+                                                                             ],
+                                                                      "en":  [
+                                                                                 "Frequently contributed to backlog tasks with consistent delivery cadence",
+                                                                                 "Collaborated with the team on version control, code reviews and repository organization",
+                                                                                 "Gained practical experience with Java, Spring Boot and relational databases"
+                                                                             ]
+                                                                  },
+                                             "techStack":  [
+                                                               "Java 17",
+                                                               "Spring Boot",
+                                                               "PostgreSQL",
+                                                               "MySQL",
+                                                               "Git",
+                                                               "Hibernate"
+                                                           ]
+                                         },
+                                         {
+                                             "title":  "IT Assistant",
+                                             "period":  {
+                                                            "pt":  "Ago 2023 - Fev 2024 (7 meses)",
+                                                            "en":  "Aug 2023 - Feb 2024 (7 months)"
+                                                        },
+                                             "description":  {
+                                                                 "pt":  "Foco em aprendizado técnico e fundamentos de desenvolvimento.",
+                                                                 "en":  "Initial role focused on technical learning and development fundamentals."
+                                                             },
+                                             "responsibilities":  {
+                                                                      "pt":  [
+                                                                                 "Concentração em Java, Spring Boot, Hibernate",
+                                                                                 "Práticas de qualidade: TDD, testes unitários, testes de integração",
+                                                                                 "Estudo de design patterns e boas práticas"
+                                                                             ],
+                                                                      "en":  [
+                                                                                 "Concentration on Java, Spring Boot, Hibernate",
+                                                                                 "Quality practices: TDD, unit testing, integration testing",
+                                                                                 "Study of design patterns and best practices"
+                                                                             ]
+                                                                  },
+                                             "techStack":  [
+                                                               "Java",
+                                                               "Spring Boot",
+                                                               "Hibernate",
+                                                               "TDD",
+                                                               "JUnit",
+                                                               "Mockito"
+                                                           ]
+                                         }
+                                     ]
+                   },
+    "testimonials":  [
+                         {
+                             "id":  "alessandro-elias",
+                             "author":  {
+                                            "name":  "Alessandro Elias",
+                                            "role":  {
+                                                         "pt":  "Tech Lead | Senior Software Engineer",
+                                                         "en":  "Tech Lead | Senior Software Engineer"
+                                                     },
+                                            "linkedin":  "https://www.linkedin.com/in/alessandro-elias-b08b85206/?locale=pt"
+                                        },
+                             "relationship":  {
+                                                  "pt":  "Alessandro supervisionava João Paulo diretamente",
+                                                  "en":  "Alessandro directly supervised João Paulo"
+                                              },
+                             "content":  {
+                                             "pt":  "Mentorei o João no desenvolvimento do e-commerce e do aplicativo de força de vendas. Desde o início não hesitou em tirar dúvidas e resolver ambiguidades, e em pouco tempo passou a assumir features complexas com autonomia, como integrações com o ERP e o backend do app mobile. Evoluiu rápido de assistente de TI a desenvolvedor, sempre entregando com qualidade e atenção ao negócio.",
+                                             "en":  "I mentored João on the development of the e-commerce platform and the field sales app. From the start he never hesitated to ask questions and clear up ambiguities, and in a short time he was taking on complex features on his own, such as ERP integrations and the mobile app\u0027s backend. He grew quickly from IT assistant to developer, always delivering with quality and attention to the business."
+                                         },
+                             "featured":  true
+                         },
+                         {
+                             "id":  "kauan-curbani",
+                             "author":  {
+                                            "name":  "Kauan Curbani",
+                                            "role":  {
+                                                         "pt":  "Desenvolvedor Sênior · Web e Mobile",
+                                                         "en":  "Senior Web and Mobile Developer"
+                                                     },
+                                            "company":  "Cloud \u0026 Observabilidade",
+                                            "linkedin":  "https://www.linkedin.com/in/crbnii/",
+                                            "avatar":  "/avatars/kauan-curbani.jpeg"
+                                        },
+                             "relationship":  {
+                                                  "pt":  "Kauan supervisionava João Paulo diretamente",
+                                                  "en":  "Kauan directly supervised João Paulo"
+                                              },
+                             "content":  {
+                                             "pt":  "Tive a oportunidade de trabalhar com o João nos últimos 2 anos no desenvolvimento do nosso app mobile, e posso dizer com tranquilidade que ele foi peça-chave na construção do backend.\n\nComo Dev Backend, atuando com Java e Spring, o João participou diretamente de grande parte da implementação da nossa estrutura backend. Além disso, contribuiu bastante para melhorar a performance de consultas e otimizar pontos importantes da aplicação, sempre preocupado com eficiência e qualidade.\n\nO que mais gosto de trabalhar com ele é a postura: aprende rápido, entende o problema com facilidade e sabe discutir soluções de forma madura, sempre buscando a melhor decisão para o produto. Ele entrega rápido, mas sem abrir mão de boas práticas e organização, o que faz muita diferença no dia a dia.\n\nRecomendo o João com total confiança para qualquer time que precise de um backend sólido, responsável e comprometido com resultado.",
+                                             "en":  "I had the opportunity to work with João for the last 2 years on developing our mobile app, and I can confidently say he was a key piece in building the backend.\n\nAs a Backend Developer, working with Java and Spring, João directly participated in a large part of implementing our backend structure. Additionally, he contributed significantly to improving query performance and optimizing important parts of the application, always concerned with efficiency and quality.\n\nWhat I like most about working with him is his attitude: he learns fast, understands problems easily, and knows how to discuss solutions maturely, always seeking the best decision for the product. He delivers quickly, but without compromising on best practices and organization, which makes a huge difference day-to-day.\n\nI recommend João with total confidence for any team that needs a solid, responsible backend developer committed to results."
+                                         },
+                             "featured":  true
+                         },
+                         {
+                             "id":  "fernando-junior",
+                             "author":  {
+                                            "name":  "Fernando Junior",
+                                            "role":  {
+                                                         "pt":  "Engenheiro de software sênior",
+                                                         "en":  "Senior Software Engineer"
+                                                     },
+                                            "company":  "Java | Go | AWS",
+                                            "linkedin":  "https://www.linkedin.com/in/fernando-junior-bnu/",
+                                            "avatar":  "/avatars/fernando.jpeg"
+                                        },
+                             "relationship":  {
+                                                  "pt":  "Fernando supervisionava João Paulo diretamente",
+                                                  "en":  "Fernando directly supervised João Paulo"
+                                              },
+                             "content":  {
+                                             "pt":  "João é um excelente profissional, tive a oportunidade de trabalhar com ele durante 2 anos e ele sempre foi um profissional dedicado, se mostrou desde o início ter facilidade de aprender e ser capaz de assumir responsabilidades. Desempenhou com excelência os projetos em que participou. João é e será peça fundamental em qualquer equipe que atuar. Contudo deixo minha recomendação de seus serviços.",
+                                             "en":  "João is an excellent professional, I had the opportunity to work with him for 2 years and he has always been a dedicated professional, showing from the beginning that he learns easily and is capable of taking on responsibilities. He performed excellently in the projects he participated in. João is and will be a fundamental piece in any team he works with. Therefore, I leave my recommendation for his services."
+                                         },
+                             "featured":  true
+                         },
+                         {
+                             "id":  "joao-vargas",
+                             "author":  {
+                                            "name":  "Joao Vargas",
+                                            "role":  {
+                                                         "pt":  "Desenvolvedor | Full-stack | Java, Spring Boot | React.js, Flutter",
+                                                         "en":  "Developer | Full-stack | Java, Spring Boot | React.js, Flutter"
+                                                     },
+                                            "company":  "",
+                                            "avatar":  "/avatars/vargas.jpeg",
+                                            "linkedin":  "https://www.linkedin.com/in/vargxrz/"
+                                        },
+                             "relationship":  {
+                                                  "pt":  "Joao trabalhou na mesma equipe que João Paulo",
+                                                  "en":  "Joao worked on the same team as João Paulo"
+                                              },
+                             "content":  {
+                                             "pt":  "Tive a sorte de iniciar minha carreira como desenvolvedor ao lado do João Paulo. Desde o começo, sempre ficou evidente a competência e a curiosidade dele na resolução de problemas.\n\nO João foi uma peça fundamental na minha evolução profissional. Como colega e amigo, nunca mediu esforços para ajudar ou explicando algo que eu não entendia ou dedicando horas (às vezes o dia inteiro) para resolver um problema junto. Para ele, o importante sempre foi chegar na melhor solução.\n\nRecomendo o João com total confiança para qualquer empresa. Trabalhar com ele é uma experiência que eleva o nível de quem está ao redor.",
+                                             "en":  "I was lucky to start my career as a developer alongside João Paulo. From the start, his competence and curiosity in problem-solving were always evident.\n\nJoão was a fundamental piece in my professional growth. As a colleague and friend, he never held back from helping — whether explaining something I didn\u0027t understand or dedicating hours (sometimes all day) to solve a problem together. What always mattered to him was reaching the best solution.\n\nI recommend João with full confidence to any company. Working with him is an experience that elevates everyone around."
+                                         },
+                             "featured":  true
+                         },
+                         {
+                             "id":  "felipe-baer",
+                             "author":  {
+                                            "name":  "Felipe Baer",
+                                            "role":  {
+                                                         "pt":  "Desenvolvedor Full-Stack | Web, Mobile e PWA",
+                                                         "en":  "Full-Stack Developer | Web, Mobile and PWA"
+                                                     },
+                                            "company":  "",
+                                            "avatar":  "/avatars/baer.jpeg",
+                                            "linkedin":  "https://www.linkedin.com/in/flpbaer/?locale=pt"
+                                        },
+                             "relationship":  {
+                                                  "pt":  "Felipe trabalhou com João Paulo, mas em equipes diferentes",
+                                                  "en":  "Felipe worked with João Paulo, but on different teams"
+                                              },
+                             "content":  {
+                                             "pt":  "Tive o prazer de trabalhar com o João e posso afirmar, com total convicção, que seu trabalho é excepcional. Acompanhei de perto sua evolução, assim como sua dedicação e vontade constante de aprender e fazer as coisas acontecerem.\n\nSeu papel sempre foi fundamental, tanto na tomada de decisões quanto na construção de soluções, graças ao seu profundo conhecimento e domínio técnico. Trabalhar com o João é, sem dúvida, uma oportunidade valiosa que todos deveriam ter.",
+                                             "en":  "I had the pleasure of working with João and can state, with full conviction, that his work is exceptional. I followed his evolution closely, as well as his dedication and constant drive to learn and make things happen.\n\nHis role was always fundamental, both in decision-making and solution building, thanks to his deep technical knowledge and domain mastery. Working with João is, without a doubt, a valuable opportunity that everyone should have."
+                                         },
+                             "featured":  true
+                         }
+                     ],
+    "skills":  [
+                   {
+                       "icon":  "Workflow",
+                       "title":  {
+                                     "pt":  "Backend \u0026 APIs",
+                                     "en":  "Backend \u0026 APIs"
+                                 },
+                       "description":  {
+                                           "pt":  "Java 17 + Spring Boot e Spring Integration. APIs REST, JPA/Hibernate e mensageria assíncrona.",
+                                           "en":  "Java 17 + Spring Boot and Spring Integration. REST APIs, JPA/Hibernate and async messaging."
+                                       },
+                       "skills":  [
+                                      "Java 17",
+                                      "Spring Boot",
+                                      "Spring Integration",
+                                      "JPA / Hibernate",
+                                      "REST APIs",
+                                      "Node.js (Lambda)"
+                                  ]
+                   },
+                   {
+                       "icon":  "Layers",
+                       "title":  {
+                                     "pt":  "Mobile \u0026 Frontend",
+                                     "en":  "Mobile \u0026 Frontend"
+                                 },
+                       "description":  {
+                                           "pt":  "Flutter offline-first com Clean Architecture + BLoC. React/Next.js com TypeScript, Vite e PWA.",
+                                           "en":  "Offline-first Flutter with Clean Architecture + BLoC. React/Next.js with TypeScript, Vite and PWA."
+                                       },
+                       "skills":  [
+                                      "Flutter",
+                                      "Dart",
+                                      "BLoC / Cubit",
+                                      "React",
+                                      "Next.js",
+                                      "TypeScript",
+                                      "Vite",
+                                      "Tailwind CSS"
+                                  ]
+                   },
+                   {
+                       "icon":  "Cloud",
+                       "title":  {
+                                     "pt":  "Cloud \u0026 IaC",
+                                     "en":  "Cloud \u0026 IaC"
+                                 },
+                       "description":  {
+                                           "pt":  "AWS (ECS, RDS, SQS, S3, Lambda, ALB, VPC, IAM) provisionada via Terraform. CI/CD em GitHub Actions.",
+                                           "en":  "AWS (ECS, RDS, SQS, S3, Lambda, ALB, VPC, IAM) provisioned via Terraform. CI/CD on GitHub Actions."
+                                       },
+                       "skills":  [
+                                      "AWS ECS",
+                                      "AWS RDS",
+                                      "AWS SQS",
+                                      "AWS S3",
+                                      "AWS Lambda",
+                                      "Terraform",
+                                      "Docker",
+                                      "GitHub Actions"
+                                  ]
+                   },
+                   {
+                       "icon":  "Activity",
+                       "title":  {
+                                     "pt":  "Dados \u0026 Observabilidade",
+                                     "en":  "Data \u0026 Observability"
+                                 },
+                       "description":  {
+                                           "pt":  "PostgreSQL + Oracle. Stack Prometheus v3 + Grafana, Datadog, Sentry, CloudWatch.",
+                                           "en":  "PostgreSQL + Oracle. Prometheus v3 + Grafana stack, Datadog, Sentry, CloudWatch."
+                                       },
+                       "skills":  [
+                                      "PostgreSQL",
+                                      "Oracle",
+                                      "Prometheus v3",
+                                      "Grafana",
+                                      "Datadog",
+                                      "Sentry",
+                                      "CloudWatch"
+                                  ]
+                   }
+               ]
+}

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="10" fill="#f1ebdf"/>
+  <rect x="5" y="5" width="54" height="54" rx="7" fill="none" stroke="#1b1814" stroke-width="2.5"/>
+  <text x="32" y="47" text-anchor="middle" font-family="'UnifrakturMaguntia','Old English Text MT','Times New Roman',serif" font-size="40" font-weight="700" fill="#1b1814">J</text>
+  <rect x="14" y="53" width="36" height="3" fill="#b8321f"/>
+</svg>

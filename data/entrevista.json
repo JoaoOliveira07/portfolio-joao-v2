@@ -1,0 +1,72 @@
+{
+  "_comment": "Respostas da entrevista. Enquanto draft = true, a página mostra o carimbo RASCUNHO. Troque as respostas pelas suas palavras e mude draft para false.",
+  "draft": true,
+  "headline": { "pt": "“Gosto de código limpo, mas não de purismo”", "en": "“I like clean code, but not purism”" },
+  "deck": {
+    "pt": "O engenheiro backend de Blumenau fala sobre filas que não perdem mensagem, ERPs teimosos e por que transformou o próprio currículo num jogo.",
+    "en": "The Blumenau backend engineer talks about queues that never lose a message, stubborn ERPs and why he turned his own résumé into a game."
+  },
+  "pull": {
+    "pt": "Rede falha, e vai falhar no pior momento. O sistema tem que estar pronto pra isso.",
+    "en": "Networks fail, and they will fail at the worst possible moment. The system has to be ready for it."
+  },
+  "qa": [
+    {
+      "q": { "pt": "Por que backend?", "en": "Why backend?" },
+      "a": {
+        "pt": "Porque gosto da parte que ninguém vê, mas todo mundo sente quando quebra. Uma tela bonita em cima de uma API lenta não serve pra nada. No backend eu resolvo o problema na raiz: dado consistente, fila que não perde mensagem, consulta que responde rápido.",
+        "en": "Because I like the part nobody sees but everybody feels when it breaks. A beautiful screen on top of a slow API is useless. On the backend I fix the problem at the root: consistent data, queues that never lose a message, queries that answer fast."
+      }
+    },
+    {
+      "q": { "pt": "Você foi de assistente de TI a pleno em pouco mais de dois anos. Como?", "en": "You went from IT assistant to mid-level in a little over two years. How?" },
+      "a": {
+        "pt": "Perguntando muito e entregando. Comecei estudando Java, Spring e testes, e fui pegando tarefas cada vez maiores. Tive a sorte de ter gente boa por perto, que me deixou errar e me ensinou a revisar código com cuidado.",
+        "en": "By asking a lot of questions and shipping. I started out studying Java, Spring and testing, and kept picking up bigger tasks. I was lucky to have great people around me who let me make mistakes and taught me to review code carefully."
+      }
+    },
+    {
+      "q": { "pt": "O que a integração com um ERP legado te ensinou?", "en": "What did integrating with a legacy ERP teach you?" },
+      "a": {
+        "pt": "Que rede falha, e vai falhar no pior momento. Por isso cada mensagem leva uma chave de idempotência: o mesmo pedido pode ser enviado três vezes e o ERP recebe uma só. Parece detalhe, mas é o que separa um sistema confiável de uma dor de cabeça na segunda-feira.",
+        "en": "That networks fail, and they will fail at the worst moment. That is why every message carries an idempotency key: the same order can be sent three times and the ERP receives it once. It sounds like a detail, but it is what separates a reliable system from a Monday-morning headache."
+      }
+    },
+    {
+      "q": { "pt": "Monolito ou microsserviços?", "en": "Monolith or microservices?" },
+      "a": {
+        "pt": "Depende, mas eu começo pelo monolito modular. Um deploy só, contextos bem separados, e quando um pedaço precisa escalar diferente, ele já está pronto pra sair. Microsserviço cedo demais costuma virar um monolito distribuído.",
+        "en": "It depends, but I start with a modular monolith. One deploy, well-separated contexts, and when a piece needs to scale differently, it is already ready to move out. Microservices too early usually turn into a distributed monolith."
+      }
+    },
+    {
+      "q": { "pt": "Por que transformar o portfólio num jogo?", "en": "Why turn your portfolio into a game?" },
+      "a": {
+        "pt": "Porque portfólio de dev é tudo igual. Eu queria que a pessoa explorasse em vez de só rolar a página. E, de quebra, pratiquei coisas que não uso no trabalho, como SVG, three.js e física de carro.",
+        "en": "Because developer portfolios all look the same. I wanted people to explore instead of just scrolling. And along the way I practiced things I do not use at work, like SVG, three.js and car physics."
+      }
+    },
+    {
+      "q": { "pt": "O que você está estudando agora?", "en": "What are you studying right now?" },
+      "a": {
+        "pt": "Designing Data-Intensive Applications e, depois, Kafka a fundo. Quero entender de verdade como sistemas distribuídos se comportam quando as coisas dão errado.",
+        "en": "Designing Data-Intensive Applications, and then Kafka in depth. I want to really understand how distributed systems behave when things go wrong."
+      }
+    },
+    {
+      "q": { "pt": "O que você procura num time?", "en": "What do you look for in a team?" },
+      "a": {
+        "pt": "Gente que revisa código com cuidado, discute solução sem ego e se importa com o que vai pra produção.",
+        "en": "People who review code carefully, discuss solutions without ego and care about what goes to production."
+      }
+    }
+  ],
+  "quick": [
+    { "q": { "pt": "Café ou chá?", "en": "Coffee or tea?" }, "a": { "pt": "Café. Umas 847 xícaras em 2026.", "en": "Coffee. About 847 cups in 2026." } },
+    { "q": { "pt": "Debug preferido?", "en": "Favorite debugger?" }, "a": { "pt": "console.log e oração.", "en": "console.log and prayer." } },
+    { "q": { "pt": "Último commit?", "en": "Last commit?" }, "a": { "pt": "\"fix: finally\".", "en": "\"fix: finally\"." } },
+    { "q": { "pt": "Abas abertas agora?", "en": "Tabs open right now?" }, "a": { "pt": "47.", "en": "47." } },
+    { "q": { "pt": "Java ou TypeScript?", "en": "Java or TypeScript?" }, "a": { "pt": "Java no backend, TypeScript no resto.", "en": "Java on the backend, TypeScript for the rest." } },
+    { "q": { "pt": "Um livro?", "en": "One book?" }, "a": { "pt": "DDIA, o atual da cabeceira.", "en": "DDIA, the one on my nightstand." } }
+  ]
+}

@@ -11,6 +11,7 @@ while ($listener.IsListening) {
   $path = [Uri]::UnescapeDataString($ctx.Request.Url.AbsolutePath.TrimStart('/'))
   if ($path -eq '') { $path = 'index.html' }
   $file = Join-Path $root $path
+  if (Test-Path $file -PathType Container) { $file = Join-Path $file 'index.html' }  # pastas abrem o index.html (ex.: /rpg/)
   $full = [IO.Path]::GetFullPath($file)
   if ($full.StartsWith($root) -and (Test-Path $full -PathType Leaf)) {
     $bytes = [IO.File]::ReadAllBytes($full)

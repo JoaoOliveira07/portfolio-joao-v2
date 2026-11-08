@@ -129,18 +129,26 @@ function applyStatic() {
   $$('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n); });
   $$('[data-i18n-html]').forEach((el) => { el.innerHTML = t(el.dataset.i18nHtml); });
   ['#paperName', '#miniName', '#footName'].forEach((s) => { $(s).textContent = t('paper'); });
-  $('#langBtn').textContent = t('util.lang');
-  $('#nightBtn').textContent = t(root.dataset.theme === 'night' ? 'util.day' : 'util.night');
+  // botões com versão longa (computador) e curta (celular)
+  $('#langBtn').innerHTML = `<span class="t-long">${t('util.lang')}</span><span class="t-short">${LANG === 'en' ? 'PT' : 'EN'}</span>`;
+  paintNight();
   if (current < 0) document.title = `${t('paper')} — ${PROFILE.name}`;
+}
+function paintNight() {
+  const night = root.dataset.theme === 'night';
+  $('#nightBtn').innerHTML = `<span class="t-long">${t(night ? 'util.day' : 'util.night')}</span><span class="t-short" aria-hidden="true">${night ? '☀' : '☾'}</span>`;
+  $('#nightBtn').setAttribute('aria-label', t(night ? 'util.day' : 'util.night'));
 }
 
 function dateline() {
   const now = new Date();
   const d = now.toLocaleDateString(locale(), { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const short = now.toLocaleDateString(locale(), { day: 'numeric', month: 'short', year: 'numeric' }).replace(/\.| de /g, ' ').replace(/\s+/g, ' ');
   const n = Math.floor((now - START) / 864e5).toLocaleString(locale());
   const year = now.getFullYear() - START.getFullYear() + (now.getMonth() >= START.getMonth() ? 1 : 0);
-  $('#dateline').textContent = t('dateline', { d, n });
-  $('#motto').textContent = t('motto', { y: roman(year) });
+  // versão longa no computador, curta no celular
+  $('#dateline').innerHTML = `<span class="t-long">${esc(t('dateline', { d, n }))}</span><span class="t-short">${esc(t('datelineShort', { d: short, n }))}</span>`;
+  $('#motto').innerHTML = `<span class="t-long">${esc(t('motto', { y: roman(year) }))}</span><span class="t-short">${esc(t('mottoShort', { y: roman(year) }))}</span>`;
 }
 function roman(n) {
   let s = '';
@@ -189,15 +197,10 @@ async function countVisit() {
     paintCirculation();
   } catch { /* sem contador, sem problema */ }
 }
+// a tiragem fica no lema, embaixo do título
 function paintCirculation() {
   if (CIRCULATION == null) return;
-  let el = $('#circulation');
-  if (!el) {
-    el = document.createElement('span');
-    el.id = 'circulation';
-    $('#dateline').after(el);
-  }
-  el.textContent = t('circulation', { n: CIRCULATION.toLocaleString(locale()) });
+  $('#circulation').textContent = ` · ${t('circulation', { n: CIRCULATION.toLocaleString(locale()) })}`;
 }
 
 async function fetchLive() {
@@ -784,7 +787,7 @@ function initUI() {
     const night = root.dataset.theme !== 'night';
     if (night) root.dataset.theme = 'night'; else delete root.dataset.theme;
     store.set('jopes-theme', night ? 'night' : 'day');
-    $('#nightBtn').textContent = t(night ? 'util.day' : 'util.night');
+    paintNight();
     $('meta[name="theme-color"]').content = night ? '#15130f' : '#f1ebdf';
   });
   if (root.dataset.theme === 'night') $('meta[name="theme-color"]').content = '#15130f';

@@ -36,8 +36,10 @@ powershell -ExecutionPolicy Bypass -File tools\gerar-dados-rpg.ps1
 
 ## Publicar
 
-Site estático: GitHub Pages (branch `main`, pasta raiz) ou qualquer host estático.
-Se o endereço mudar (ex.: domínio próprio), atualize `og:url`, `og:image` e `canonical` no `index.html`
-e o link do portfólio em `tools/cv.html`.
+No ar em **https://www.jopes.com.br**, pela Vercel (projeto ligado a este repositório: cada push na `main` publica).
+O `vercel.json` marca o site como estático (sem build) e redireciona os endereços do portfólio antigo
+(`/en`, `/pt/about`, `/pt/projects/...`) para as seções do jornal.
+
+Se o endereço mudar, atualize `og:url`, `og:image` e `canonical` no `index.html` e o link em `tools/cv.html`.
 
 O contador de visitas usa o serviço gratuito [abacus.jasoncameron.dev](https://abacus.jasoncameron.dev) (sem dados pessoais).

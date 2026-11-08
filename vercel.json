@@ -1,0 +1,42 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "redirects": [
+    { "source": "/pt", "destination": "/", "permanent": false },
+    { "source": "/en", "destination": "/?lang=en", "permanent": false },
+    { "source": "/pt/about", "destination": "/#entrevista", "permanent": false },
+    { "source": "/en/about", "destination": "/?lang=en#entrevista", "permanent": false },
+    { "source": "/pt/lab", "destination": "/#passatempos", "permanent": false },
+    { "source": "/en/lab", "destination": "/?lang=en#passatempos", "permanent": false },
+    { "source": "/pt/projects", "destination": "/#tecnologia", "permanent": false },
+    { "source": "/en/projects", "destination": "/?lang=en#tecnologia", "permanent": false },
+
+    { "source": "/pt/projects/segalas-ecommerce", "destination": "/#/materia/backend-ecommerce", "permanent": false },
+    { "source": "/en/projects/segalas-ecommerce", "destination": "/?lang=en#/materia/backend-ecommerce", "permanent": false },
+    { "source": "/pt/projects/ecommerce-front", "destination": "/#/materia/loja-b2b", "permanent": false },
+    { "source": "/en/projects/ecommerce-front", "destination": "/?lang=en#/materia/loja-b2b", "permanent": false },
+    { "source": "/pt/projects/salesforce-mobile", "destination": "/#/materia/app-vendas", "permanent": false },
+    { "source": "/en/projects/salesforce-mobile", "destination": "/?lang=en#/materia/app-vendas", "permanent": false },
+    { "source": "/pt/projects/backoffice", "destination": "/#/materia/painel-admin", "permanent": false },
+    { "source": "/en/projects/backoffice", "destination": "/?lang=en#/materia/painel-admin", "permanent": false },
+    { "source": "/pt/projects/register-flow", "destination": "/#/materia/app-cadastro", "permanent": false },
+    { "source": "/en/projects/register-flow", "destination": "/?lang=en#/materia/app-cadastro", "permanent": false },
+    { "source": "/pt/projects/integration-platform", "destination": "/#/materia/integracao-erp", "permanent": false },
+    { "source": "/en/projects/integration-platform", "destination": "/?lang=en#/materia/integracao-erp", "permanent": false },
+    { "source": "/pt/projects/offline-integrator", "destination": "/#/materia/api-sync", "permanent": false },
+    { "source": "/en/projects/offline-integrator", "destination": "/?lang=en#/materia/api-sync", "permanent": false },
+    { "source": "/pt/projects/infra-terraform", "destination": "/#/materia/infra-aws", "permanent": false },
+    { "source": "/en/projects/infra-terraform", "destination": "/?lang=en#/materia/infra-aws", "permanent": false },
+    { "source": "/pt/projects/:slug(commitclock|kira-semi-joias|finance-dashboard)", "destination": "/#/materia/:slug", "permanent": false },
+    { "source": "/en/projects/:slug(commitclock|kira-semi-joias|finance-dashboard)", "destination": "/?lang=en#/materia/:slug", "permanent": false },
+    { "source": "/pt/projects/:slug", "destination": "/#tecnologia", "permanent": false },
+    { "source": "/en/projects/:slug", "destination": "/?lang=en#tecnologia", "permanent": false },
+
+    { "source": "/gate", "destination": "/", "permanent": false }
+  ],
+  "headers": [
+    { "source": "/rpg/assets/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }] },
+    { "source": "/img/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }] },
+    { "source": "/tools/(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }] }
+  ]
+}

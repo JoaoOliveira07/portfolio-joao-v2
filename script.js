@@ -363,7 +363,7 @@ function buildInterview() {
     <div class="iv-grid">
       <aside class="iv-side rise">
         <figure>
-          <div class="print-img iv-photo"><img src="img/eu.jpg" alt="${esc(PROFILE.name)}" loading="lazy"></div>
+          <div class="print-img iv-photo"><img src="img/entrevista.jpg" alt="${esc(PROFILE.name)}" loading="lazy"></div>
           <figcaption>${t('iv.caption')}</figcaption>
         </figure>
         <div class="iv-quick">

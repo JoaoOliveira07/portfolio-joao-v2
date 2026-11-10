@@ -99,6 +99,7 @@ function localize() {
     responsibilities: arr(L(pos.responsibilities)), techStack: arr(pos.techStack), locked: !!pos.isLocked,
     company, location: L(RAW.experience.location), pts: MARKET_PTS[pos.title] || 0, short: C().market[pos.title] || pos.title,
   }));
+  buildCandles();
 }
 
 /* ---------- render ---------- */
@@ -131,13 +132,7 @@ function applyStatic() {
   ['#paperName', '#miniName', '#footName'].forEach((s) => { $(s).textContent = t('paper'); });
   // botões com versão longa (computador) e curta (celular)
   $('#langBtn').innerHTML = `<span class="t-long">${t('util.lang')}</span><span class="t-short">${LANG === 'en' ? 'PT' : 'EN'}</span>`;
-  paintNight();
   if (current < 0) document.title = `${t('paper')} — ${PROFILE.name}`;
-}
-function paintNight() {
-  const night = root.dataset.theme === 'night';
-  $('#nightBtn').innerHTML = `<span class="t-long">${t(night ? 'util.day' : 'util.night')}</span><span class="t-short" aria-hidden="true">${night ? '☀' : '☾'}</span>`;
-  $('#nightBtn').setAttribute('aria-label', t(night ? 'util.day' : 'util.night'));
 }
 
 function dateline() {
@@ -387,9 +382,9 @@ function buildInterview() {
 /* ---------- carreira: o pregão da JPO3 ---------- */
 function buildCareer() {
   $('#positions').innerHTML = CAREER.map((pos, i) => {
-    const delta = Math.round(((pos.pts - IPO) / IPO) * 100);
+    const delta = Math.round(((pos.close - IPO) / IPO) * 100);
     return `<li class="pos${pos.locked ? ' locked' : ''}" data-i="${i}">
-      <div class="pos-meta"><span class="kicker">${esc(pos.period)}</span><span class="pos-level">JPO3 ${num(pos.pts)} pts · ${i ? t('career.since', { p: delta }).replace('▲ ', '') : t('career.opening')}</span></div>
+      <div class="pos-meta"><span class="kicker">${esc(pos.period)}</span><span class="pos-level">JPO3 ${num(pos.close)} pts · ${i ? t('career.since', { p: delta }).replace('▲ ', '') : t('career.opening')}</span></div>
       <h3 class="headline">${esc(pos.title)}</h3>
       <div class="company">${esc(pos.company)} · ${esc(pos.location)}</div>
       <p class="deck">${esc(pos.description)}</p>
@@ -399,7 +394,8 @@ function buildCareer() {
     </li>`;
   }).join('');
   $('#marketFoot').innerHTML = `
-    <span><i class="lg lg-line"></i>${t('career.lgPrice')}</span>
+    <span><i class="lg lg-up"></i>${t('career.lgUp')}</span>
+    <span><i class="lg lg-dn"></i>${t('career.lgDown')}</span>
     <span><i class="lg lg-proj"></i>${t('career.lgProj')}</span>
     <span><i class="lg lg-vol"></i>${t('career.lgVol')}</span>`;
   drawChart(activePos);
@@ -412,39 +408,76 @@ const ROLE_START = {
   'Mid-Level Software Developer': [2025, 8], 'Senior Software Developer': [2027, 0],
 };
 const T0 = new Date(2023, 6, 1), T1 = new Date(2027, 5, 1);
-let activePos = -1, chartGeo = null;
+let activePos = -1, chartGeo = null, CANDLES = [];
+
+// gerador pseudoaleatório com semente: as velas são fictícias, mas sempre as mesmas
+function rng(seed) {
+  return () => {
+    seed = (seed + 0x6D2B79F5) | 0;
+    let q = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    q = (q + Math.imul(q ^ (q >>> 7), 61 | q)) ^ q;
+    return ((q ^ (q >>> 14)) >>> 0) / 4294967296;
+  };
+}
+// Uma vela a cada duas semanas, como num home broker. Dentro de cada cargo a cotação oscila em
+// torno do patamar (com semanas de queda); cada promoção vira um rali de algumas semanas.
+function buildCandles() {
+  const rand = rng(2023), now = new Date();
+  const real = CAREER.map((p, i) => ({ p, i, s: new Date(...(ROLE_START[p.title] || [2023, 7])) })).filter((r) => !r.p.locked);
+  const seen = new Set();
+  real.forEach((r) => { r.p.techStack.forEach((s) => seen.add(s.replace(/\s*\d+$/, ''))); r.p.cum = seen.size; });
+  const out = [];
+  let prev = IPO * 0.97, wk = 0, k0 = -1;
+  for (let d = new Date(2023, 7, 1); d <= now; d = new Date(d.getTime() + 14 * 864e5)) {
+    let k = -1;
+    real.forEach((r, j) => { if (d >= r.s) k = j; });
+    if (k < 0) continue;
+    if (k !== k0) { wk = 0; k0 = k; }
+    const r = real[k], base = r.p.pts;
+    const o = prev;
+    const rally = wk < 3; // primeiras semanas no cargo novo: rali de alta
+    const pull = rally ? 0.5 : 0.18;
+    const c = o + (base - o) * pull + (rand() - (rally ? 0.3 : 0.5)) * base * 0.13;
+    const h = Math.max(o, c) + (0.15 + rand()) * base * 0.03;
+    const l = Math.min(o, c) - (0.15 + rand()) * base * 0.03;
+    out.push({ d, o, h, l, c, role: r.i, first: wk === 0, vol: (r.p.cum || 1) * (0.5 + rand() * 0.8) * (rally ? 1.6 : 1) });
+    prev = c; wk++;
+  }
+  // a última semana de cada cargo fecha no patamar dele (é o número do painel e do texto)
+  real.forEach((r) => {
+    const last = out.filter((c) => c.role === r.i).pop();
+    if (!last) return;
+    last.c = r.p.pts; last.h = Math.max(last.h, last.o, last.c); last.l = Math.min(last.l, last.o, last.c);
+    const nxt = out[out.indexOf(last) + 1];
+    if (nxt) { nxt.o = last.c; nxt.h = Math.max(nxt.h, nxt.o); nxt.l = Math.min(nxt.l, nxt.o); }
+  });
+  CANDLES = out;
+  CAREER.forEach((p) => { p.close = p.pts; });
+}
 
 function drawChart(active) {
   const svg = $('#chart');
-  if (!svg || !CAREER.length) return;
+  if (!svg || !CAREER.length || !CANDLES.length) return;
   const W = Math.max(300, svg.clientWidth || svg.parentElement.clientWidth);
   const small = W < 560;
   // o painel fica preso no topo: em telas baixas o gráfico encolhe para não cobrir o texto
-  const H = small ? 150 : Math.round(Math.min(260, Math.max(190, innerHeight * 0.32)));
-  const P = { l: 8, r: small ? 46 : 58, t: small ? 22 : 30, b: small ? 52 : 70 };
-  const priceBottom = H - P.b, volTop = H - P.b + 14, volBottom = H - 22;
+  const H = small ? 160 : Math.round(Math.min(260, Math.max(200, innerHeight * 0.3)));
+  const P = { l: 8, r: small ? 46 : 58, t: small ? 28 : 36, b: small ? 46 : 58 };
+  const priceBottom = H - P.b, volTop = H - P.b + 10, volBottom = H - 22;
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   svg.style.height = `${H}px`;
 
   const now = new Date();
   const x = (d) => P.l + ((d - T0) / (T1 - T0)) * (W - P.l - P.r);
-  const y = (v) => priceBottom - (v / 135) * (priceBottom - P.t);
-  const roles = CAREER.map((p, i) => {
-    const s = new Date(...(ROLE_START[p.title] || [2023, 7]));
-    const next = CAREER[i + 1];
-    const e = p.locked ? s : next && !next.locked ? new Date(...ROLE_START[next.title]) : now;
-    return { ...p, s, e, i };
-  });
-  const real = roles.filter((r) => !r.locked);
-  const upto = Math.min(active, real.length - 1);
-  const senior = roles.find((r) => r.locked);
+  const y = (v) => priceBottom - ((v - 12) / 125) * (priceBottom - P.t);
+  const slot = x(new Date(T0.getTime() + 14 * 864e5)) - x(T0);
+  const bw = Math.max(2, Math.min(10, slot * 0.64));
+  const realN = CAREER.filter((p) => !p.locked).length;
+  const upto = active < 0 ? realN - 1 : Math.min(active, realN - 1);
+  const seniorI = CAREER.findIndex((p) => p.locked);
+  const senior = seniorI >= 0 ? CAREER[seniorI] : null;
   const fmt = (d) => d.toLocaleDateString(locale(), { month: 'short', year: '2-digit' }).replace('.', '').replace(' de ', '/');
-
-  const stepPath = (list) => list.map((r, k) => (k === 0 ? `M ${x(r.s)} ${y(r.pts)}` : ` V ${y(r.pts)}`) + ` H ${x(r.e)}`).join('');
-  const ghost = stepPath(real);
-  const shown = upto >= 0 ? stepPath(real.slice(0, upto + 1)) : '';
-  const area = upto >= 0 ? `${shown} V ${priceBottom} H ${x(real[0].s)} Z` : '';
-  const last = upto >= 0 ? real[upto] : null;
+  const fmtDay = (d) => d.toLocaleDateString(locale(), { day: '2-digit', month: 'short', year: '2-digit' }).replace(/\./g, '').replace(/ de /g, '/');
 
   // grade de preço (direita) e anos (embaixo)
   let grid = '';
@@ -456,73 +489,92 @@ function drawChart(active) {
     grid += `<line class="g gv" x1="${gx}" x2="${gx}" y1="${P.t - 8}" y2="${volBottom}"/><text class="ax ax-x" x="${gx}" y="${H - 6}">${yr}</text>`;
   }
 
-  // volume: uma barra por mês, altura = tecnologias acumuladas na carreira até aquele cargo
-  const seen = new Set();
-  real.forEach((r) => { r.techStack.forEach((s) => seen.add(s.replace(/\s*\d+$/, ''))); r.cum = seen.size; });
-  const maxStack = Math.max(...real.map((r) => r.cum), 1);
-  let vol = '';
-  for (let d = new Date(T0); d < now; d.setMonth(d.getMonth() + 1)) {
-    const r = real.find((rr) => d >= new Date(rr.s.getFullYear(), rr.s.getMonth(), 1) && d < rr.e);
-    if (!r) continue;
-    const bx = x(d), bw = Math.max(1.5, x(new Date(d.getFullYear(), d.getMonth() + 1, 1)) - bx - 1.5);
-    const bh = (r.cum / maxStack) * (volBottom - volTop);
-    vol += `<rect class="vol${r.i <= upto ? ' on' : ''}" x="${bx}" y="${volBottom - bh}" width="${bw}" height="${bh}"/>`;
-  }
+  // velas + volume
+  const maxVol = Math.max(...CANDLES.map((c) => c.vol), 1);
+  let candles = '', vol = '';
+  CANDLES.forEach((c) => {
+    const up = c.c >= c.o, dim = c.role > upto, X = x(c.d) + slot / 2;
+    const top = y(Math.max(c.o, c.c)), bh = Math.max(1, Math.abs(y(c.o) - y(c.c)));
+    const cls = `${up ? 'up' : 'dn'}${dim ? ' dim' : ''}`;
+    candles += `<g class="cd ${cls}"><line class="wick" x1="${X}" x2="${X}" y1="${y(c.h)}" y2="${y(c.l)}"/><rect class="body" x="${X - bw / 2}" y="${top}" width="${bw}" height="${bh}"/></g>`;
+    const vh = (c.vol / maxVol) * (volBottom - volTop);
+    vol += `<rect class="vol ${cls}" x="${X - bw / 2}" y="${volBottom - vh}" width="${bw}" height="${vh}"/>`;
+  });
 
-  // marcadores de promoção com rótulo
-  const marks = roles.map((r) => {
-    const isOn = r.i <= upto || (r.locked && active >= roles.length - 1);
-    const mx = x(r.s), my = y(r.pts);
-    const anchor = mx > W - P.r - 70 ? 'end' : 'start';
-    const dx = anchor === 'end' ? -8 : 8;
-    return `<g class="mk${isOn ? ' on' : ''}${r.i === active ? ' cur' : ''}${r.locked ? ' locked' : ''}">
-      <line class="pt-o" x1="${mx}" y1="${my}" x2="${mx}" y2="${my}"/><line class="pt-i" x1="${mx}" y1="${my}" x2="${mx}" y2="${my}"/>
-      ${small && r.i !== active ? '' : `<text class="mk-l" x="${mx + dx}" y="${my - 24}" text-anchor="${anchor}">${esc(r.short)}</text><text class="mk-d" x="${mx + dx}" y="${my - 11}" text-anchor="${anchor}">${r.locked ? '2027?' : fmt(r.s)}</text>`}
-    </g>`;
+  // marcadores de promoção (como "eventos" num gráfico de corretora)
+  const shown = CANDLES.filter((c) => c.role <= upto);
+  const marks = CAREER.map((p, i) => {
+    if (p.locked) return '';
+    const run = CANDLES.filter((cd) => cd.role === i);
+    if (!run.length) return '';
+    const c = run[0], X = x(c.d) + slot / 2;
+    const top = y(Math.max(...run.slice(0, 5).map((r) => r.h))) - 6;
+    const isOn = i <= upto;
+    const anchor = X > W - P.r - 70 ? 'end' : 'start';
+    const dx = anchor === 'end' ? 4 : -4;
+    const label = small && i !== active ? '' : `<text class="mk-l" x="${X + dx}" y="${top - 20}" text-anchor="${anchor}">${esc(p.short)}</text><text class="mk-d" x="${X + dx}" y="${top - 8}" text-anchor="${anchor}">${fmt(c.d)}</text>`;
+    return `<g class="mk${isOn ? ' on' : ''}${i === active ? ' cur' : ''}"><line class="flag" x1="${X}" x2="${X}" y1="${top}" y2="${top - (label ? 5 : 3)}"/>${label}</g>`;
   }).join('');
 
-  // hoje + projeção + etiqueta de preço
+  // hoje + projeção (Sênior) + etiqueta de preço
   const nx = x(now);
   const today = `<line class="today" x1="${nx}" x2="${nx}" y1="${P.t - 8}" y2="${volBottom}"/><text class="today-l" x="${nx - 5}" y="${P.t - 12}" text-anchor="end">${t('career.today')}</text>`;
-  const projOn = senior && active >= roles.length - 1;
-  const proj = senior ? `<path class="proj${projOn ? ' on' : ''}" d="M ${nx} ${y(real[real.length - 1].pts)} L ${x(senior.s)} ${y(senior.pts)}"/>` : '';
-  const tagV = projOn ? senior.pts : last ? last.pts : null;
-  const tag = tagV != null ? `<line class="tag-line" x1="${projOn ? x(senior.s) : x(last.e)}" x2="${W - P.r}" y1="${y(tagV)}" y2="${y(tagV)}"/>
-    <rect class="tag${projOn ? ' proj-tag' : ''}" x="${W - P.r + 2}" y="${y(tagV) - 10}" width="${P.r - 4}" height="20" rx="2"/>
+  const lastC = CANDLES[CANDLES.length - 1];
+  const projOn = senior && active >= seniorI;
+  let proj = '';
+  if (senior) {
+    const sx = x(new Date(...ROLE_START[senior.title])), sy = y(senior.pts);
+    const anchor = sx > W - P.r - 70 ? 'end' : 'start', dx = anchor === 'end' ? -10 : 10;
+    proj = `<path class="proj${projOn ? ' on' : ''}" d="M ${x(lastC.d) + slot / 2} ${y(lastC.c)} L ${sx} ${sy}"/>
+      <g class="mk locked${projOn ? ' on cur' : ''}"><line class="pt-o" x1="${sx}" y1="${sy}" x2="${sx}" y2="${sy}"/><line class="pt-i" x1="${sx}" y1="${sy}" x2="${sx}" y2="${sy}"/>
+      ${small && !projOn ? '' : `<text class="mk-l" x="${sx + dx}" y="${sy - 18}" text-anchor="${anchor}">${esc(senior.short)}</text><text class="mk-d" x="${sx + dx}" y="${sy - 6}" text-anchor="${anchor}">2027?</text>`}</g>`;
+  }
+  const lastShown = shown[shown.length - 1];
+  const tagV = projOn ? senior.pts : lastShown ? lastShown.c : null;
+  const tagUp = !lastShown || lastShown.c >= lastShown.o;
+  const tagX = projOn ? x(new Date(...ROLE_START[senior.title])) : lastShown ? x(lastShown.d) + slot / 2 + bw / 2 : 0;
+  const tag = tagV != null ? `<line class="tag-line" x1="${tagX}" x2="${W - P.r}" y1="${y(tagV)}" y2="${y(tagV)}"/>
+    <rect class="tag ${projOn ? 'proj-tag' : tagUp ? 'up' : 'dn'}" x="${W - P.r + 2}" y="${y(tagV) - 10}" width="${P.r - 4}" height="20" rx="2"/>
     <text class="tag-t" x="${W - P.r / 2}" y="${y(tagV) + 4}">${num(tagV)}</text>` : '';
 
   svg.innerHTML = `
-    <defs><linearGradient id="chartFade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="fade-a"/><stop offset="1" class="fade-b"/></linearGradient></defs>
     ${grid}
-    <text class="vol-l" x="${P.l + 2}" y="${volTop - 3}">${t('career.volume')}</text>
+    <text class="vol-l" x="${P.l + 2}" y="${volTop + 6}">${t('career.volume')}</text>
     ${vol}
     ${today}
-    <path class="ghost" d="${ghost}"/>
-    <path class="area" d="${area}" fill="url(#chartFade)"/>
-    <path class="line" d="${shown}"/>
+    ${candles}
     ${proj}${tag}${marks}
-    <g class="hover" id="chartHover" style="display:none"><line class="hv-l" y1="${P.t - 8}" y2="${volBottom}"/><rect class="hv-box" height="38" rx="2"/><text class="hv-t1"/><text class="hv-t2"/></g>`;
-  chartGeo = { x, y, roles, real, W, P, priceBottom, fmt, now };
+    <g class="hover" id="chartHover" style="display:none"><line class="hv-l" y1="${P.t - 8}" y2="${volBottom}"/><line class="hv-h" x1="${P.l}" x2="${W - P.r}"/><rect class="hv-box" height="38" rx="2"/><text class="hv-t1"/><text class="hv-t2"/></g>`;
+  chartGeo = { x, y, W, P, fmtDay, fmt, now, slot, senior };
 }
 
-// mira: mês, cargo e cotação sob o mouse
+// mira: encaixa na vela mais próxima, com abertura / máxima / mínima / fechamento
 function chartHover(e) {
   if (!chartGeo) return;
   const svg = $('#chart'), g = $('#chartHover');
-  const { x, roles, real, W, P, fmt, now } = chartGeo;
+  const { x, y, W, P, fmtDay, fmt, now, slot, senior } = chartGeo;
   const rect = svg.getBoundingClientRect();
   const px = ((e.clientX - rect.left) / rect.width) * W;
+  if (px < P.l || px > W - P.r) { g.style.display = 'none'; return; }
   const date = new Date(T0.getTime() + ((px - P.l) / (W - P.l - P.r)) * (T1 - T0));
-  let r = real.find((rr) => date >= rr.s && date < rr.e);
-  const senior = roles.find((rr) => rr.locked);
-  if (!r && date >= now && senior) r = senior;
-  if (!r || px < P.l || px > W - P.r) { g.style.display = 'none'; return; }
+  let line1, line2, hx, hy;
+  const lastC = CANDLES[CANDLES.length - 1];
+  if (date >= CANDLES[0].d && date <= new Date(lastC.d.getTime() + 14 * 864e5)) {
+    const c = CANDLES.reduce((a, b) => (Math.abs(b.d - date) < Math.abs(a.d - date) ? b : a));
+    const p = CAREER[c.role];
+    line1 = `${fmtDay(c.d)} · ${p.short} · ${t('career.techs', { n: p.cum })}`;
+    line2 = t('career.ohlc', { o: num(c.o), h: num(c.h), l: num(c.l), c: num(c.c) });
+    hx = x(c.d) + slot / 2; hy = y(c.c);
+  } else if (date > now && senior) {
+    line1 = `${fmt(date)} · ${senior.short}`;
+    line2 = `${num(senior.pts)} pts${t('career.proj')}`;
+    hx = px; hy = y(senior.pts);
+  } else { g.style.display = 'none'; return; }
   g.style.display = '';
-  const line1 = `${fmt(date)} · ${r.short}`;
-  const line2 = r.locked && date >= now ? `${num(r.pts)} pts${t('career.proj')}` : `${num(r.pts)} pts · ${t('career.techs', { n: r.cum })}`;
   const bw = Math.max(line1.length, line2.length) * 6.6 + 16;
-  const bx = px + bw + 12 > W - P.r ? px - bw - 8 : px + 8;
-  g.querySelector('.hv-l').setAttribute('x1', px); g.querySelector('.hv-l').setAttribute('x2', px);
+  const bx = hx + bw + 12 > W - P.r ? hx - bw - 8 : hx + 8;
+  const vl = g.querySelector('.hv-l'); vl.setAttribute('x1', hx); vl.setAttribute('x2', hx);
+  const hl = g.querySelector('.hv-h'); hl.setAttribute('y1', hy); hl.setAttribute('y2', hy);
   const box = g.querySelector('.hv-box');
   box.setAttribute('x', bx); box.setAttribute('y', P.t); box.setAttribute('width', bw);
   const t1 = g.querySelector('.hv-t1'), t2 = g.querySelector('.hv-t2');
@@ -535,7 +587,7 @@ function setQuote(i, instant) {
   activePos = i;
   const p = CAREER[i];
   drawChart(i);
-  const target = p.pts, from = instant ? target : quoteVal, t0 = performance.now();
+  const target = p.close ?? p.pts, from = instant ? target : quoteVal, t0 = performance.now();
   cancelAnimationFrame(quoteRaf);
   const step = (now) => {
     const k = Math.min(1, (now - t0) / 900), e = 1 - Math.pow(1 - k, 3);
@@ -589,21 +641,21 @@ function buildPuzzle() {
 
 /* ---------- cartas ---------- */
 function buildLetters() {
+  // cada carta começa por quem escreve (remetente), depois a frase-título e o texto
   $('#letters').innerHTML = RAW.testimonials.map((tm) => {
     const name = tm.author.name;
     const paras = L(tm.content).split(/\n+/).filter(Boolean);
     const title = C().letterTitles[name] || paras[0].split(/(?<=[.!?])\s/)[0];
     const av = AVATARS[name];
+    const who = `<b>${esc(name)}</b><span>${esc(L(tm.author.role))}</span>`;
     return `<article class="letter rise">
+      <header class="letter-from">
+        ${av ? `<div class="print-img"><img src="img/avatars/${av}.jpeg" alt="${esc(name)}" loading="lazy"></div>` : ''}
+        ${tm.author.linkedin ? `<a href="${esc(tm.author.linkedin)}" target="_blank" rel="noopener">${who}</a>` : `<div>${who}</div>`}
+      </header>
+      <p class="letter-rel">${esc(L(tm.relationship))}</p>
       <h3>“${esc(title.replace(/[.]$/, ''))}”</h3>
       ${paras.map((p) => `<p>${esc(p)}</p>`).join('')}
-      <div class="signature">
-        ${av ? `<div class="print-img"><img src="img/avatars/${av}.jpeg" alt="${esc(name)}" loading="lazy"></div>` : ''}
-        ${(() => {
-          const inner = `<b>${esc(name)}</b><span>${esc(L(tm.author.role))}</span><span>${esc(L(tm.relationship))}</span>`;
-          return tm.author.linkedin ? `<a href="${esc(tm.author.linkedin)}" target="_blank" rel="noopener">${inner}</a>` : `<div>${inner}</div>`;
-        })()}
-      </div>
     </article>`;
   }).join('');
 }
@@ -782,15 +834,6 @@ function initUI() {
     toast(LANG === 'en' ? 'International edition' : 'Edição brasileira');
   });
 
-  // edição noturna
-  $('#nightBtn').addEventListener('click', () => {
-    const night = root.dataset.theme !== 'night';
-    if (night) root.dataset.theme = 'night'; else delete root.dataset.theme;
-    store.set('jopes-theme', night ? 'night' : 'day');
-    paintNight();
-    $('meta[name="theme-color"]').content = night ? '#15130f' : '#f1ebdf';
-  });
-  if (root.dataset.theme === 'night') $('meta[name="theme-color"]').content = '#15130f';
   $('#printBtn').addEventListener('click', () => print());
 
   // gráfico da carreira: mira e redesenho ao mudar a largura

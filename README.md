@@ -1,11 +1,11 @@
 # O Jopes — portfolio-joao-v2
 
 Portfólio de **João Paulo Oliveira**, engenheiro backend em Blumenau (SC), em forma de jornal.
-Inclui o **JOPES.EXE** (portfólio jogável, cidade isométrica) em [`rpg/`](rpg/).
+Inclui o **JOPES.EXE** (o currículo como jogo 3D) em [`rpg/`](rpg/).
 
 - Projetos como reportagens, com infográficos de arquitetura
 - Entrevista, carreira como pregão da "ação JPO3", classificados, palavra cruzada e cartas de colegas
-- Edição brasileira e internacional (PT/EN), edição noturna e versão para impressão
+- Edição brasileira e internacional (PT/EN) e versão para impressão
 - HTML, CSS e JavaScript puros: sem framework e sem build
 
 ## Rodar localmente

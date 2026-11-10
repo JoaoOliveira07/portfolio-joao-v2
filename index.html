@@ -12,7 +12,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="O Jopes">
   <meta property="og:title" content="O Jopes — João Paulo Oliveira, engenheiro backend">
-  <meta property="og:description" content="Portfólio em forma de jornal: projetos, carreira, cartas de colegas, uma palavra cruzada e um RPG. Java, Spring Boot, AWS e mensageria.">
+  <meta property="og:description" content="Portfólio em forma de jornal: projetos, carreira, cartas de colegas, uma palavra cruzada e um jogo 3D do currículo. Java, Spring Boot, AWS e mensageria.">
   <meta property="og:url" content="https://www.jopes.com.br/">
   <meta property="og:image" content="https://www.jopes.com.br/img/og.png">
   <meta property="og:image:width" content="1200">
@@ -23,16 +23,14 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://www.jopes.com.br/">
   <script>
-    // Antes de pintar: idioma, tema e se a abertura da rotativa deve rodar.
+    // Antes de pintar: idioma e se a abertura da rotativa deve rodar.
     (function () {
       var d = document.documentElement, s = {};
-      try { s = { lang: localStorage.getItem('jopes-lang'), theme: localStorage.getItem('jopes-theme'), seen: localStorage.getItem('jopes-press') }; } catch (e) {}
+      try { s = { lang: localStorage.getItem('jopes-lang'), seen: localStorage.getItem('jopes-press') }; } catch (e) {}
       var q = new URLSearchParams(location.search).get('lang');
       var lang = q || s.lang || 'pt';
       d.lang = lang === 'en' ? 'en' : 'pt-BR';
       d.dataset.lang = lang === 'en' ? 'en' : 'pt';
-      var night = s.theme ? s.theme === 'night' : matchMedia('(prefers-color-scheme: dark)').matches;
-      if (night) d.dataset.theme = 'night';
       var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!s.seen && !reduce && !location.hash) d.classList.add('press');
     })();
@@ -49,13 +47,18 @@
     <div class="press-text"><span id="pressText">Rodando a edição…</span><small data-i18n="press.skip">clique para pular</small></div>
   </div>
 
+  <!-- Letreiro de logs (topo da página) -->
+  <div class="ticker">
+    <span class="ticker-label" data-i18n="ticker.label"></span>
+    <div class="ticker-viewport"><div class="ticker-track" id="ticker"></div></div>
+  </div>
+
   <!-- Barra de utilidades -->
   <div class="utility">
     <div class="wrap utility-inner">
       <span id="dateline">Blumenau, SC</span>
       <span class="utility-actions">
         <button id="langBtn" type="button"></button>
-        <button id="nightBtn" type="button"></button>
         <button id="printBtn" type="button" data-i18n="util.print"></button>
         <a class="game-link" href="rpg/" data-i18n="util.play"></a>
       </span>
@@ -89,12 +92,6 @@
     </div>
   </div>
 
-  <!-- Letreiro de logs -->
-  <div class="ticker">
-    <span class="ticker-label" data-i18n="ticker.label"></span>
-    <div class="ticker-viewport"><div class="ticker-track" id="ticker"></div></div>
-  </div>
-
   <main class="wrap">
     <!-- CAPA -->
     <section class="front" id="tecnologia">
@@ -108,7 +105,7 @@
       </aside>
     </section>
 
-    <!-- Matéria especial: o RPG -->
+    <!-- Matéria especial: o jogo 3D do currículo -->
     <section class="feature" id="games"></section>
 
     <section class="row3" id="row3"></section>

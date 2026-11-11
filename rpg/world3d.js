@@ -23,6 +23,8 @@ const COARSE = matchMedia('(pointer: coarse)').matches;
 // light mode: phones / low-memory devices get 3D only for the portfolio buildings + ground
 const LIGHT = COARSE || (navigator.deviceMemory && navigator.deviceMemory <= 4);
 window.__world3dStarted = true;
+const NO_SHADOWS = /[?&]noshadows\b/.test(location.search);   // para comparar / depurar
+const SELF_SHADOWS = !NO_SHADOWS && !LIGHT;
 const emit = (name, detail) => window.dispatchEvent(new CustomEvent(name, { detail }));
 const DPR = COARSE ? 1.15 : Math.min(1.85, Math.max(1.35, (window.devicePixelRatio || 1) * 1.2));   // the camera zooms in ×1.35
 const GROUND_DPR = COARSE ? 1 : Math.min(1.45, window.devicePixelRatio || 1);
@@ -53,7 +55,7 @@ const PERIODS = {
   night: { hemi: [0xa9c2ff, 0x1a1d24, 1.25], amb: [0x404858, 0.6], key: [0xe6edff, 1.9, [-60, 140, 90]], rim: [0xffa060, 0.6], EM: 1, clear: 0x07090d },
   dusk:  { hemi: [0xffc9a8, 0x2a1f2a, 1.45], amb: [0x5a4858, 0.7], key: [0xffad6b, 2.6, [-140, 60, 40]], rim: [0x8a7bff, 0.55], EM: 0.75, clear: 0x1a1420 },
   dawn:  { hemi: [0xffd9e6, 0x2a2430, 1.5], amb: [0x585068, 0.7], key: [0xffd2b8, 2.4, [120, 70, 120]], rim: [0x9ab8ff, 0.5], EM: 0.5, clear: 0x1d1a26 },
-  day:   { hemi: [0xe4f0ff, 0x6d6858, 2.1], amb: [0x8a94a6, 0.9], key: [0xfff3e2, 3.3, [-80, 160, 60]], rim: [0xc4dcff, 0.7], EM: 0.16, clear: 0x3a4452 },
+  day:   { hemi: [0xe4f0ff, 0x6d6858, 2.1], amb: [0x8a94a6, 0.9], key: [0xfff3e2, 3.3, [-95, 125, 70]], rim: [0xc4dcff, 0.7], EM: 0.16, clear: 0x3a4452 },
 };
 let PERIOD = 'night';
 function lights(scene, strength = 1, period = PERIOD) {
@@ -818,7 +820,7 @@ function buildStation() {
 /* ════════════════════════════ GROUND ════════════════════════════ */
 function buildGround(gd) {
   const scene = new THREE.Scene();
-  lights(scene, 0.9, PERIOD);
+  scene.userData.L = lights(scene, 0.9, PERIOD);
   const { BLOCK, ROAD, LANE, half, minK, maxK } = gd;
   const lo = minK * BLOCK - 600, hi = maxK * BLOCK + 600, span = hi - lo;
   // asphalt
@@ -1059,6 +1061,57 @@ function buildGround(gd) {
   return scene;
 }
 
+/* ════════════════════════════ SOMBRAS ════════════════════════════
+   O chão é renderizado uma vez só, então dá para pagar por sombras de verdade: cada prédio, árvore,
+   outdoor e viaduto entra na cena do chão como um "fantasma" (não aparece, só projeta sombra), e a
+   luz principal do período (sol / lua) desenha a sombra deles no asfalto e nas calçadas.
+   Custo em jogo: zero (fica pintado no canvas do chão). Muda com a hora do dia. */
+const SHADOW_ONLY = new THREE.MeshBasicMaterial({ colorWrite: false, depthWrite: false });
+const SHADOW_K = { day: 0.44, dusk: 0.5, dawn: 0.42, night: 0.36 };      // opacidade da sombra no chão em cada período
+const castable = m => m && !m.transparent && m.type !== 'MeshBasicMaterial' && m.visible !== false;
+function buildSpec(sp, bbInfo = {}) {
+  return sp.kind === 'zone' ? buildZone(sp)
+    : { g: sp.kind === 'lowrise' ? buildLowrise(sp) : sp.kind === 'tree' ? buildTree(sp) : sp.kind === 'billboard' ? buildBillboard(sp, bbInfo[sp.k] || {})
+           : sp.kind === 'viaduct' ? buildViaduct(sp) : sp.kind === 'station' ? buildStation() : sp.kind === 'lamp' ? buildLamp(sp) : sp.kind === 'signal' ? buildSignal() : buildBush(sp), zm: [] };
+}
+function addShadows(gscene, GR) {
+  const L = gscene.userData.L, key = L?.key;
+  if (!key) return;
+  // o que tem volume no próprio chão (bancos, lixeiras, monumento) também projeta
+  gscene.traverse(o => { if (o.isMesh) o.castShadow = castable([].concat(o.material)[0]) && o.geometry?.type !== 'PlaneGeometry'; });
+  const ghosts = new THREE.Group();
+  for (const o of CITY.objects) {
+    if (!o.spec || o.car || o.heli || o.ped) continue;
+    if (LIGHT && ['tree', 'bush', 'lamp', 'signal'].includes(o.spec.kind)) continue;   // celular: só prédios, outdoors e viaduto fazem sombra
+    let g;
+    try { g = buildSpec(o.spec).g; } catch (e) { continue; }
+    g.position.x += o.u; g.position.z += o.v;
+    g.traverse(m => {
+      if (!m.isMesh) return;
+      if (castable([].concat(m.material)[0])) { m.material = SHADOW_ONLY; m.castShadow = true; }
+      else m.visible = false;
+    });
+    ghosts.add(g);
+  }
+  gscene.add(ghosts);
+  // A sombra é uma película escura logo acima do chão (ShadowMaterial): a força dela não depende de
+  // quanto o sol ilumina o asfalto, então aparece igual ao meio-dia e no fim da tarde. O que é mais
+  // alto que a película (terminal do aeroporto, monumento) fica na frente dela, como deve ser.
+  const gd = CITY.groundData;
+  const mid = gd.mapPx / 2, C = new THREE.Vector3(mid, 0, mid), dir = key.position.clone().normalize();
+  key.position.copy(C).addScaledVector(dir, 4200); key.target.position.copy(C); gscene.add(key.target);
+  const film = new THREE.Mesh(new THREE.PlaneGeometry(gd.mapPx * 2.2, gd.mapPx * 2.2), new THREE.ShadowMaterial({ opacity: SHADOW_K[PERIOD] ?? 0.4, depthWrite: false }));
+  film.rotation.x = -Math.PI / 2; film.position.set(mid, 8.2, mid); film.receiveShadow = true; film.renderOrder = 5;
+  gscene.add(film);
+  const R = gd.mapPx * 0.88, size = Math.min(COARSE ? 2048 : 4096, GR.capabilities.maxTextureSize);
+  key.castShadow = true;
+  Object.assign(key.shadow.camera, { left: -R, right: R, top: R, bottom: -R, near: 200, far: 9000 });
+  key.shadow.camera.updateProjectionMatrix();
+  key.shadow.mapSize.set(size, size);
+  key.shadow.bias = -0.0004; key.shadow.radius = COARSE ? 2 : 3;
+  GR.shadowMap.enabled = true; GR.shadowMap.type = THREE.PCFSoftShadowMap;
+}
+
 /* ════════════════════════════ BOOT ════════════════════════════ */
 async function boot() {
   if (!CITY || !CITY.attach3D) { emit('city3d:ready'); return; }
@@ -1069,6 +1122,15 @@ async function boot() {
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
   if (window.CITY_PERIOD && PERIODS[window.CITY_PERIOD]) PERIOD = window.CITY_PERIOD;   // set before the first render
   const LIGHTS = lights(scene);
+  if (SELF_SHADOWS) {
+    const k = LIGHTS.key;
+    k.castShadow = true; k.shadow.mapSize.set(1024, 1024);
+    Object.assign(k.shadow.camera, { left: -620, right: 620, top: 620, bottom: -620, near: 100, far: 4000 }); k.shadow.camera.updateProjectionMatrix();
+    k.shadow.bias = -0.0008; k.shadow.normalBias = 1.4; k.shadow.radius = 2.5;
+    R.shadowMap.enabled = true; R.shadowMap.type = THREE.PCFSoftShadowMap;
+    const place = () => { k.position.normalize().multiplyScalar(1800); };
+    place(); window.addEventListener('city:period', () => setTimeout(place, 0));
+  }
   const cam = isoCamera(1500);
 
   // billboards need the portfolio data (title, category) and the screenshots as textures
@@ -1096,9 +1158,7 @@ async function boot() {
     let rec = o.rec;
     if (!rec) {
       const sp = o.spec;
-      rec = sp.kind === 'zone' ? buildZone(sp)
-          : { g: sp.kind === 'lowrise' ? buildLowrise(sp) : sp.kind === 'tree' ? buildTree(sp) : sp.kind === 'billboard' ? buildBillboard(sp, bbInfo[sp.k] || {})
-                 : sp.kind === 'viaduct' ? buildViaduct(sp) : sp.kind === 'station' ? buildStation() : sp.kind === 'lamp' ? buildLamp(sp) : sp.kind === 'signal' ? buildSignal() : buildBush(sp), zm: [] };
+      rec = buildSpec(sp, bbInfo);
       if (rec.keep) o.rec = rec;
     }
     let zoneMul = null;
@@ -1108,6 +1168,10 @@ async function boot() {
       zoneMul = new Map(rec.zm.map(m => { m.userData.e0 = m.userData.base ?? 2; return [m, L]; }));
     }
     applyEM(rec.g, zoneMul);
+    if (SELF_SHADOWS && !rec.shadowed) {           // cada peça projeta sombra nas outras peças do mesmo objeto (marquises, torres, copas)
+      rec.shadowed = true;
+      rec.g.traverse(m => { if (m.isMesh) { const c = castable([].concat(m.material)[0]); m.receiveShadow = c; m.castShadow = c && m.geometry?.type !== 'PlaneGeometry'; } });
+    }
     const moving = rec.update ? !!rec.update(t, dt, o.el.classList.contains('near')) : false;
     const { x, y } = o.box, pw = o.canvas.width, ph = o.canvas.height;
     cam.left = x; cam.right = x + pw / DPR; cam.top = -y; cam.bottom = -(y + ph / DPR); cam.updateProjectionMatrix();
@@ -1174,6 +1238,9 @@ async function boot() {
       GR.setClearColor(PERIODS[PERIOD].clear, 1);
       const gscene = buildGround(gd);
       applyEM(gscene);
+      const ts = performance.now();
+      if (!NO_SHADOWS) try { addShadows(gscene, GR); } catch (e) { console.warn('[world3d] sombras do chão falharam', e); }
+      window.__shadowMs = performance.now() - ts;
       const gcam = isoCamera(6000);
       gcam.left = -gd.X0; gcam.right = gd.mapPx - gd.X0; gcam.top = 0; gcam.bottom = -gd.mapPx; gcam.updateProjectionMatrix();
       GR.render(gscene, gcam);

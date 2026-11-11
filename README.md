@@ -36,6 +36,14 @@ powershell -ExecutionPolicy Bypass -File tools\gerar-dados-rpg.ps1
 
 ## Jogo (JOPES.EXE)
 
+- `rpg/index.html` ficou só com a marcação; os estilos estão em `rpg/game.css` e a lógica em `rpg/game.js`
+  (jogador, carros, helicóptero, HUD, câmera, tour, clima e o loop). `city.js` gera a cidade, `world3d.js` desenha
+  prédios e chão em 3D e `vehicles.js` os veículos.
+- Sombras: o chão é renderizado uma vez com a sombra real de cada prédio, árvore e outdoor, conforme a hora do dia
+  (`addShadows` em `world3d.js`). Abra com `?noshadows` para comparar.
+- Movimento: a pé há aceleração curta, joystick analógico no celular e clique/toque no chão para andar até o ponto;
+  a câmera olha um pouco à frente e a rodinha do mouse dá zoom; no carro, Espaço é o freio de mão.
+- Pedestres existem mas estão desligados (abra com `?peds` para ver).
 - `rpg/plus.js`: cafés para coletar, a entrega expressa de carro (rota em `ROUTE`, medalhas em `MEDALS`), o "+XP" flutuante e o confete do 100%.
 - Os modelos `.glb` em `rpg/assets/garage` e `rpg/assets/models` estão comprimidos com meshopt (metade do tamanho).
   Ao adicionar um modelo novo, comprima antes de publicar:

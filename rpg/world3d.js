@@ -25,6 +25,7 @@ const LIGHT = COARSE || (navigator.deviceMemory && navigator.deviceMemory <= 4);
 window.__world3dStarted = true;
 const NO_SHADOWS = /[?&]noshadows\b/.test(location.search);   // para comparar / depurar
 const SELF_SHADOWS = !NO_SHADOWS && !LIGHT;
+const OUTLINES = !/[?&]nolines\b/.test(location.search) && !LIGHT;
 const emit = (name, detail) => window.dispatchEvent(new CustomEvent(name, { detail }));
 const DPR = COARSE ? 1.15 : Math.min(1.85, Math.max(1.35, (window.devicePixelRatio || 1) * 1.2));   // the camera zooms in ×1.35
 const GROUND_DPR = COARSE ? 1 : Math.min(1.45, window.devicePixelRatio || 1);
@@ -262,6 +263,29 @@ function buildLowrise(sp) {
       g.add(box(0.5, 6, L, M.metalDark, a + 6, hh, zc));
       if (hh + 24 < h - 14) g.add(tube([a + 3, hh + 1, v1], [a + 3, hh + 24, v0], 0.5, M.metalDark));
     }
+  }
+  // Relevo de fachada (textura por repetição): cimalha no topo, faixa acima do térreo, uma faixa a cada
+  // dois andares nos prédios altos e pilastras nas quinas. São peças finas, mas ganham traço e sombra.
+  if (h > 40) {
+    const rd = rng(sp.seed + 7), rowH = (h - 10 - w0) / rows;
+    g.add(box(2 * a + 5, 1.6, 2 * b + 5, M.concreteDark, 0, h - 4.6, 0));                    // cimalha
+    g.add(box(2 * a + 2.6, 1.1, 2 * b + 2.6, M.trim, 0, 4 + w0 - 1.5, 0));                   // faixa do térreo
+    for (let k = 2; k < rows; k += 2) g.add(box(2 * a + 2, 0.8, 2 * b + 2, M.concreteDark, 0, 4 + w0 + k * rowH - 1, 0));
+    for (const [x, z] of [[a, b], [-a, b], [a, -b]]) g.add(box(3.2, h - 8, 3.2, plain, x - Math.sign(x) * 0.8, 4, z - Math.sign(z) * 0.8));
+    // telhado: placas solares em fileira ou claraboia, quando sobra espaço
+    const roll = rd();
+    if (roll < 0.34 && a > 34 && b > 34) {
+      const n = 2 + Math.floor(rd() * 2), pw = Math.min(22, a * 0.5), x0 = a * 0.32;
+      for (let i = 0; i < n; i++) {
+        const pnl = box(pw, 0.8, 9, M.glassDark, x0, h + 3.2, b * 0.55 - i * 13);
+        pnl.rotation.x = -0.38; g.add(pnl);
+        g.add(box(pw - 2, 2.6, 0.8, M.metalDark, x0, h, b * 0.55 - i * 13 - 3.4));
+      }
+    } else if (roll < 0.6 && a > 30 && b > 30) {
+      g.add(box(18, 2.4, 12, M.concreteDark, a * 0.35, h, b * 0.4));
+      const sky = box(15, 1.2, 9, M.glassDark, a * 0.35, h + 2.4, b * 0.4); sky.rotation.z = 0.12; g.add(sky);
+    }
+    if (rd() < 0.5) { const px = -a * 0.62, pz = b * 0.62; g.add(cyl(1.3, 1.3, 9, M.metal, px, h, pz, 8)); g.add(cyl(2.2, 2.2, 1.2, M.metalDark, px, h + 9, pz, 8)); }
   }
   if (sp.roof === 'box') g.add(rbox(Math.min(28, a * 0.6), 12, Math.min(28, b * 0.6), 1.5, M.concreteDark, -a * 0.3, h, -b * 0.3));
   else if (sp.roof === 'tank') {
@@ -1061,6 +1085,61 @@ function buildGround(gd) {
   return scene;
 }
 
+/* ════════════════════════════ ACABAMENTO DO CHÃO ════════════════════════════
+   Detalhes baixos pintados junto com o chão (custo zero em jogo): cada prédio ganha um lote com
+   borda, uma sombra de contato escurecendo o pé das paredes e uma cerca-viva ou floreiras; os
+   estacionamentos ganham canteiros; as ruas ganham setas de sentido antes dos cruzamentos. */
+function dressGround(scene, gd) {
+  const { BLOCK, LANE, ROAD, minK, maxK } = gd, Y = 6.62;
+  const flat = (w, d, mat, u, v, y = Y) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), mat); m.rotation.x = -Math.PI / 2; m.position.set(u, y, v); scene.add(m); return m; };
+  const plotT = canvasTex(128, 128, (g, W, H) => {
+    g.fillStyle = '#3b4149'; g.fillRect(0, 0, W, H);
+    g.strokeStyle = 'rgba(255,255,255,0.10)'; g.lineWidth = 3; g.strokeRect(4, 4, W - 8, H - 8);
+    g.strokeStyle = 'rgba(0,0,0,0.28)'; g.lineWidth = 1; for (let i = 16; i < W; i += 16) { g.beginPath(); g.moveTo(i, 6); g.lineTo(i, H - 6); g.stroke(); }
+  });
+  const plotM = new THREE.MeshStandardMaterial({ map: plotT, roughness: 0.9 });
+  const aoT = canvasTex(128, 128, (g, W, H) => {                 // retângulo escuro com borda esfumada
+    g.clearRect(0, 0, W, H); g.filter = 'blur(9px)'; g.fillStyle = 'rgba(0,0,0,0.9)'; g.fillRect(22, 22, W - 44, H - 44); g.filter = 'none';
+  });
+  const aoM = new THREE.MeshBasicMaterial({ map: aoT, transparent: true, opacity: 0.6, depthWrite: false });
+  const hedge = new THREE.MeshStandardMaterial({ color: 0x2c6a41, roughness: 1 });
+  const soil = new THREE.MeshStandardMaterial({ color: 0x5a4a3c, roughness: 0.9 });
+  const petals = [0xff5c8a, 0xffd54a, 0xf2f2f2, 0xff8a3c].map(c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.8, emissive: c, emissiveIntensity: 0.12 }));
+  const hedges = [], pots = [], blooms = petals.map(() => []);
+  for (const o of CITY.objects) {
+    const sp = o.spec;
+    if (!sp || !o.solid || o.car) continue;
+    if (sp.kind === 'zone') { const ao = flat(2 * o.a + 44, 2 * o.b + 44, aoM, o.u, o.v, Y + 0.3); ao.renderOrder = 4; continue; }
+    if (sp.kind !== 'lowrise') continue;
+    const { a, b } = sp, r = rng(sp.seed + 31);
+    flat(2 * a + 30, 2 * b + 30, plotM, o.u, o.v);
+    const ao = flat(2 * a + 40, 2 * b + 40, aoM, o.u, o.v, Y + 0.3); ao.renderOrder = 4;
+    if (!sp.shop && r() < 0.75) hedges.push([o.u - a * 0.12, o.v + b + 8, a * 1.5, 0]);          // cerca-viva na frente (face +v)
+    if (r() < 0.7) hedges.push([o.u + a + 8, o.v - b * 0.2, b * 1.2, 1]);                         // e na lateral (face +u)
+    if (sp.shop) for (const du of [-a * 0.86, a * 0.86]) { pots.push([o.u + du, o.v + b + 9]); blooms[Math.floor(r() * blooms.length)].push([o.u + du, o.v + b + 9]); }
+  }
+  // estacionamentos: canteiro com cerca-viva nas duas pontas
+  for (let i = minK; i < maxK; i++) for (let j = minK; j < maxK; j++) {
+    const cu = (i + 0.5) * BLOCK, cv = (j + 0.5) * BLOCK;
+    const cars = CITY.cars.filter(c => !c.ai && Math.abs(c.u - cu) < 130 && Math.abs(c.v - cv) < 190).length;
+    if (cars >= 2 && !CITY.objects.some(o => o.spec && o.spec.kind === 'lowrise' && Math.abs(o.u - cu) < 190 && Math.abs(o.v - cv) < 190)) hedges.push([cu, cv - 172, 250, 0], [cu, cv + 172, 250, 0]);
+  }
+  const unit = new THREE.BoxGeometry(1, 1, 1);
+  const inst = (geo, mat, list, place) => { if (!list.length) return; const im = new THREE.InstancedMesh(geo, mat, list.length), d = new THREE.Object3D(); list.forEach((it, k) => { place(d, it); d.updateMatrix(); im.setMatrixAt(k, d.matrix); }); scene.add(im); };
+  inst(unit, hedge, hedges, (d, [u, v, len, rot]) => { d.position.set(u, Y + 3.2, v); d.scale.set(rot ? 5.5 : len, 6.4, rot ? len : 5.5); });
+  inst(unit, soil, pots, (d, [u, v]) => { d.position.set(u, Y + 2, v); d.scale.set(8, 4, 8); });
+  blooms.forEach((list, k) => inst(new THREE.SphereGeometry(4.2, 8, 6), petals[k], list, (d, [u, v]) => { d.position.set(u, Y + 5.6, v); d.scale.set(1, 0.7, 1); }));
+  // setas de sentido pintadas em cada faixa, antes dos cruzamentos (mão direita, como o trânsito)
+  const arrow = new THREE.Shape(); arrow.moveTo(-9, -1.3); arrow.lineTo(2, -1.3); arrow.lineTo(2, -4.2); arrow.lineTo(10, 0); arrow.lineTo(2, 4.2); arrow.lineTo(2, 1.3); arrow.lineTo(-9, 1.3);
+  const ag = new THREE.ShapeGeometry(arrow); ag.rotateX(-Math.PI / 2);
+  const arrows = [];
+  for (let k = minK; k <= maxK; k++) for (let m = minK; m < maxK; m++) for (const dir of [1, -1]) {
+    const along = (m + 0.5) * BLOCK + dir * (BLOCK / 2 - ROAD / 2 - 58);
+    arrows.push([along, k * BLOCK + dir * LANE, dir > 0 ? 0 : Math.PI], [k * BLOCK - dir * LANE, along, dir > 0 ? -Math.PI / 2 : Math.PI / 2]);
+  }
+  inst(ag, new THREE.MeshStandardMaterial({ color: 0xaeb4bc, roughness: 0.75 }), arrows, (d, [u, v, rot]) => { d.position.set(u, 0.16, v); d.rotation.set(0, rot, 0); });
+}
+
 /* ════════════════════════════ SOMBRAS ════════════════════════════
    O chão é renderizado uma vez só, então dá para pagar por sombras de verdade: cada prédio, árvore,
    outdoor e viaduto entra na cena do chão como um "fantasma" (não aparece, só projeta sombra), e a
@@ -1112,6 +1191,71 @@ function addShadows(gscene, GR) {
   GR.shadowMap.enabled = true; GR.shadowMap.type = THREE.PCFSoftShadowMap;
 }
 
+/* ════════════════════════════ TRAÇO ════════════════════════════
+   Linha fina de ilustração técnica em cada prédio (a linguagem do iso-glow: volume simples, contorno
+   fino, e o que está "ligado" brilha). Em vez de desenhar arestas à mão, cada objeto é renderizado
+   uma segunda vez guardando normal + profundidade; um filtro acha onde elas mudam de um pixel para o
+   outro (quina, degrau, silhueta) e risca ali uma linha de 1 px por cima da imagem. Vale para
+   qualquer forma, inclusive cantos arredondados, e só roda quando o objeto é redesenhado. */
+const LINE = {                                  // cor e força do traço em cada período
+  day:   [0.04, 0.06, 0.10, 0.50],
+  dusk:  [1.00, 0.86, 0.74, 0.34],
+  dawn:  [1.00, 0.90, 0.92, 0.32],
+  night: [0.74, 0.86, 1.00, 0.36],
+};
+function makeOutliner(R, maxW, maxH) {
+  const rt = new THREE.WebGLRenderTarget(maxW, maxH, { type: THREE.HalfFloatType, minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter });
+  const normalDepth = new THREE.ShaderMaterial({
+    vertexShader: `varying vec3 vN; varying float vD;
+      void main() {
+        #include <beginnormal_vertex>
+        #include <defaultnormal_vertex>
+        #include <begin_vertex>
+        #include <project_vertex>
+        vN = normalize(transformedNormal); vD = -mvPosition.z - 1500.0;
+      }`,
+    fragmentShader: `varying vec3 vN; varying float vD;
+      void main() { gl_FragColor = vec4(normalize(vN) * 0.5 + 0.5, vD); }`,
+  });
+  const edge = new THREE.ShaderMaterial({
+    transparent: true, depthTest: false, depthWrite: false,
+    uniforms: { tN: { value: rt.texture }, px: { value: new THREE.Vector2(1 / maxW, 1 / maxH) }, uvScale: { value: new THREE.Vector2(1, 1) },
+                line: { value: new THREE.Vector4(1, 1, 1, 0.4) }, creases: { value: 1 } },
+    vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }`,
+    fragmentShader: `uniform sampler2D tN; uniform vec2 px, uvScale; uniform vec4 line; uniform float creases; varying vec2 vUv;
+      void main() {
+        vec2 uv = vUv * uvScale;
+        vec4 c = texture2D(tN, uv), r = texture2D(tN, uv + vec2(px.x, 0.0)), u = texture2D(tN, uv + vec2(0.0, px.y));
+        float cc = step(0.1, length(c.rgb)), cr = step(0.1, length(r.rgb)), cu = step(0.1, length(u.rgb));
+        float sil = max(abs(cc - cr), abs(cc - cu));                                        // silhueta
+        float inside = cc * cr * cu;
+        float crease = step(0.2, max(distance(c.rgb, r.rgb), distance(c.rgb, u.rgb)));      // quina: a normal muda
+        float stepd = step(3.0, max(abs(c.a - r.a), abs(c.a - u.a)));                       // degrau: a profundidade salta
+        float e = max(sil, inside * max(creases * crease, stepd));
+        gl_FragColor = vec4(line.rgb, line.a * e);
+      }`,
+  });
+  const quadScene = new THREE.Scene(), quadCam = new THREE.Camera();
+  quadScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), edge));
+  const hidden = [];
+  return function outline(scene, cam, g, pw, ph, creases) {
+    g.traverse(m => { if (m.isMesh && m.visible && !castable([].concat(m.material)[0])) { m.visible = false; hidden.push(m); } });   // vidro, brilhos e sombras falsas não têm traço
+    const bg = scene.background, env = scene.environment;
+    scene.overrideMaterial = normalDepth;
+    R.setRenderTarget(rt); R.setViewport(0, 0, pw, ph); R.setScissor(0, 0, pw, ph);
+    const shadows = R.shadowMap.enabled; R.shadowMap.enabled = false;
+    R.clear(); R.render(scene, cam);
+    R.shadowMap.enabled = shadows;
+    scene.overrideMaterial = null; scene.background = bg; scene.environment = env;
+    R.setRenderTarget(null); R.setViewport(0, 0, pw, ph); R.setScissor(0, 0, pw, ph);
+    for (const m of hidden) m.visible = true; hidden.length = 0;
+    edge.uniforms.uvScale.value.set(pw / maxW, ph / maxH);
+    edge.uniforms.line.value.set(...(LINE[PERIOD] || LINE.night));
+    edge.uniforms.creases.value = creases ? 1 : 0;
+    R.autoClear = false; R.render(quadScene, quadCam); R.autoClear = true;
+  };
+}
+
 /* ════════════════════════════ BOOT ════════════════════════════ */
 async function boot() {
   if (!CITY || !CITY.attach3D) { emit('city3d:ready'); return; }
@@ -1153,6 +1297,8 @@ async function boot() {
   R.setPixelRatio(1); R.setSize(maxW, maxH, false); R.setClearColor(0x000000, 0);
   R.setScissorTest(true);
 
+  let outline = null;
+  if (OUTLINES && R.capabilities.isWebGL2) try { outline = makeOutliner(R, maxW, maxH); } catch (e) { console.warn('[world3d] sem traço', e); }
   const t0 = performance.now();
   function draw(o, t, dt) {
     let rec = o.rec;
@@ -1178,6 +1324,8 @@ async function boot() {
     R.setViewport(0, 0, pw, ph); R.setScissor(0, 0, pw, ph);
     scene.add(rec.g);
     R.render(scene, cam);
+    // folhagem é facetada: nela só a silhueta e os degraus ganham traço, senão cada triângulo viraria uma linha
+    if (outline && !['lamp', 'signal'].includes(o.spec.kind)) outline(scene, cam, rec.g, pw, ph, !['tree', 'bush'].includes(o.spec.kind));
     scene.remove(rec.g);
     const ctx = o.canvas.getContext('2d');
     ctx.clearRect(0, 0, o.canvas.width, o.canvas.height);
@@ -1237,6 +1385,7 @@ async function boot() {
       GR.setPixelRatio(GROUND_DPR); GR.setSize(gd.mapPx, gd.mapPx, false); GR.setClearColor(0x07090d, 1);
       GR.setClearColor(PERIODS[PERIOD].clear, 1);
       const gscene = buildGround(gd);
+      try { dressGround(gscene, gd); } catch (e) { console.warn('[world3d] acabamento do chão falhou', e); }
       applyEM(gscene);
       const ts = performance.now();
       if (!NO_SHADOWS) try { addShadows(gscene, GR); } catch (e) { console.warn('[world3d] sombras do chão falharam', e); }

@@ -709,12 +709,12 @@ const CAR = {
   ACCEL: 360,         // throttle
   BRAKE: 900,         // S while moving forward
   DRAG: 1.1,          // rolling resistance (per second, proportional)
-  COAST: 70,          // constant decel when off the throttle
+  COAST: 90,          // constant decel when off the throttle
   WHEELBASE: 62,      // bigger = wider turning circle
   MAX_STEER: 0.5,     // rad at the front wheels
-  STEER_RATE: 2.4,    // how fast the wheel turns toward the input (rad/s)
-  GRIP_LOSS: 0.65,    // at top speed the max steer shrinks by this fraction
-  YAW_EASE: 5,        // how fast the body's turn rate follows the wheels (1/s): the car has weight
+  STEER_RATE: 3.2,    // how fast the wheel turns toward the input (rad/s)
+  GRIP_LOSS: 0.55,    // at top speed the max steer shrinks by this fraction
+  YAW_EASE: 6.5,        // how fast the body's turn rate follows the wheels (1/s): the car has weight
 };
 const CAR_PAD = 24;      // extra clearance around the car body (iso units)
 let nearBillboard = null;
@@ -722,10 +722,12 @@ let drivingCar = null, nearCar = null, driveDist = 0, honkAt = 0, lastBump = 0;
 
 function updateDriving(dt, dx, dy) {
   const car = drivingCar;
-  const throttle = dy < 0 ? 1 : 0, brake = dy > 0 ? 1 : 0, steerIn = dx;
+  let throttle = dy < 0 ? 1 : 0, brake = dy > 0 ? 1 : 0, steerIn = dx;
+  // joystick do celular: volante analógico (meio curso = meia esterçada), acelera para cima, freia para baixo
+  if (joyVec.m > 0) { steerIn = clamp(joyVec.x * joyVec.m * 1.4, -1, 1); throttle = joyVec.y < -0.3 ? 1 : 0; brake = joyVec.y > 0.5 ? 1 : 0; }
 
-  // speed
-  if (throttle) car.speed += CAR.ACCEL * dt * (car.speed < 0 ? 2.5 : 1);
+  // speed: arranca forte e a aceleração vai caindo perto da velocidade máxima
+  if (throttle) car.speed += CAR.ACCEL * dt * (car.speed < 0 ? 2.5 : 1.4 - 0.75 * Math.min(1, car.speed / CAR.MAX_SPEED));
   else if (brake) car.speed -= (car.speed > 0 ? CAR.BRAKE : CAR.ACCEL * 0.6) * dt;
   else {
     const c = Math.min(Math.abs(car.speed), CAR.COAST * dt);
@@ -739,9 +741,9 @@ function updateDriving(dt, dx, dy) {
   if (Math.abs(car.speed) < 2 && !throttle && !brake) car.speed = 0;
 
   // steering: the wheel eases toward the input; less lock at high speed
-  const lock = Math.min(CAR.MAX_STEER, CAR.MAX_STEER * (1 - CAR.GRIP_LOSS * Math.min(1, Math.abs(car.speed) / CAR.MAX_SPEED)) * (hb ? 1.9 : 1));
+  const lock = Math.min(CAR.MAX_STEER, CAR.MAX_STEER * (1 - CAR.GRIP_LOSS * Math.min(1, Math.abs(car.speed) / CAR.MAX_SPEED)) * (hb ? 1.9 : brake && car.speed > 60 ? 1.25 : 1));   // freando a frente "morde" mais
   const target = steerIn * lock;
-  const ds = target - car.steer, maxStep = CAR.STEER_RATE * dt;
+  const ds = target - car.steer, maxStep = CAR.STEER_RATE * dt * (steerIn ? 1 : 1.7);                  // soltou o volante: ele volta rápido ao centro
   car.steer += clamp(ds, -maxStep, maxStep);
   if (!steerIn && Math.abs(car.steer) < 0.02) car.steer = 0;
 
@@ -772,10 +774,21 @@ function updateDriving(dt, dx, dy) {
         writeSave();
       }
     } else {
-      // crash: stop dead and bounce back a little
       if (Math.abs(car.speed) > 60 && performance.now() - lastBump > 250) { lastBump = performance.now(); playSfx('bump'); }
-      car.speed = -car.speed * 0.25;
-      car.angle = prevAngle; car.yaw = 0; car.slip = 0;
+      // Raspou num meio-fio, prédio ou carro: em vez de parar seco, tenta escorregar ao longo dele
+      // (só a parte do movimento paralela à parede), perdendo velocidade enquanto raspa.
+      let slid = false;
+      if (inside) for (const [sx, sy] of [[car.x + du, car.y + du / 2], [car.x - dv, car.y + dv / 2]]) {
+        if ((sx !== car.x || sy !== car.y) && !carCollidesAt(sx, sy, car.angle)) {
+          CITY.moveCar(car, sx, sy);
+          car.speed *= Math.max(0, 1 - 2.6 * dt); car.slip = 0;
+          slid = true; break;
+        }
+      }
+      if (!slid) {                                   // batida de frente: para e volta um pouco
+        car.speed = -car.speed * 0.25;
+        car.angle = prevAngle; car.yaw = 0; car.slip = 0;
+      }
     }
   }
   car.wheelRot = (car.wheelRot || 0) + car.speed * dt / 5.8; // wheels roll with the distance covered

@@ -108,7 +108,7 @@
   const ROUTE = [[2.5, 3], [1.5, 3], [1, 2.5], [1, 1.5], [1.5, 1], [2.5, 1], [3, 1.5]].map(([a, b]) => ({ u: a * B, v: b * B, ...CITY.S(a * B, b * B) }));
   const LAST = ROUTE.length - 1;
   const RING = `<svg viewBox="0 0 220 110"><ellipse cx="110" cy="55" rx="100" ry="50"/><ellipse class="pulse" cx="110" cy="55" rx="100" ry="50"/></svg>`;
-  const MEDALS = [[22, 'OURO'], [32, 'PRATA'], [Infinity, 'BRONZE']];
+  const MEDALS = [[17, 'OURO'], [24, 'PRATA'], [Infinity, 'BRONZE']];
   const run = { active: false, i: 0, t: 0, ring: null, beam: null, hintAt: 0, doneUntil: 0 };
   const hud = document.createElement('div'); hud.id = 'plus-run';
   hud.innerHTML = '<span id="plus-run-l">ENTREGA</span><time id="plus-run-t">0.0s</time><small id="plus-run-s"></small>';

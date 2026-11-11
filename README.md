@@ -41,6 +41,9 @@ powershell -ExecutionPolicy Bypass -File tools\gerar-dados-rpg.ps1
   prédios e chão em 3D e `vehicles.js` os veículos.
 - Sombras: o chão é renderizado uma vez com a sombra real de cada prédio, árvore e outdoor, conforme a hora do dia
   (`addShadows` em `world3d.js`). Abra com `?noshadows` para comparar.
+- Traço: cada prédio ganha uma linha fina de ilustração técnica nas quinas e na silhueta (`makeOutliner` em
+  `world3d.js`; cor por período em `LINE`). Abra com `?nolines` para comparar. Sombras nos prédios e traço ficam
+  desligados no celular.
 - Movimento: a pé há aceleração curta, joystick analógico no celular e clique/toque no chão para andar até o ponto;
   a câmera olha um pouco à frente e a rodinha do mouse dá zoom; no carro, Espaço é o freio de mão.
 - Pedestres existem mas estão desligados (abra com `?peds` para ver).

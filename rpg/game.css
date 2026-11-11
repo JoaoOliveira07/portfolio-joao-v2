@@ -898,3 +898,10 @@ body.debug #debug-coords { display: block; bottom: 220px; }
 #worldPan .walk-mark { position: absolute; width: 0; height: 0; z-index: 2; pointer-events: none; animation: walk-mark .9s ease-out forwards; }
 #worldPan .walk-mark::before { content: ''; position: absolute; left: -17px; top: -8.5px; width: 34px; height: 17px; border: 2px solid var(--accent); border-radius: 50%; box-shadow: 0 0 10px rgba(255,230,0,.6); }
 @keyframes walk-mark { 0% { transform: scale(1.7); opacity: 0; } 25% { opacity: 1; } 100% { transform: scale(.75); opacity: .55; } }
+
+/* sombra dos bonecos (silhueta deitada na direção da luz do período) e dos veículos (renderizada em 3D) */
+#worldPan .sprite-shadow { z-index: 3; transform-origin: 50% 88%; transform: translate(-50%, -88%) skewX(var(--shadow-skew, -66deg)) scaleY(0.34); filter: brightness(0) blur(0.6px); opacity: var(--shadow-op, 0.34); image-rendering: auto; }
+body[data-period=dusk] { --shadow-skew: -74deg; --shadow-op: 0.38; }
+body[data-period=dawn] { --shadow-skew: 70deg; --shadow-op: 0.3; }
+body[data-period=night] { --shadow-op: 0.28; }
+body.veh-shadows .obj.gl .tshadow { display: none; }

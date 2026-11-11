@@ -351,6 +351,14 @@ Object.values(spritePaths).flat().forEach(src => { new Image().src = src; });
 
 const playerImgEl = document.createElement('img');
 playerImgEl.className = 'sprite';
+// sombra dos bonecos: a própria silhueta do sprite, escurecida e deitada no chão na direção da luz
+function spriteShadow(img) {
+  const sh = document.createElement('img');
+  sh.className = 'sprite sprite-shadow'; sh.alt = ''; sh.src = img.src;
+  worldPanEl.appendChild(sh);
+  return sh;
+}
+let playerShadowEl = null, playerShadowSrc = '';
 playerImgEl.src = spritePaths['idle_south'];
 worldPanEl.appendChild(playerImgEl);
 
@@ -400,6 +408,7 @@ const NPCS = NPC_DEFS.map(def => {
   imgEl.src = def.imgPath;
   if (def.cls) imgEl.classList.add(def.cls);
   worldPanEl.appendChild(imgEl);
+  const shEl = spriteShadow(imgEl); shEl.style.left = def.pos.x + 'px'; shEl.style.top = def.pos.y + 'px';
   const nameEl = document.createElement('div');
   nameEl.className = 'npc-name';
   nameEl.textContent = def.name;
@@ -507,11 +516,11 @@ window.addEventListener('keyup', e => { keys[keyName(e)] = false; });
 window.addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
 
 // rodinha do mouse = zoom da câmera (fica salvo); Ctrl+rodinha não dá zoom na página
-let userZoom = clamp(+uiPref.zoom || 1, 0.7, 1.4);
+let userZoom = clamp(+uiPref.zoom || 1, 0.7, 1.12);
 window.addEventListener('wheel', e => {
   if (e.ctrlKey) { e.preventDefault(); return; }
   if (overlayOpen || npcDialogOpen || tour.active || e.target.closest?.(UI_SEL)) return;
-  userZoom = clamp(userZoom * Math.exp(-e.deltaY * 0.0012), 0.7, 1.4);
+  userZoom = clamp(userZoom * Math.exp(-e.deltaY * 0.0012), 0.7, 1.12);
   uiPref.zoom = Math.round(userZoom * 100) / 100; saveUiPref();
 }, { passive:false });
 document.addEventListener('gesturestart', e => e.preventDefault());
@@ -542,8 +551,21 @@ const NPC_COLLIDE_RADIUS = 28;
 // Every solid city object blocks its iso footprint (+ a little padding for
 // the sprite's feet) — so you can walk right up to a wall, or behind it.
 const FOOT_PAD = 12;
+// O aeroporto é pintado junto com o chão, então não tinha colisão: dava para atravessar o terminal.
+// Estes retângulos (centro u,v e meia-largura a,b) repetem as medidas usadas em world3d.js · buildAirport.
+const EXTRA_SOLIDS = (() => {
+  const R = CITY.RUNWAY, B = CITY.BLOCK;
+  if (!R) return [];
+  return [
+    { u: 3.5 * B, v: R.v - 230, a: 131, b: 30 },            // terminal
+    { u: 3.5 * B + 60, v: R.v - 174, a: 6, b: 30 },         // ponte de embarque
+    { u: 4.5 * B + 110, v: R.v - 250, a: 11, b: 11 },       // torre de controle
+    { u: 4.5 * B - 70, v: R.v - 240, a: 43, b: 56 },        // hangar
+  ];
+})();
 function collidesAt(x, y, pad = FOOT_PAD, npcExtra = 0) {
   const p = CITY.I(x, y);
+  for (const o of EXTRA_SOLIDS) if (Math.abs(p.u - o.u) < o.a + pad && Math.abs(p.v - o.v) < o.b + pad) return true;
   for (const o of CITY.objects) {
     if (o.solid && Math.abs(p.u - o.u) < o.a + pad && Math.abs(p.v - o.v) < o.b + pad) return true;
   }
@@ -559,12 +581,13 @@ const CAR_HL = 30, CAR_HW = 14;    // half length / half width of the car body (
 function carCollidesAt(x, y, ang) {
   const p = CITY.I(x, y), c = Math.cos(ang), s = Math.sin(ang), ac = Math.abs(c), as = Math.abs(s);
   const eu = ac * CAR_HL + as * CAR_HW, ev = as * CAR_HL + ac * CAR_HW;    // car extent on the u / v axes
-  for (const o of CITY.objects) {
-    if (!o.solid) continue;
+  const hit = o => {
     const du = o.u - p.u, dv = o.v - p.v;
-    if (Math.abs(du) >= o.a + eu || Math.abs(dv) >= o.b + ev) continue;
-    if (Math.abs(du * c + dv * s) < CAR_HL + o.a * ac + o.b * as && Math.abs(-du * s + dv * c) < CAR_HW + o.a * as + o.b * ac) return true;
-  }
+    if (Math.abs(du) >= o.a + eu || Math.abs(dv) >= o.b + ev) return false;
+    return Math.abs(du * c + dv * s) < CAR_HL + o.a * ac + o.b * as && Math.abs(-du * s + dv * c) < CAR_HW + o.a * as + o.b * ac;
+  };
+  for (const o of CITY.objects) if (o.solid && hit(o)) return true;
+  for (const o of EXTRA_SOLIDS) if (hit(o)) return true;
   for (const npc of NPCS) if (Math.hypot(x - npc.def.pos.x, y - npc.def.pos.y) < NPC_COLLIDE_RADIUS + 24) return true;
   return false;
 }
@@ -1896,6 +1919,17 @@ window.addEventListener('city:period', () => { playerKey = ''; NPCS.forEach(n =>
    DEPTH — a sprite standing behind an object (north of both of its front
    faces) is drawn under it; the object fades so the player stays visible.
    ════════════════════════════════════════════════ */
+// O objeto só fica translúcido se o personagem/carro estiver mesmo atrás de uma parte opaca dele
+// (antes bastava encostar na caixa do objeto: a estação e o viaduto, que são compridos e na diagonal, sumiam à toa).
+function coversSprite(o, px, py) {
+  const m = o.mask; if (!m) return true;
+  const kx = m.w / o.box.w, ky = m.h / o.box.h, ox = o.x + o.box.x, oy = o.y + o.box.y;
+  for (const [dx, dy] of [[0, 0], [0, -16], [0, 14], [-12, 0], [12, 0]]) {
+    const mx = Math.floor((px + dx - ox) * kx), my = Math.floor((py + dy - oy) * ky);
+    if (mx >= 0 && my >= 0 && mx < m.w && my < m.h && m.a[my * m.w + mx] > 60) return true;
+  }
+  return false;
+}
 function spriteDepth(x, y, xraySet, self = null, hw = 26, top = 56) {
   let z = Math.round(y);
   const p = CITY.I(x, y);
@@ -1906,7 +1940,7 @@ function spriteDepth(x, y, xraySet, self = null, hw = 26, top = 56) {
     if (sx1 < bb.x0 || sx0 > bb.x1 || sy1 < bb.y0 || sy0 > bb.y1) continue;
     if (p.u < o.u + o.a && p.v < o.v + o.b) {
       z = Math.min(z, o.z - 1);
-      if (xraySet && sy0 < o.y) xraySet.add(o);
+      if (xraySet && sy0 < o.y && coversSprite(o, x, y - top * 0.45)) xraySet.add(o);
     } else {
       z = Math.max(z, o.z + 1);
     }
@@ -1975,6 +2009,10 @@ function animate() {
   const xray = new Set();
   playerImgEl.style.left = playerPos.x + 'px';
   playerImgEl.style.top  = playerPos.y + 'px';
+  if (!playerShadowEl) playerShadowEl = spriteShadow(playerImgEl);
+  playerShadowEl.style.left = playerPos.x + 'px'; playerShadowEl.style.top = playerPos.y + 'px';
+  playerShadowEl.style.display = playerImgEl.style.display === 'none' || tour.active ? 'none' : '';
+  if (playerShadowSrc !== playerImgEl.src) { playerShadowSrc = playerImgEl.src; playerShadowEl.src = playerShadowSrc; }
   if (!drivingCar && !pilot) playerImgEl.style.zIndex = spriteDepth(playerPos.x, playerPos.y, xray);
   heli.skipDepth = heli.state !== 'ground';
   if (heli.state === 'ground') { heli.z = spriteDepth(heli.x, heli.y, null, heli, 50, 50); heli.el.style.zIndex = heli.z; }

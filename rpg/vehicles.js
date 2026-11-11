@@ -23,7 +23,8 @@ import { buildClio } from './cars/clio.js?v=2';
 import { buildXTZ } from './cars/xtz.js?v=1';
 
 const W = 260, H = 170;                 // same box as CAR_VB in city.js (x −130…130, y −95…75)
-const DPR = (window.devicePixelRatio || 1) >= 1.75 ? 2 : 1.5;   // 1.5 or 2 only: keeps every box a whole number of pixels
+// telas de alta densidade no computador desenham os veículos em 3× (antes 2×: ficavam moles com a câmera aproximada); celular fica em 2×
+const DPR = (window.devicePixelRatio || 1) >= 1.75 ? (matchMedia('(pointer: coarse)').matches ? 2 : 3) : 1.5;   // 1.5 or 2 only: keeps every box a whole number of pixels
 const HMAX = 205;                                               // tallest box (train), the GL canvas is W × HMAX
 
 function boot() {
@@ -58,8 +59,20 @@ function boot() {
     day:   [0xe4f0ff, 0x5d5848, 1.8, 0xfff3e2, 2.8, 0xc4dcff, 0.6],
   };
   const setPeriod = p => { const v = VP[p]; if (!v) return; hemi.color.setHex(v[0]); hemi.groundColor.setHex(v[1]); hemi.intensity = v[2]; key.color.setHex(v[3]); key.intensity = v[4]; rim.color.setHex(v[5]); rim.intensity = v[6]; };
-  setPeriod(window.CITY_PERIOD || 'night');
-  window.addEventListener('city:period', e => setPeriod(e.detail));
+  /* Sombra de verdade para carros e moto: a mesma direção de luz da cidade (world3d.js · PERIODS), projetada
+     num plano invisível no chão. Substitui a elipse fixa que ficava embaixo de qualquer carro, em qualquer ângulo. */
+  const KEY_DIR = { night: [-60, 140, 90], dusk: [-140, 60, 40], dawn: [120, 70, 120], day: [-95, 125, 70] };
+  const SHADOW_OP = { day: 0.42, dusk: 0.46, dawn: 0.4, night: 0.34 };
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  key.castShadow = true; key.shadow.mapSize.set(1024, 1024);
+  Object.assign(key.shadow.camera, { left: -120, right: 120, top: 120, bottom: -120, near: 40, far: 900 }); key.shadow.camera.updateProjectionMatrix();
+  key.shadow.bias = -0.0006; key.shadow.radius = 2.5;
+  const catcher = new THREE.Mesh(new THREE.PlaneGeometry(560, 560), new THREE.ShadowMaterial({ opacity: 0.4, depthWrite: false }));
+  catcher.rotation.x = -Math.PI / 2; catcher.position.y = 0.06; catcher.receiveShadow = true; catcher.visible = false; scene.add(catcher);
+  const setShadow = p => { const d = KEY_DIR[p]; if (!d) return; key.position.set(...d).normalize().multiplyScalar(420); catcher.material.opacity = SHADOW_OP[p]; };
+  document.body.classList.add('veh-shadows');
+  setPeriod(window.CITY_PERIOD || 'night'); setShadow(window.CITY_PERIOD || 'night');
+  window.addEventListener('city:period', e => { setPeriod(e.detail); setShadow(e.detail); });
 
   /* ── camera: world X = iso u, Z = iso v, Y = height (1 unit = 1 px) ──
      screen x = u − v, screen y = (u+v)/2 − h  →  view y = h − (u+v)/2,
@@ -836,7 +849,10 @@ function boot() {
     if (m.userData.moto) seatRider(m, o.el.classList.contains('driving'));
     const tm = o.el.classList.contains('braking') ? mat.tailOn : mat.tailOff;
     for (const t of m.userData.tails || [m.userData.tail]) { if (!t) continue; if (t.userData.brake) t.userData.brake(tm === mat.tailOn); else t.material = tm; }
+    if (!m.userData.casts) { m.userData.casts = true; m.traverse(q => { if (q.isMesh && q.geometry.type !== 'PlaneGeometry') q.castShadow = true; }); }
+    catcher.visible = true;
     draw(m, o.canvas);
+    catcher.visible = false;
   }
 
   /* the player riding the bike: the same 3D person as the sprites, seated, at the bike's scale

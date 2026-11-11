@@ -309,10 +309,11 @@ const LEAF = ['#24503a', '#1f4733', '#2a5a41', '#234d37'];
 // organic foliage: an icosphere pushed around by cheap 3D noise, coloured per
 // vertex (sunlit tops, darker undersides) so it reads as volume, not facets
 function foliage(radius, base, r, opts = {}) {
-  const seg = (opts.detail ?? 2) >= 2 ? [18, 13] : [11, 8];         // indexed sphere → smooth shading
-  const geo = new THREE.SphereGeometry(radius, seg[0], seg[1]);
+  // Copa low-poly: um icosaedro amassado, com cada face de uma cor só (mais clara em cima, mais escura
+  // embaixo, com uma variação pequena de face para face). Lê como ilustração, não como massinha.
+  const geo = new THREE.IcosahedronGeometry(radius, (opts.detail ?? 2) >= 2 ? 2 : 1);      // não indexado → faces planas
   const pos = geo.attributes.position, col = new Float32Array(pos.count * 3);
-  const o1 = r() * 10, o2 = r() * 10, o3 = r() * 10, amp = opts.amp ?? 0.16, sq = opts.squash ?? 1;
+  const o1 = r() * 10, o2 = r() * 10, o3 = r() * 10, amp = (opts.amp ?? 0.16) * 1.25, sq = opts.squash ?? 1;
   const c0 = new THREE.Color(base), c = new THREE.Color();
   for (let i = 0; i < pos.count; i++) {
     const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i), L = Math.hypot(x, y, z) || 1;
@@ -320,9 +321,14 @@ function foliage(radius, base, r, opts = {}) {
     const n = Math.sin(nx * 3.1 + o1) * Math.cos(ny * 2.7 + o2) + Math.sin(nz * 3.7 + o3) * 0.6 + Math.sin((nx + nz) * 6.3 + o1) * 0.25;
     const k = 1 + amp * n;
     pos.setXYZ(i, x * k, y * k * sq, z * k);
-    const light = 0.62 + 0.5 * (ny * 0.5 + 0.5) + 0.06 * n;      // top lighter, belly darker
+  }
+  for (let f = 0; f < pos.count; f += 3) {                 // uma cor por face
+    const cy = (pos.getY(f) + pos.getY(f + 1) + pos.getY(f + 2)) / (3 * radius * sq || 1);
+    const cx = (pos.getX(f) + pos.getX(f + 1) + pos.getX(f + 2)) / (3 * radius);
+    const hsh = Math.sin((f + o1 * 97) * 12.9898) * 43758.5453, jit = (hsh - Math.floor(hsh)) - 0.5;
+    const light = 0.66 + 0.42 * (cy * 0.5 + 0.5) - 0.07 * cx + 0.13 * jit;
     c.copy(c0).multiplyScalar(light);
-    col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
+    for (let v = 0; v < 3; v++) { col[(f + v) * 3] = c.r; col[(f + v) * 3 + 1] = c.g; col[(f + v) * 3 + 2] = c.b; }
   }
   geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
   geo.computeVertexNormals();
@@ -331,7 +337,7 @@ function foliage(radius, base, r, opts = {}) {
 const FOLIAGE = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.82, metalness: 0 });
 const BARK = new THREE.MeshStandardMaterial({ color: 0x5a4636, roughness: 0.95 });
 const BARK_ARAU = new THREE.MeshStandardMaterial({ color: 0x6b4f3a, roughness: 0.9 });
-const LEAF_GREENS = ['#2f6b45', '#356f3f', '#2b6249', '#3c7444', '#2e5e3c'];
+const LEAF_GREENS = ['#2f7a48', '#3a8246', '#2d7050', '#46894a', '#33703f'];
 const shadowTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d');
   const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32); gr.addColorStop(0, 'rgba(0,0,0,0.42)'); gr.addColorStop(0.6, 'rgba(0,0,0,0.2)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
   g.fillStyle = gr; g.fillRect(0, 0, 64, 64); return new THREE.CanvasTexture(c); })();
@@ -1087,8 +1093,8 @@ function buildGround(gd) {
 
 /* ════════════════════════════ ACABAMENTO DO CHÃO ════════════════════════════
    Detalhes baixos pintados junto com o chão (custo zero em jogo): cada prédio ganha um lote com
-   borda, uma sombra de contato escurecendo o pé das paredes e uma cerca-viva ou floreiras; os
-   estacionamentos ganham canteiros; as ruas ganham setas de sentido antes dos cruzamentos. */
+   borda, uma sombra de contato escurecendo o pé das paredes e uma cerca-viva ou floreiras; as
+   ruas ganham setas de sentido antes dos cruzamentos. */
 function dressGround(scene, gd) {
   const { BLOCK, LANE, ROAD, minK, maxK } = gd, Y = 6.62;
   const flat = (w, d, mat, u, v, y = Y) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), mat); m.rotation.x = -Math.PI / 2; m.position.set(u, y, v); scene.add(m); return m; };
@@ -1117,12 +1123,6 @@ function dressGround(scene, gd) {
     if (!sp.shop && r() < 0.75) hedges.push([o.u - a * 0.12, o.v + b + 8, a * 1.5, 0]);          // cerca-viva na frente (face +v)
     if (r() < 0.7) hedges.push([o.u + a + 8, o.v - b * 0.2, b * 1.2, 1]);                         // e na lateral (face +u)
     if (sp.shop) for (const du of [-a * 0.86, a * 0.86]) { pots.push([o.u + du, o.v + b + 9]); blooms[Math.floor(r() * blooms.length)].push([o.u + du, o.v + b + 9]); }
-  }
-  // estacionamentos: canteiro com cerca-viva nas duas pontas
-  for (let i = minK; i < maxK; i++) for (let j = minK; j < maxK; j++) {
-    const cu = (i + 0.5) * BLOCK, cv = (j + 0.5) * BLOCK;
-    const cars = CITY.cars.filter(c => !c.ai && Math.abs(c.u - cu) < 130 && Math.abs(c.v - cv) < 190).length;
-    if (cars >= 2 && !CITY.objects.some(o => o.spec && o.spec.kind === 'lowrise' && Math.abs(o.u - cu) < 190 && Math.abs(o.v - cv) < 190)) hedges.push([cu, cv - 172, 250, 0], [cu, cv + 172, 250, 0]);
   }
   const unit = new THREE.BoxGeometry(1, 1, 1);
   const inst = (geo, mat, list, place) => { if (!list.length) return; const im = new THREE.InstancedMesh(geo, mat, list.length), d = new THREE.Object3D(); list.forEach((it, k) => { place(d, it); d.updateMatrix(); im.setMatrixAt(k, d.matrix); }); scene.add(im); };
@@ -1268,7 +1268,7 @@ async function boot() {
   const LIGHTS = lights(scene);
   if (SELF_SHADOWS) {
     const k = LIGHTS.key;
-    k.castShadow = true; k.shadow.mapSize.set(1024, 1024);
+    k.castShadow = true; k.shadow.mapSize.set(2048, 2048);
     Object.assign(k.shadow.camera, { left: -620, right: 620, top: 620, bottom: -620, near: 100, far: 4000 }); k.shadow.camera.updateProjectionMatrix();
     k.shadow.bias = -0.0008; k.shadow.normalBias = 1.4; k.shadow.radius = 2.5;
     R.shadowMap.enabled = true; R.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -1297,6 +1297,7 @@ async function boot() {
   R.setPixelRatio(1); R.setSize(maxW, maxH, false); R.setClearColor(0x000000, 0);
   R.setScissorTest(true);
 
+  const maskCv = document.createElement('canvas'), maskCtx = maskCv.getContext('2d', { willReadFrequently: true });
   let outline = null;
   if (OUTLINES && R.capabilities.isWebGL2) try { outline = makeOutliner(R, maxW, maxH); } catch (e) { console.warn('[world3d] sem traço', e); }
   const t0 = performance.now();
@@ -1320,6 +1321,10 @@ async function boot() {
     }
     const moving = rec.update ? !!rec.update(t, dt, o.el.classList.contains('near')) : false;
     const { x, y } = o.box, pw = o.canvas.width, ph = o.canvas.height;
+    if (SELF_SHADOWS) {                               // sombra nítida: o mapa de sombra cobre só este objeto
+      const ext = Math.max(o.box.w, o.box.h) * 0.6 + 24, sc = LIGHTS.key.shadow.camera;
+      if (sc.right !== ext) { sc.left = -ext; sc.right = ext; sc.top = ext; sc.bottom = -ext; sc.updateProjectionMatrix(); }
+    }
     cam.left = x; cam.right = x + pw / DPR; cam.top = -y; cam.bottom = -(y + ph / DPR); cam.updateProjectionMatrix();
     R.setViewport(0, 0, pw, ph); R.setScissor(0, 0, pw, ph);
     scene.add(rec.g);
@@ -1331,6 +1336,14 @@ async function boot() {
     ctx.clearRect(0, 0, o.canvas.width, o.canvas.height);
     ctx.drawImage(R.domElement, 0, R.domElement.height - ph, pw, ph, 0, 0, pw, ph);
     if (!rec.keep) dispose(rec.g);
+    if (!o.mask) {                                    // silhueta em baixa resolução: o jogo usa para saber se o personagem está mesmo atrás de algo opaco
+      const mw = Math.max(1, Math.round(o.box.w / 4)), mh = Math.max(1, Math.round(o.box.h / 4));
+      maskCv.width = mw; maskCv.height = mh;
+      maskCtx.clearRect(0, 0, mw, mh); maskCtx.drawImage(o.canvas, 0, 0, mw, mh);
+      const d = maskCtx.getImageData(0, 0, mw, mh).data, a = new Uint8Array(mw * mh);
+      for (let k = 0; k < a.length; k++) a[k] = d[k * 4 + 3];
+      o.mask = { w: mw, h: mh, a };
+    }
     CITY.show3D(o);
     return moving;
   }

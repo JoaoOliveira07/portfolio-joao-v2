@@ -14,6 +14,9 @@ import * as THREE from 'three';
 import { RoomEnvironment } from './assets/vendor/RoomEnvironment.js';
 import { RoundedBoxGeometry } from './assets/vendor/RoundedBoxGeometry.js';
 import { GLTFLoader } from './assets/vendor/GLTFLoader.js';
+import { MeshoptDecoder } from './assets/vendor/meshopt_decoder.module.js';
+// every .glb is meshopt-compressed (about half the download): all loaders need the decoder
+const gltfLoader = () => new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
 import { buildCruze } from './cars/cruze.js?v=2';
 import { buildHB20 } from './cars/hb20.js?v=1';
 import { buildClio } from './cars/clio.js?v=2';
@@ -485,7 +488,7 @@ function boot() {
   async function loadGLBs() {
     let cfg = {};
     try { const r = await fetch('assets/garage/garage.json', { cache: 'no-cache' }); if (r.ok) cfg = await r.json(); } catch {}
-    const loader = new GLTFLoader();
+    const loader = gltfLoader();
     const ids = Object.keys(cfg).filter(k => cfg[k] && cfg[k].file);
     await Promise.all(ids.map(async id => {
       try { const g = await loader.loadAsync('assets/garage/' + cfg[id].file); GLB[id] = normalizeGLB(g.scene, id, cfg[id]); }
@@ -773,7 +776,7 @@ function boot() {
   heliModel.scale.setScalar(1.3);
   /* the real helicopter: a yellow EC135 (assets/models/heli.glb). Its main and tail rotors get their
      own pivots so they still spin; the pilot figures that came with the model were removed. */
-  new GLTFLoader().loadAsync('assets/models/heli.glb').then(g => {
+  gltfLoader().loadAsync('assets/models/heli.glb').then(g => {
     { // the exported model is not upright: pick the orientation where it is flattest (rotor disc horizontal)
       let best = null; for (const [ax, an] of [['x', 0], ['x', Math.PI / 2], ['x', -Math.PI / 2], ['z', Math.PI / 2], ['z', -Math.PI / 2]]) {
         g.scene.rotation.set(0, 0, 0); g.scene.rotation[ax] = an; g.scene.updateMatrixWorld(true);
@@ -796,7 +799,7 @@ function boot() {
   // its own, bigger drawing box: a 737 dwarfs everything else in town
   const PLANE_BOX = { x: -320, y: -260, w: 640, h: 440 };
   const planeCanvases = new Map();
-  new GLTFLoader().loadAsync(PLANE.file).then(g => {
+  gltfLoader().loadAsync(PLANE.file).then(g => {
     const w = normalizeGLB(g.scene, 'plane', { length: PLANE.length, rotY: PLANE.rotY, env: 1.2 });
     w.position.y = PLANE.alt;
     planeModel.clear(); planeModel.add(w);
@@ -1030,7 +1033,7 @@ function boot() {
      Each car ~2x a car's length; the underframe/platform props that came with the model are hidden. */
   const TRAIN = { file: 'assets/models/train.glb', length: 130, deck: 71,
     hide: '^(Cubo00[1-35689]_0|Cubo01[02356]_0|Cilindro_0|corte_porta_0|Plano_0|Plano001_0)$' };
-  new GLTFLoader().loadAsync(TRAIN.file).then(g => {
+  gltfLoader().loadAsync(TRAIN.file).then(g => {
     const w = normalizeGLB(g.scene, 'train', { length: TRAIN.length, rotY: window.TRAIN_ROTY ?? Math.PI / 2, hide: TRAIN.hide, env: 1.2 });
     w.position.y = TRAIN.deck;
     for (const m of [trainModels.cab, trainModels.mid]) { m.userData.body = null; m.clear(); m.add(m === trainModels.cab ? w : w.clone(true)); }

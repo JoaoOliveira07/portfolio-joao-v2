@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://www.jopes.com.br/</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://www.jopes.com.br/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.jopes.com.br/?lang=en"/>
+  </url>
+  <url><loc>https://www.jopes.com.br/rpg/</loc></url>
+  <url><loc>https://www.jopes.com.br/cv/cv-pt.pdf</loc></url>
+  <url><loc>https://www.jopes.com.br/cv/cv-en.pdf</loc></url>
+</urlset>

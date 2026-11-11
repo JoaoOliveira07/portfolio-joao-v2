@@ -21,7 +21,7 @@ Abra http://localhost:5500 (o site lê os dados com `fetch`, então não funcion
 | O quê | Arquivo |
 |---|---|
 | Projetos profissionais (versão pública, sem dados internos) | `data/profissionais.json` |
-| Perfil, carreira, skills, cartas e projetos pessoais | `data/edicao.json` |
+| Perfil, carreira, skills, cartas e projetos pessoais (a duração do cargo atual é calculada sozinha) | `data/edicao.json` |
 | Entrevista (mude `draft` para `false` quando aprovar as respostas) | `data/entrevista.json` |
 | Manchetes, textos de jornal, cruzadinha, PT/EN | `i18n.js` |
 | CVs em PDF | `tools/cv.html` → `tools/gerar-cv.ps1` |
@@ -32,6 +32,16 @@ Depois de mudar projetos ou infográficos, regenere o que o jogo e a prévia de 
 ```
 powershell -ExecutionPolicy Bypass -File tools\gerar-imagens.ps1
 powershell -ExecutionPolicy Bypass -File tools\gerar-dados-rpg.ps1
+```
+
+## Jogo (JOPES.EXE)
+
+- `rpg/plus.js`: cafés para coletar, a entrega expressa de carro (rota em `ROUTE`, medalhas em `MEDALS`), o "+XP" flutuante e o confete do 100%.
+- Os modelos `.glb` em `rpg/assets/garage` e `rpg/assets/models` estão comprimidos com meshopt (metade do tamanho).
+  Ao adicionar um modelo novo, comprima antes de publicar:
+
+```
+npx @gltf-transform/cli meshopt modelo.glb modelo.glb --level medium
 ```
 
 ## Publicar

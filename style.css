@@ -44,6 +44,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 img { display: block; max-width: 100%; }
 ::selection { background: var(--red); color: var(--paper); }
 :focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+/* atalho de teclado: aparece só quando recebe foco (primeiro Tab da página) */
+.skip { position: fixed !important; left: 12px; top: -60px; z-index: 200 !important; background: var(--ink); color: var(--paper); padding: 10px 14px; font-family: var(--mono); font-size: 12px; text-decoration: none; transition: top .15s; }
+.skip:focus { top: 12px; }
 
 .wrap { width: min(1240px, calc(100% - 32px)); margin-inline: auto; }
 
@@ -143,7 +146,7 @@ a:hover .print-img.diagram::after, .print-img.diagram:hover::after { opacity: .1
 .dg-label { font-family: var(--serif); font-weight: 700; font-size: 16px; fill: var(--ink); text-anchor: middle; }
 .dg-sub { font-family: var(--mono); font-size: 10.5px; fill: var(--ink-2); text-anchor: middle; }
 .dg-inv { fill: var(--paper); }
-.dg-elabel { font-family: var(--mono); font-size: 10px; fill: var(--red); text-anchor: middle; }
+.dg-elabel { font-family: var(--mono); font-size: 10px; fill: var(--red); text-anchor: middle; paint-order: stroke; stroke: var(--paper-2); stroke-width: 5px; stroke-linejoin: round; }
 .dg-title { font-family: var(--mono); font-size: 11px; font-weight: 600; fill: var(--red); text-transform: uppercase; letter-spacing: .14em; }
 figcaption { font-family: var(--mono); font-size: 11px; color: var(--ink-3); margin-top: 6px; }
 
@@ -358,7 +361,7 @@ kbd {
 .lg-proj { border-top: 2px dashed var(--red); }
 
 .positions { list-style: none; }
-.pos { min-height: 62vh; padding: 10px 0 60px; border-bottom: 1px solid var(--ink); display: flex; flex-direction: column; justify-content: center; opacity: .35; transition: opacity .6s; }
+.pos { min-height: 62vh; padding: 10px 0 60px; border-bottom: 1px solid var(--ink); display: flex; flex-direction: column; justify-content: center; opacity: .5; transition: opacity .6s; }
 .pos:last-child { border-bottom: 0; }
 .pos.on { opacity: 1; }
 .pos-meta { display: flex; gap: 14px; flex-wrap: wrap; align-items: baseline; }
@@ -406,6 +409,7 @@ kbd {
 }
 .letter h3 { font-size: 1.45rem; font-weight: 700; font-style: italic; line-height: 1.2; margin-bottom: 10px; text-wrap: balance; }
 .letter p { font-size: 15.5px; margin-bottom: 9px; text-align: justify; hyphens: auto; }
+.letter-more { display: none; font-family: var(--mono); font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--red); padding: 6px 0; }
 
 /* ---------- Expediente ---------- */
 .colophon { background: var(--ink); color: var(--paper); padding: 46px 0 28px; }
@@ -440,6 +444,8 @@ kbd {
 .reader-page .headline { font-size: clamp(2.2rem, 5.2vw, 4.2rem); margin: 10px 0 14px; }
 .reader-page .deck { font-size: clamp(1.1rem, 1.8vw, 1.35rem); margin-bottom: 14px; }
 .reader-page figure { margin: 26px 0 30px; }
+/* o infográfico não ocupa a tela inteira: o começo do texto aparece sem rolar */
+.reader-page figure:has(.diagram) { max-width: 720px; margin-inline: auto; }
 .reader-page figure .print-img { aspect-ratio: 16 / 9; }
 .article-cols { column-count: 2; column-gap: 40px; column-rule: 1px solid var(--ink); }
 .article-cols > * { break-inside: avoid; }
@@ -554,9 +560,9 @@ html.press .lead .deck, html.press .lead .byline, html.press .lead-body, html.pr
 /* ---------- Toast ---------- */
 .toast {
   position: fixed; left: 50%; bottom: 24px; z-index: 100; transform: translate(-50%, calc(100% + 40px));
-  background: var(--red); color: #fff; font-family: var(--mono); font-size: 13px; padding: 10px 18px; transition: transform .4s ease;
+  background: var(--red); color: #fff; font-family: var(--mono); font-size: 13px; padding: 10px 18px; transition: transform .4s ease, visibility 0s .4s; visibility: hidden;
 }
-.toast.show { transform: translate(-50%, 0); }
+.toast.show { transform: translate(-50%, 0); visibility: visible; transition: transform .4s ease; }
 
 /* entrada suave dos blocos */
 .rise { opacity: 0; transform: translateY(14px); transition: opacity .8s ease, transform .8s ease; }
@@ -656,6 +662,11 @@ a:hover .print-img.anim.seen img, .print-img.anim.seen:hover img { filter: grays
   .brief { grid-template-columns: 110px 1fr; grid-template-rows: auto; column-gap: 14px; }
   .brief .print-img { grid-row: span 3; aspect-ratio: 1; margin: 0; }
   .ads { column-count: 1; }
+  /* cartas: só o primeiro parágrafo; o resto abre no botão */
+  .letter-rest { display: none; }
+  .letter.open .letter-rest { display: block; }
+  .letter-more { display: inline-block; }
+  .letter { margin-bottom: 28px; }
   .market { padding: 8px 10px 4px; top: 52px; }
   .market-head { flex-wrap: nowrap; align-items: center; }
   .market-quote b { font-size: 1.15rem; }
@@ -682,6 +693,7 @@ a:hover .print-img.anim.seen img, .print-img.anim.seen:hover img { filter: grays
   :root { --paper: #fff; }
   body::before, .utility, .sections, .mini, .ticker, .reader, .toast, .market, .copy, .more-link, .feature-actions { display: none !important; }
   .rise { opacity: 1; transform: none; }
+  .letter-rest { display: block !important; } .letter-more, .skip { display: none !important; }
   .pos { min-height: 0; opacity: 1; padding: 10px 0; break-inside: avoid; }
   .print-img img { mix-blend-mode: normal; }
   .colophon { background: none; color: #000; }

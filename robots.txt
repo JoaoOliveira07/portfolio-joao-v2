@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /tools/
+
+Sitemap: https://www.jopes.com.br/sitemap.xml

@@ -22,6 +22,33 @@
   <meta property="og:locale:alternate" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://www.jopes.com.br/">
+  <link rel="alternate" hreflang="pt-BR" href="https://www.jopes.com.br/">
+  <link rel="alternate" hreflang="en" href="https://www.jopes.com.br/?lang=en">
+  <link rel="alternate" hreflang="x-default" href="https://www.jopes.com.br/">
+  <!-- Dados estruturados: ajudam o Google a entender que a página é o perfil de uma pessoa. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "inLanguage": "pt-BR",
+    "url": "https://www.jopes.com.br/",
+    "name": "O Jopes — João Paulo Oliveira",
+    "mainEntity": {
+      "@type": "Person",
+      "name": "João Paulo Oliveira",
+      "jobTitle": "Engenheiro Backend",
+      "url": "https://www.jopes.com.br/",
+      "image": "https://www.jopes.com.br/img/og.png",
+      "address": { "@type": "PostalAddress", "addressLocality": "Blumenau", "addressRegion": "SC", "addressCountry": "BR" },
+      "knowsAbout": ["Java", "Spring Boot", "AWS", "Terraform", "PostgreSQL", "Mensageria", "Sistemas distribuídos"],
+      "sameAs": ["https://github.com/JoaoOliveira07", "https://www.linkedin.com/in/joaooliveira07/"]
+    }
+  }
+  </script>
+  <!-- Os três arquivos de dados começam a baixar junto com o CSS, sem esperar o script.js. -->
+  <link rel="preload" href="data/edicao.json" as="fetch" crossorigin="anonymous">
+  <link rel="preload" href="data/profissionais.json" as="fetch" crossorigin="anonymous">
+  <link rel="preload" href="data/entrevista.json" as="fetch" crossorigin="anonymous">
   <script>
     // Antes de pintar: idioma e se a abertura da rotativa deve rodar.
     (function () {
@@ -41,6 +68,8 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <a class="skip" href="#tecnologia" data-i18n="skip">Pular para as notícias</a>
+  <noscript><p style="padding:24px 16px;font-family:Georgia,serif">O Jopes é montado com JavaScript. Sem ele, veja o <a href="cv/cv-pt.pdf">currículo em PDF</a> ou o <a href="https://www.linkedin.com/in/joaooliveira07/">LinkedIn</a> de João Paulo Oliveira.</p></noscript>
   <!-- Abertura: a edição saindo da rotativa -->
   <div class="press-overlay" id="press" aria-hidden="true">
     <div class="press-roller"></div>
@@ -50,7 +79,7 @@
   <!-- Letreiro de logs (topo da página) -->
   <div class="ticker">
     <span class="ticker-label" data-i18n="ticker.label"></span>
-    <div class="ticker-viewport"><div class="ticker-track" id="ticker"></div></div>
+    <div class="ticker-viewport" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div>
   </div>
 
   <!-- Barra de utilidades -->

@@ -95,11 +95,27 @@ function localize() {
   });
   const { company, positions } = RAW.experience;
   CAREER = [...positions].reverse().map((pos) => ({
-    title: pos.title, period: L(pos.period), description: L(pos.description),
+    title: pos.title, period: livePeriod(pos), description: L(pos.description),
     responsibilities: arr(L(pos.responsibilities)), techStack: arr(pos.techStack), locked: !!pos.isLocked,
     company, location: L(RAW.experience.location), pts: MARKET_PTS[pos.title] || 0, short: C().market[pos.title] || pos.title,
   }));
   buildCandles();
+}
+
+// O cargo atual ("... - Atual (7 meses)") tem a duração recalculada a cada visita, para o texto
+// do edicao.json não envelhecer. Conta como o LinkedIn: o mês de início e o mês atual entram.
+function livePeriod(pos) {
+  const text = L(pos.period), start = ROLE_START[pos.title];
+  const current = /atual|present/i.test(text);
+  if (!current || pos.isLocked || !start) return text;
+  const now = new Date();
+  const months = (now.getFullYear() - start[0]) * 12 + (now.getMonth() - start[1]) + 1;
+  if (months < 1) return text;
+  const y = Math.floor(months / 12), m = months % 12, en = LANG === 'en';
+  const parts = [];
+  if (y) parts.push(`${y} ${en ? (y > 1 ? 'years' : 'year') : (y > 1 ? 'anos' : 'ano')}`);
+  if (m) parts.push(`${m} ${en ? (m > 1 ? 'months' : 'month') : (m > 1 ? 'meses' : 'mês')}`);
+  return text.replace(/\s*\([^)]*\)\s*$/, '') + ` (${parts.join(' ')})`;
 }
 
 /* ---------- render ---------- */
@@ -261,7 +277,7 @@ function buildLead() {
 function buildProfile() {
   $('#profile').innerHTML = `
     <h2 class="box-title">${t('profile.title')}</h2>
-    <div class="print-img"><img src="img/eu.jpg" alt="${esc(PROFILE.name)}"></div>
+    <div class="print-img"><img src="img/eu.webp" width="760" height="760" fetchpriority="high" decoding="async" alt="${esc(PROFILE.name)}"></div>
     <figcaption>${t('profile.caption')}</figcaption>
     <h2>${esc(PROFILE.name)}</h2>
     <p class="role">${t('role')} · ${LANG === 'en' ? 'Blumenau, Brazil' : esc(PROFILE.location)}</p>
@@ -361,7 +377,7 @@ function buildInterview() {
     <div class="iv-grid">
       <aside class="iv-side rise">
         <figure>
-          <div class="print-img iv-photo"><img src="img/entrevista.jpg" alt="${esc(PROFILE.name)}" loading="lazy"></div>
+          <div class="print-img iv-photo"><img src="img/entrevista.webp" width="400" height="400" alt="${esc(PROFILE.name)}" loading="lazy" decoding="async"></div>
           <figcaption>${t('iv.caption')}</figcaption>
         </figure>
         <div class="iv-quick">
@@ -650,12 +666,14 @@ function buildLetters() {
     const who = `<b>${esc(name)}</b><span>${esc(L(tm.author.role))}</span>`;
     return `<article class="letter rise">
       <header class="letter-from">
-        ${av ? `<div class="print-img"><img src="img/avatars/${av}.jpeg" alt="${esc(name)}" loading="lazy"></div>` : ''}
+        ${av ? `<div class="print-img"><img src="img/avatars/${av}.webp" width="160" height="160" alt="${esc(name)}" loading="lazy" decoding="async"></div>` : ''}
         ${tm.author.linkedin ? `<a href="${esc(tm.author.linkedin)}" target="_blank" rel="noopener">${who}</a>` : `<div>${who}</div>`}
       </header>
       <p class="letter-rel">${esc(L(tm.relationship))}</p>
       <h3>“${esc(title.replace(/[.]$/, ''))}”</h3>
-      ${paras.map((p) => `<p>${esc(p)}</p>`).join('')}
+      <p>${esc(paras[0])}</p>
+      ${paras.length > 1 ? `<div class="letter-rest">${paras.slice(1).map((p) => `<p>${esc(p)}</p>`).join('')}</div>
+      <button class="letter-more" type="button" aria-expanded="false">${t('letters.more')}</button>` : ''}
     </article>`;
   }).join('');
 }
@@ -835,6 +853,15 @@ function initUI() {
   });
 
   $('#printBtn').addEventListener('click', () => print());
+
+  // cartas longas: no celular abrem só o primeiro parágrafo; o botão mostra o resto
+  $('#letters').addEventListener('click', (e) => {
+    const b = e.target.closest('.letter-more');
+    if (!b) return;
+    const open = b.closest('.letter').classList.toggle('open');
+    b.setAttribute('aria-expanded', String(open));
+    b.textContent = t(open ? 'letters.less' : 'letters.more');
+  });
 
   // gráfico da carreira: mira e redesenho ao mudar a largura
   const chart = $('#chart');

@@ -8,6 +8,14 @@
 <link rel="alternate" href="../">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<!-- o importmap precisa vir antes de qualquer módulo (inclusive os modulepreload abaixo) -->
+<script type="importmap">{ "imports": { "three": "./assets/vendor/three.module.min.js" } }</script>
+<link rel="modulepreload" href="assets/vendor/three.module.min.js">
+<link rel="modulepreload" href="assets/vendor/RoomEnvironment.js">
+<link rel="modulepreload" href="assets/vendor/RoundedBoxGeometry.js">
+<link rel="modulepreload" href="assets/vendor/GLTFLoader.js">
+<link rel="modulepreload" href="assets/vendor/BufferGeometryUtils.js">
+<link rel="modulepreload" href="assets/vendor/meshopt_decoder.module.js">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%23050d18'/%3E%3Ctext x='12' y='17' font-size='14' fill='%23FFE600' text-anchor='middle' font-family='monospace' font-weight='bold'%3EJ%3C/text%3E%3C/svg%3E">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -990,6 +998,7 @@ body.debug #debug-coords { display: block; bottom: 220px; }
   <div id="controls-hint" class="glass">
     <button id="ctrl-close" type="button" title="Esconder">×</button>
     <div class="ctrl-row"><span class="ctrl-keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span><span class="ctrl-label">Andar · dirigir · voar</span></div>
+    <div class="ctrl-row"><span class="ctrl-keys"><kbd class="wide">Shift</kbd></span><span class="ctrl-label">Correr</span></div>
     <div class="ctrl-row"><span class="ctrl-keys"><kbd>E</kbd></span><span class="ctrl-label">Entrar · conversar · carro</span></div>
     <div class="ctrl-row"><span class="ctrl-keys"><kbd>F</kbd></span><span class="ctrl-label">Helicóptero (no HQ)</span></div>
     <div class="ctrl-row"><span class="ctrl-keys"><kbd>H</kbd></span><span class="ctrl-label">Buzina</span></div>
@@ -1098,12 +1107,17 @@ function writeSave() {
       introSeen,
       audioMuted,
       garageCar,
+      coffees: [...coffeeGot],
+      bestDelivery,
     }));
   } catch {}
 }
 const save = loadSave();
 let introSeen = save.introSeen || false;
-let garageCar = save.garageCar || null;          // which of João's vehicles the JOPES car is
+let garageCar = save.garageCar || null;
+const COFFEE_TOTAL = 12;
+const coffeeGot = new Set(save.coffees || []);       // cafés espalhados pela cidade (plus.js)
+let bestDelivery = save.bestDelivery || null;       // melhor tempo da entrega expressa, em segundos (plus.js)          // which of João's vehicles the JOPES car is
 
 /* ════════════════════════════════════════════════
    TIME OF DAY — follows the real hour in Blumenau unless the visitor picks
@@ -1166,6 +1180,9 @@ function playSfx(name) {
   if (name === 'engine')    { playTone(70, 0, 0.25, 'sawtooth'); playTone(95, 0.12, 0.3, 'sawtooth'); playTone(140, 0.3, 0.18, 'square'); }
   if (name === 'door')      { playTone(180, 0, 0.06, 'square'); playTone(120, 0.06, 0.08, 'square'); }
   if (name === 'bump')      playTone(90, 0, 0.08, 'square');
+  if (name === 'coin')      { playTone(988, 0, 0.06); playTone(1319, 0.06, 0.12); }
+  if (name === 'check')     { playTone(784, 0, 0.07, 'triangle'); playTone(1047, 0.07, 0.11, 'triangle'); }
+  if (name === 'go')        { playTone(440, 0, 0.1); playTone(440, 0.25, 0.1); playTone(880, 0.5, 0.25); }
   if (name === 'complete')  { playTone(392, 0, 0.1); playTone(523, 0.1, 0.1); playTone(659, 0.2, 0.1); playTone(784, 0.3, 0.22); }
 }
 
@@ -1320,6 +1337,7 @@ let xp = save.xp || 0, level = save.level || 1;
 
 function addXP(amount) {
   xp += amount;
+  window.JOPES_PLUS?.xpPop(amount);
   const newLevel = LEVELS.filter(([r]) => xp >= r).length;
   if (newLevel > level) { level = newLevel; showToast('NÍVEL ' + LEVELS[level-1][1] + ' DESBLOQUEADO', 'trophy'); playSfx('levelup'); }
   updateHUD();
@@ -1452,10 +1470,12 @@ const MISSIONS = [
   { type:'extra', key:'fly', label:'Voar de helicóptero', xp:80 },
   { type:'extra', key:'billboards', label:'Ver 3 projetos nos outdoors', xp:60 },
   { type:'extra', key:'garage', label:'Tirar um carro da garagem', xp:50 },
+  { type:'extra', key:'coffee', get label() { return `Achar os cafés da redação ${coffeeGot.size}/${COFFEE_TOTAL}`; }, xp:120 },
+  { type:'extra', key:'delivery', label:'Entregar um pedido de carro', xp:100 },
 ];
 const questListEl = document.getElementById('quest-list');
 const questCardEl = document.getElementById('quest-card');
-let allMissionsDone = save.allMissionsDone || false;
+let allMissionsDone = save.allMissionsDone || false;   // re-checked in renderQuestList: a save from before new missions existed is no longer 100%
 const uiPref = (() => { try { return JSON.parse(localStorage.getItem('jopes_ui') || '{}'); } catch { return {}; } })();
 const saveUiPref = () => { try { localStorage.setItem('jopes_ui', JSON.stringify(uiPref)); } catch {} };
 const questHead = document.getElementById('quest-head');
@@ -1486,6 +1506,7 @@ function renderQuestList() {
   document.getElementById('quest-count').textContent = `${doneCount}/${MISSIONS.length}`;
   document.getElementById('quest-prog-fill').style.width = (doneCount / MISSIONS.length * 100) + '%';
 
+  if (doneCount < MISSIONS.length && allMissionsDone) { allMissionsDone = false; questCardEl.classList.remove('all-done'); }
   if (doneCount === MISSIONS.length && !allMissionsDone) {
     allMissionsDone = true;
     questCardEl.classList.add('all-done');
@@ -1497,6 +1518,7 @@ function renderQuestList() {
     void flash.offsetWidth;
     flash.classList.add('active');
     writeSave();
+    window.JOPES_PLUS?.confetti();
     setTimeout(showCompletionOverlay, 900);
   }
 }
@@ -1511,6 +1533,7 @@ revealZone('main');
    INPUT
    ════════════════════════════════════════════════ */
 const keys = {};
+const keyName = e => (e.key.length === 1 ? e.key.toLowerCase() : e.key);
 function handleInteract() {
   if (npcDialogOpen) { advanceNPCDialog(); return; }
   if (overlayOpen) return;
@@ -1524,14 +1547,16 @@ function handleInteract() {
 }
 
 window.addEventListener('keydown', e => {
-  keys[e.key] = true;
+  keys[keyName(e)] = true;
   if (e.key === 'e' || e.key === 'E') handleInteract();
   if ((e.key === 'h' || e.key === 'H') && drivingCar && !e.repeat) { playSfx('horn'); honkAt = performance.now(); }
   if ((e.key === 'f' || e.key === 'F') && !e.repeat) tryHelipad();
   if (e.key === 'Escape') { if (tour.active) endTour(); closeNPCDialog(); closeOverlay(); }
   if (tour.active && (e.key === 'ArrowRight' || e.key === 'Enter')) tourNext();
 });
-window.addEventListener('keyup', e => { keys[e.key] = false; });
+window.addEventListener('keyup', e => { keys[keyName(e)] = false; });
+// alt-tab / clicking away never delivers the keyup: let go of everything
+window.addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
 
 window.addEventListener('wheel', e => { if (e.ctrlKey) e.preventDefault(); }, { passive:false });
 document.addEventListener('gesturestart', e => e.preventDefault());
@@ -1542,6 +1567,7 @@ document.addEventListener('gesturestart', e => e.preventDefault());
    MOVEMENT
    ════════════════════════════════════════════════ */
 const SPEED = 260; // map-space px/sec
+const RUN_BOOST = 1.6;
 const NPC_COLLIDE_RADIUS = 28;
 
 // Every solid city object blocks its iso footprint (+ a little padding for
@@ -1575,7 +1601,7 @@ function carCollidesAt(x, y, ang) {
 }
 
 let nearBuilding = null;
-// download the garage's 3D models only once the player heads that way (they're ~17 MB)
+// download the garage's 3D models only once the player heads that way (they're ~23 MB)
 let garageSpot = null, garagePreloaded = false;
 function preloadGarageNear() {
   if (garagePreloaded || !window.JOPES_GARAGE?.loadModels) return;
@@ -1615,8 +1641,9 @@ function updatePlayer(dt) {
 
   if (moving) {
     const len = Math.hypot(dx, dy);
-    const nx = clamp(playerPos.x + (dx/len) * SPEED * dt, EDGE_MARGIN, MAP_PX - EDGE_MARGIN);
-    const ny = clamp(playerPos.y + (dy/len) * SPEED * dt, EDGE_MARGIN, MAP_PX - EDGE_MARGIN);
+    const run = keys['Shift'] ? RUN_BOOST : 1;      // Shift = correr
+    const nx = clamp(playerPos.x + (dx/len) * SPEED * run * dt, EDGE_MARGIN, MAP_PX - EDGE_MARGIN);
+    const ny = clamp(playerPos.y + (dy/len) * SPEED * run * dt, EDGE_MARGIN, MAP_PX - EDGE_MARGIN);
     // if already stuck inside a collider (bad coords, tuning slip), never hard-lock —
     // let this frame's move through so the player can always walk back out
     const alreadyStuck = collidesAt(playerPos.x, playerPos.y);
@@ -1624,7 +1651,7 @@ function updatePlayer(dt) {
     if (alreadyStuck || !collidesAt(playerPos.x, ny)) playerPos.y = ny;
 
     spriteDir = getSpriteDir(dx, dy);
-    spriteAnimTime += dt;
+    spriteAnimTime += dt * run;
     if (spriteAnimTime >= 1 / SPRITE_FPS) {
       spriteAnimTime = 0;
       spriteFrame = (spriteFrame + 1) % WALK_FRAMES;
@@ -2049,6 +2076,7 @@ function drawMinimap() {
     if (lit) { mmCtx.globalAlpha = 0.18; mmCtx.beginPath(); mmCtx.arc(x, y, 6, 0, Math.PI*2); mmCtx.fill(); }
   });
   mmCtx.globalAlpha = 1;
+  window.JOPES_PLUS?.minimap(mmCtx, MM_SCALE);
   const px = 5 + playerPos.x*MM_SCALE, py = 5 + playerPos.y*MM_SCALE, t = performance.now() / 1000;
   mmCtx.strokeStyle = 'rgba(255,230,0,' + (0.55 - (t % 1.4) / 1.4 * 0.55) + ')'; mmCtx.lineWidth = 1;
   mmCtx.beginPath(); mmCtx.arc(px, py, 3 + (t % 1.4) / 1.4 * 7, 0, Math.PI*2); mmCtx.stroke();
@@ -2945,15 +2973,16 @@ function animate() {
 
   updateChars3D();
   updateZoneHUD();
+  window.JOPES_PLUS?.update(dt, now);
   drawMinimap();
   debugCoords.textContent = `X: ${Math.round(playerPos.x)}   Y: ${Math.round(playerPos.y)}`;
 }
 animate();
 </script>
 <!-- 3D vehicles: three.js is vendored in assets/vendor (MIT), nothing loads from outside -->
-<script type="importmap">{ "imports": { "three": "./assets/vendor/three.module.min.js" } }</script>
-<script type="module" src="vehicles.js?v=38"></script>
+<script type="module" src="vehicles.js?v=39"></script>
 <script type="module" src="world3d.js?v=19"></script>
+<script src="plus.js?v=1"></script>
 <script src="likes.js"></script>
 </body>
 </html>
